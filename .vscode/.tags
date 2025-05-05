@@ -12,59 +12,13 @@
 !_TAG_FIELD_DESCRIPTION	typeref	/Type and name of a variable or typedef/
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	A,assert	/assertions (assert, assume, cover, restrict)/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	C,class	/classes/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	E,enum	/enumerators/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	H,checker	/checkers/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	I,interface	/interfaces/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	K,package	/packages/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	L,clocking	/clocking/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	M,modport	/modports/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	N,nettype	/nettype declarations/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	O,constraint	/constraints/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	P,program	/programs/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	R,property	/properties/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	S,struct	/structs and unions/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	T,typedef	/type declarations/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	V,covergroup	/covergroups/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	b,block	/blocks (begin, fork)/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	c,constant	/constants (parameter, specparam, enum values)/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	d,define	/text macros/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	e,event	/events/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	f,function	/functions/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	i,instance	/instances of module or interface/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	l,ifclass	/interface class/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	m,module	/modules/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	n,net	/net data types/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	p,port	/ports/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	q,sequence	/sequences/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	r,register	/variable data types/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	t,task	/tasks/
-!_TAG_KIND_DESCRIPTION!SystemVerilog	w,member	/struct and union members/
 !_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_OUTPUT_VERSION	0.0	/current.age/
-!_TAG_PARSER_VERSION!SystemVerilog	1.1	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
 !_TAG_PROC_CWD	/home/jinm/cpp/tensorcore/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	6.1.0	/f272e5cff/
-!_TAG_ROLE_DESCRIPTION!SystemVerilog!module	decl	/declaring instances/
-MODE_BF16	./MAC/include/package.sv	/^    MODE_BF16 = 3'b100,$/;"	kind:constant	line:9	typedef:pkg.mode_caculation
-MODE_FP16	./MAC/include/package.sv	/^    MODE_FP16 = 3'b101,$/;"	kind:constant	line:10	typedef:pkg.mode_caculation
-MODE_FP32	./MAC/include/package.sv	/^    MODE_FP32 = 3'b111$/;"	kind:constant	line:12	typedef:pkg.mode_caculation
-MODE_IDLE	./MAC/include/package.sv	/^    MODE_IDLE = 3'b000,$/;"	kind:constant	line:5	typedef:pkg.mode_caculation
-MODE_INT2	./MAC/include/package.sv	/^    MODE_INT2 = 3'b001,\/\/not implemented$/;"	kind:constant	line:6	typedef:pkg.mode_caculation
-MODE_INT4	./MAC/include/package.sv	/^    MODE_INT4 = 3'b010,$/;"	kind:constant	line:7	typedef:pkg.mode_caculation
-MODE_INT8	./MAC/include/package.sv	/^    MODE_INT8 = 3'b011,$/;"	kind:constant	line:8	typedef:pkg.mode_caculation
-MODE_MIXED	./MAC/include/package.sv	/^    MODE_MIXED = 1'b1$/;"	kind:constant	line:16	typedef:pkg.mode_precision
-MODE_NORMAL	./MAC/include/package.sv	/^    MODE_NORMAL = 1'b0,$/;"	kind:constant	line:15	typedef:pkg.mode_precision
-MODE_TF32	./MAC/include/package.sv	/^    MODE_TF32 = 3'b110,$/;"	kind:constant	line:11	typedef:pkg.mode_caculation
-mode_caculation	./MAC/include/package.sv	/^  } mode_caculation; \/\/precision$/;"	kind:typedef	line:13	package:pkg
-mode_precision	./MAC/include/package.sv	/^}mode_precision;\/\/混合精度?$/;"	kind:typedef	line:17	package:pkg
-pkg	./MAC/include/package.sv	/^package pkg;$/;"	kind:package	line:3
-sig	./MAC/include/package.sv	/^`define sig(name, stage) name``_stage_``stage$/;"	kind:define	line:1
-sigm	./MAC/include/package.sv	/^`define sigm(name, stage) name``_stage_``stage``_m\/\/说明这个stage modify了这个信号$/;"	kind:define	line:2
