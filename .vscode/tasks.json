@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Auto Ctags for SV",
+            "type": "shell",
+            "command": "watchexec",
+            "args": [
+                "--debounce",
+                "1000ms",
+                "-e",
+                "sv",
+                "--",
+                "ctags",
+                "-R",
+                "--fields=+nKz",
+                "-f",
+                ".vscode/.tags",
+                "--langmap=SystemVerilog:+.sv",
+                "-R",
+                "./MAC/include"
+            ],
+            "problemMatcher": [],
+            "isBackground": true,
+            "detail": "自动监听sv文件变动并生成tags"
+        }
+    ]
+}
