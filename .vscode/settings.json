@@ -3,8 +3,10 @@
     "verilog.linting.path": "/usr/local/bin",
     "verilog.linting.linter": "verilator",
     "verilog.linting.verilator.includePath": [
-        "${workspaceFolder}/MAC/include"
+        "${workspaceFolder}/rtl/util/MAC/include"
     ],
-    "ctags-companion.command": "ctags -R --fields=+nKz -f .vscode/.tags --langmap=SystemVerilog:+.v -R /home/jinm/cpp/tensorcore/MAC/include",
-    
+    "ctags-companion.command": "ctags -R --fields=+nKz -f .vscode/.tags --langmap=SystemVerilog:+.v -R ${workspaceFolder}/rtl/util",
+    "files.watcherExclude": {
+        "**/target": true
+    },
 }

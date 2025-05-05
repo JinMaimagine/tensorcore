@@ -18,7 +18,7 @@
                 ".vscode/.tags",
                 "--langmap=SystemVerilog:+.sv",
                 "-R",
-                "./MAC/include"
+                "./rtl/util"
             ],
             "problemMatcher": [],
             "isBackground": true,
