@@ -1,0 +1,28 @@
+TOP       	?= top
+TOPDIR		= $(abspath $(CURDIR)/../util)
+OBJDIR      = $(abspath $(CURDIR)/../../obj_dir)
+VERILATORDIR = $(abspath $(CURDIR))
+
+# 让 verilator 生成到 obj_dir
+$(OBJDIR)/V$(TOP).mk:
+	@mkdir -p $(OBJDIR)
+	verilator -Wall --trace \
+	--cc --exe --Mdir $(OBJDIR) \
+	$(TOPDIR)/$(TOP).sv main.cpp \
+	--top-module $(TOP)
+	ln -sf $(VERILATORDIR)/main.cpp $(OBJDIR)/main.cpp
+
+# 调用 verilator 生成的 Makefile 编译可执行文件
+
+compile: $(OBJDIR)/V$(TOP).mk
+	$(MAKE) -C $(OBJDIR) -f V$(TOP).mk V$(TOP)
+	
+
+# 运行仿真程序
+run: compile
+	$(OBJDIR)/V$(TOP)
+
+# 清理
+.PHONY: all compile run clean
+clean:
+	rm -rf $(OBJDIR)
