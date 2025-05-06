@@ -7,11 +7,17 @@ obj_dir:verilator的生成
 rtl/util:最终的rtl实现
 ```  
 ## rtl/util部分:
-**top.sv**:最终的top文件,由tensorcore+AXI共同构成
-**tensorcore.sv**:tensorcore本身的部分,需要留出AXI的三个接口(数据/状态,master,slave)
-**systolic.sv**:要实现的systolic部分
-**PE.sv**:要实现的PE部分
-**MAC**:是我要实现的FMA单元
-*还有控制逻辑的sv由你们自己写,但是要按照上面的文件必须实现,方便验证*
+- **top.sv**  
+  顶层模块，将 TensorCore 与 AXI 总线相连接。  
+- **tensorcore.sv**  
+  核心模块，暴露三个 AXI 接口：数据/状态口、Master 口、Slave 口。  
+- **systolic.sv**  
+  实现矩阵乘法的 Systolic 阵列结构。  
+- **PE.sv**  
+  处理单元 (Processing Element)，负责子矩阵的乘累加。  
+- **MAC.sv**  
+  FMA 单元 (乘加器)，实现乘法累加操作。  
+- **control.sv**  
+  （示例）负责启动、握手、完成等控制逻辑。
 
 
