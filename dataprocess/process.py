@@ -9,19 +9,19 @@ random.seed(42)
 class UnsignedINT32:
     def __init__(self):
         self.value = [ random.getrandbits(1) for _ in range(32) ]
+        self.value2int = int(''.join(str(bit) for bit in self.value), 2)
 
     def __mul__(self, other):
-        a = int(''.join(str(bit) for bit in self.value), 2)
-        b = int(''.join(str(bit) for bit in other.value), 2)
-        prod = (a * b) & 0xFFFFFFFF
-        bits = [int(b) for b in f'{prod:032b}']
-        strs=''.join(str(bit) for bit in bits)
-        return strs
+        a = self.value2int
+        b = other.value2int
+        prod = (a * b) 
+        return prod
+
 
     def __repr__(self):
         strs=""
         strs=''.join(str(bit) for bit in self.value)
-        return strs
+        return f"('{strs}', {self.value2int})"
     
 
 def gen(dim):#gen(4):4*4的数据，gen(8):8*8
@@ -38,18 +38,26 @@ dim=int(sys.argv[1])
 A=gen(dim)
 B=gen(dim)
 C = [[0 for _ in range(dim)] for _ in range(dim)]
+D= [[0 for _ in range(dim)] for _ in range(dim)]
 for i in range(dim):
     for j in range(dim):
-        C[i][j]=A[i][j]*B[i][j]
+        for k in range(dim):
+            C[i][j] += A[i][k] * B[k][j]
+        D[i][j] = (C[i][j],f"{C[i][j]:0100b}")
+
+
+
+
+
 
 print("A:")
 for row in A:
-    print([str(elem) for elem in row])
+    print([elem for elem in row])
 
 print("B:")
 for row in B:
-    print([str(elem) for elem in row])
+    print([elem for elem in row])
 
-print("C:")
-for row in C:
+print("D:")
+for row in D:
     print(row)  # C 里是字符串或整数，直接打印就行
