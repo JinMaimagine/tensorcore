@@ -5,6 +5,7 @@
 //  * axi_tensor_wr  : AXI4‑Full MASTER (write D)
 //  * axi_tensor_cfg : AXI‑Lite   SLAVE (CSR)
 //------------------------------------------------------------------------------
+`include "rtl/util/tpu_axi.sv"
 module top #(
     parameter WIDTH       = 6,
     // AXI parameterisation
