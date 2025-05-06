@@ -1,4 +1,5 @@
 `include "package.sv"
+`include "tpu_axi.sv"
 import pkg::*;
 //------------------------------------------------------------------------------
 // MAC_top – contest tensor‑core top module, now保持原有 `sig` 宏命名方式，
