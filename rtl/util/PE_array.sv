@@ -32,8 +32,6 @@ generate
     		.CLK(CLK),
     		.RESET(RESET),
     		.EN(EN),
-			.SELECTOR(SELECTOR),
-			.B_EN(B_EN),
     		// .....
 			.A_left(A_left[31:0]),
 			.in_sum(zero),
@@ -47,9 +45,6 @@ generate
     		.CLK(CLK),
     		.RESET(RESET),
     		.EN(EN),
-			.SELECTOR(SELECTOR),
-			.B_EN(B_EN),
-    		// .....
 			.A_left(A_left[(gi+1)*32-1:gi*32]),
 			.in_sum(out_sum[num2*32*gi-1:num2*32*(gi-1)]),
 			.out_sum(out_sum[num2*32*(gi+1)-1:num2*32*gi]),
@@ -67,6 +62,6 @@ endgenerate
 // 	out_sum_final[(i+1)*32-1:i*32] = out_sum[(num1-1)*32*num2+32*(i+1)-1:(num1-1)*32*num2+32*i+32];
 // end
 // endgenerate
-assign out_sum_final = out_sum[num1*32*num2:(num1-1)*32*num2];
+assign out_sum_final = out_sum[num1*32*num2-1:(num1-1)*32*num2];
 assign out_B_final = out_B_below[num1*32*num2-1:(num1-1)*32*num2];
 endmodule
