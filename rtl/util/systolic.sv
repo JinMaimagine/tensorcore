@@ -21,6 +21,7 @@ always_ff @(posedge clk) begin
 end
 endmodule
 //基本的调度框架
+//systolic遵循一个原则:要么一直流动,要么保持，PE本身遵循这个规律,边界也要遵循这个规律
 module systolic #(
 parameter L=8,
 parameter ENTRYS=1024,
@@ -53,8 +54,8 @@ logic finish;
 logic finishall;
 logic flag;
 assign flag=state==DONE;
-logic RE;//readenable
-assign RE=systolic && !stop;
+logic AHEAD;//systolic可以继续,同时readenable
+assign AHEAD=systolic && !stop;
 //但是并不是systolic就可以流动,还要看是不是stop状态
 always_ff @(posedge clk) begin
     if(!rst) begin
@@ -98,8 +99,8 @@ logic [L-1:0]reA;
 logic [L-1:0]reB;
 always_comb begin
     for(integer i=0;i<L;i++) begin
-        reA[i]=pointerA[i]>=0&&systolic;
-        reB[i]=pointerB[i]>=0&&systolic;
+        reA[i]=pointerA[i]>=0&&AHEAD;
+        reB[i]=pointerB[i]>=0&&AHEAD;
     end
 end
 always_ff @(posedge clk) begin
@@ -108,7 +109,7 @@ always_ff @(posedge clk) begin
             pointerB[i] <= -i;
             pointerA[i] <= -i;
         end
-    end else if(RE) begin
+    end else if(AHEAD) begin
         for(integer i=0;i<L;i++)begin
             pointerB[i] <= pointerB[i]+1;
             pointerA[i] <= pointerA[i]+1;
