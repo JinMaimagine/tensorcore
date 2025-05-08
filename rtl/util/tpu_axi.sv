@@ -35,7 +35,7 @@ module axi_tensor_rd #(
     input  [ID_WIDTH-1:0]      s_axi_arid,
     input  [ADDR_WIDTH-1:0]    s_axi_araddr,
     input  [7:0]               s_axi_arlen,
-    input  [2:0]               s_axi_arsize,
+    input  [2:0]               s_axi_arsize,//每 beat 字节数的 log₂；256‑bit 总线时为 3'd5 (=32 B)。
     input  [1:0]               s_axi_arburst,
     input                      s_axi_arvalid,
     output                     s_axi_arready,
