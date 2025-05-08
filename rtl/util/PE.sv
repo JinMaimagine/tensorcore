@@ -6,7 +6,8 @@ module PE(
     // interface to PE row .....
     input wire [31:0] A_left,
     output reg [31:0] A_right,
-
+    input wire [31:0] C_left,
+    output reg [31:0] C_right,
     input wire [31:0] in_sum,
     output reg [31:0] out_sum,
 
