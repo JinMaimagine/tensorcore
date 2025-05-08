@@ -42,15 +42,21 @@ typedef struct packed {
     //一些time，分别是什么时候开始结束什么状态,
 } PE_pkg_t;
 
-localparam int FP_FORMAT_BITS = 3; 
-typedef enum logic [FP_FORMAT_BITS-1:0] {
+localparam int STATE_BIT = 3; 
+typedef enum logic [STATE_BIT-1:0] {
     IDLE    = 'd0,
     READ_C  = 'd1,
     SYSTOLIC = 'd2,//有规律流动状态
-    RESET = 'd3,//重置状态
-    FINISH='d4  //完全算完
+    ACCUMULATE = 'd3,//累加状态
+    RESET = 'd4,//重置状态
+    FINISH='d5  //完全算完
     // add new formats here
 } state_t;
 
+localparam int PATTERN_BIT = 3;
+typedef enum logic [PATTERN_BIT-1:0] {
+    NOMAL = 'd0,
+    BROADCAST = 'd1//INT4,INT8
+} pattern_t;
 
 endpackage
