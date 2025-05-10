@@ -1,9 +1,13 @@
 // ---------------------------------------------------------------------
 // 32→16 converter  (combinational, round‑to‑nearest‑even)
 // ---------------------------------------------------------------------
+`include "RCA.sv"
+
 module fp32_to_fp16_conv (
     input  wire [31:0] fp32_i,
-    output logic [15:0] fp16_o
+    output logic [15:0] fp16_o,
+    output logic        underflow_o,
+    output logic        overflow_o
 );
     //------------------------------------------------------------------
     // 拆字段
@@ -60,6 +64,8 @@ module fp32_to_fp16_conv (
     //------------------------------------------------------------------
     always_comb begin
         fp16_o = {sign, 15'd0};              // 缺省置 0
+        underflow_o = 1'b0;
+        overflow_o  = 1'b0;
 
         // Inf / NaN pass-through --------------------------------------
         if (exp32 == 8'hFF) begin
@@ -69,10 +75,12 @@ module fp32_to_fp16_conv (
         // 下溢（不支持 sub-norm 输出） -------------------------------
         else if (exp32 < 8'd103) begin        // 103 = 112-9
             fp16_o = {sign, 15'd0};
+            underflow_o = 1'b1;              // 下溢
         end
         // 上溢 → Inf --------------------------------------------------
         else if (exp32 > 8'd142) begin        // 142 = 112+30
             fp16_o = {sign, 5'h1F, 10'd0};
+            overflow_o = 1'b1;               // 上溢
         end
         // 正常数 ------------------------------------------------------
         else begin

@@ -42,20 +42,31 @@
 //   – The cut‑point is **after CarrySaveAdder**, matching the diagram
 //     you provided.
 // =============================================================
+`include "SpecialCaseDetector.v"
+`include "R4Booth.v"
+`include "WallaceTree.v"
+`include "PreNormalizer.v"
+`include "Compressor32.v"
+`include "EACAdder.v"
+`include "MSBIncrementer.v"
+`include "Normalizer.v"
+`include "LeadingOneDetector_Top.v"
+`include "Rounder.v"
 
-`define FMA_STAGE1_BUS_W (   (2*PARM_MANT+2)   +  // CSA_sum
-                            (2*PARM_MANT+2)   +  // CSA_carry
-                            (PARM_MANT+4)     +  // A_Mant_aligned_high
-                            1                 +  // mv_halt
-                            1                 +  // exp_mv_sign
-                            1                 +  // carry_postcor
-                            1                 +  // sub_sign
-                            1                 +  // sign_aligned
-                            (PARM_EXP+2)      +  // exp_aligned
-                            1                 +  // bc_not_strange
-                            1                 +  // mant_sticky_sht_out
-                            12                +  // special case flags
-                            3                 )  // rounding‑mode passthru
+`define FMA_STAGE1_BUS_W (  (2*PARM_MANT+2)  +  /* CSA_sum */             \
+                            (2*PARM_MANT+2)  +  /* CSA_carry */          \
+                            (PARM_MANT+4)    +  /* A_Mant_aligned_high */\
+                            1                +  /* mv_halt */           \
+                            1                +  /* exp_mv_sign */       \
+                            1                +  /* carry_postcor */     \
+                            1                +  /* sub_sign */          \
+                            1                +  /* sign_aligned */      \
+                            (PARM_EXP+2)     +  /* exp_aligned */       \
+                            1                +  /* bc_not_strange */    \
+                            1                +  /* mant_sticky_sht_out */\
+                            12               +  /* special case flags */\
+                            3 )                 /* rounding‑mode passthru */
+
 
 // =====================================================================
 //  Stage‑1  :  up to Carry‑Save Adder (no flops)

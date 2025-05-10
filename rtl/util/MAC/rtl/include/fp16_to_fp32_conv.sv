@@ -6,6 +6,8 @@
 //  • 次正规数: exp16 == 00000 & man16 != 0   ← 这里normalize
 //  • ±0      : exp16 == 00000 & man16 == 0
 // ---------------------------------------------------------------------
+`include"RCA.sv"
+
 module fp16_to_fp32_conv (
     input  wire [15:0] fp16_i,
     output logic [31:0] fp32_o
