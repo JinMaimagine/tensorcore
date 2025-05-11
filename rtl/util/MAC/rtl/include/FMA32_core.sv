@@ -189,33 +189,86 @@ module fma32_core_stage1 #(
     wire Carry_postcor = (~Exp_mv_sign) & ((~adder_corr_sgn) ^ CSA_carry[2*PARM_MANT+1]);
 
     // ---------- Package all outputs into a bus -----------------------------------------
+    // localparam int W_SUM   = 2*PARM_MANT+2;
+    // localparam int W_HIGH  = PARM_MANT+4;
+    // localparam int W_EXPAL = PARM_EXP+2;
+
+    // logic [`FMA_STAGE1_BUS_W-1:0] bus;
+    // int idx=0;
+    // // helper task to deposit bits
+    // function automatic void put(input int w, input logic [63:0] data);
+    //     bus[idx +: w] = data[w-1:0]; idx += w;
+    // endfunction
+
+    // always_comb begin
+    //     idx = 0;
+    //     put(W_SUM,   CSA_sum);
+    //     put(W_SUM,   CSA_carry);
+    //     put(W_HIGH,  A_Mant_aligned[3*PARM_MANT+5 : 2*PARM_MANT+2]);
+    //     put(1,       Mv_halt);
+    //     put(1,       Exp_mv_sign);
+    //     put(1,       Carry_postcor);
+    //     put(1,       Sub_Sign);
+    //     put(1,       Sign_aligned);
+    //     put(W_EXPAL, Exp_aligned);
+    //     put(1,       (~(B_Inf|C_Inf|B_Zero|C_Zero|B_NaN|C_NaN))); // bc_not_strange
+    //     put(1,       Mant_sticky_sht_out);
+    //     put(12,      {A_Inf,B_Inf,C_Inf, A_Zero,B_Zero,C_Zero, A_NaN,B_NaN,C_NaN});
+    //     put(3,       rm_i);
+    // end
+    // ---------- Package all outputs into a bus -----------------------------------------
     localparam int W_SUM   = 2*PARM_MANT+2;
     localparam int W_HIGH  = PARM_MANT+4;
     localparam int W_EXPAL = PARM_EXP+2;
 
     logic [`FMA_STAGE1_BUS_W-1:0] bus;
-    int idx=0;
-    // helper task to deposit bits
-    function automatic void put(input int w, input logic [63:0] data);
-        bus[idx +: w] = data[w-1:0]; idx += w;
-    endfunction
 
+
+    // Calculate positions manually without dynamic w
     always_comb begin
+        int idx;
         idx = 0;
-        put(W_SUM,   CSA_sum);
-        put(W_SUM,   CSA_carry);
-        put(W_HIGH,  A_Mant_aligned[3*PARM_MANT+5 : 2*PARM_MANT+2]);
-        put(1,       Mv_halt);
-        put(1,       Exp_mv_sign);
-        put(1,       Carry_postcor);
-        put(1,       Sub_Sign);
-        put(1,       Sign_aligned);
-        put(W_EXPAL, Exp_aligned);
-        put(1,       (~(B_Inf|C_Inf|B_Zero|C_Zero|B_NaN|C_NaN))); // bc_not_strange
-        put(1,       Mant_sticky_sht_out);
-        put(12,      {A_Inf,B_Inf,C_Inf, A_Zero,B_Zero,C_Zero, A_NaN,B_NaN,C_NaN});
-        put(3,       rm_i);
+        
+        // Packing CSA_sum into the bus
+        bus[idx +: W_SUM] = CSA_sum; 
+        idx = idx + W_SUM;
+        
+        // Packing CSA_carry into the bus
+        bus[idx +: W_SUM] = CSA_carry; 
+        idx = idx + W_SUM;
+        
+        // Packing A_Mant_high into the bus
+        bus[idx +: W_HIGH] = A_Mant_aligned[3*PARM_MANT+5 : 2*PARM_MANT+2];
+        idx = idx + W_HIGH;
+
+        // Packing mv_halt, exp_mv_sign, carry_postcor, etc.
+        bus[idx +: 1] = Mv_halt; idx = idx + 1;
+        bus[idx +: 1] = Exp_mv_sign; idx = idx + 1;
+        bus[idx +: 1] = Carry_postcor; idx = idx + 1;
+        bus[idx +: 1] = Sub_Sign; idx = idx + 1;
+        bus[idx +: 1] = Sign_aligned; idx = idx + 1;
+        
+        // Packing Exp_aligned
+        bus[idx +: W_EXPAL] = Exp_aligned; 
+        idx = idx + W_EXPAL;
+
+        // Packing bc_not_strange
+        bus[idx +: 1] = (~(B_Inf|C_Inf|B_Zero|C_Zero|B_NaN|C_NaN)); 
+        idx = idx + 1;
+
+        // Packing Mant_sticky_sht_out
+        bus[idx +: 1] = Mant_sticky_sht_out; 
+        idx = idx + 1;
+
+        // Packing spc_flags
+        bus[idx +: 12] = {A_Inf, B_Inf, C_Inf, A_Zero, B_Zero, C_Zero, A_NaN, B_NaN, C_NaN}; 
+        idx = idx + 12;
+
+        // Packing rm_i
+        bus[idx +: 3] = rm_i;
+        idx = idx + 3;
     end
+
 
     assign stage1_bus_o = bus;
 
@@ -248,14 +301,14 @@ module fma32_core_stage2 #(
     output logic                          NX_o
 );
     // ----------- Unpack bus -------------------------------------------------------------
-    localparam int W_SUM  = 2*PARM_MANT+2;
-    localparam int W_HIGH = PARM_MANT+4;
-    localparam int W_EXPAL= PARM_EXP+2;
+    // localparam int W_SUM  = 2*PARM_MANT+2;
+    // localparam int W_HIGH = PARM_MANT+4;
+    // localparam int W_EXPAL= PARM_EXP+2;
 
-    int idx=0;
-    function automatic logic [63:0] get(input int w);
-        logic [63:0] t; t = stage1_bus_i[idx +: w]; idx += w; return t;
-    endfunction
+    // int idx=0;
+    // function automatic logic [63:0] get(input int w);
+    //     logic [63:0] t; t = stage1_bus_i[idx +: w]; idx += w; return t;
+    // endfunction
 
     logic [W_SUM-1:0] CSA_sum;
     logic [W_SUM-1:0] CSA_carry;
@@ -266,22 +319,73 @@ module fma32_core_stage2 #(
     logic [11:0] spc_flags;
     logic [PARM_RM-1:0] rm_i;
 
+    // always_comb begin
+    //     idx=0;
+    //     CSA_sum         = get(W_SUM);
+    //     CSA_carry       = get(W_SUM);
+    //     A_Mant_high     = get(W_HIGH);
+    //     mv_halt         = get(1);
+    //     exp_mv_sign     = get(1);
+    //     carry_postcor   = get(1);
+    //     sub_sign        = get(1);
+    //     sign_aligned    = get(1);
+    //     Exp_aligned     = get(W_EXPAL);
+    //     bc_not_strange  = get(1);
+    //     mant_stk_out    = get(1);
+    //     spc_flags       = get(12);
+    //     rm_i            = get(3);
+    // end
+    // ----------- Unpack bus -------------------------------------------------------------
+    localparam int W_SUM  = 2*PARM_MANT+2;
+    localparam int W_HIGH = PARM_MANT+4;
+    localparam int W_EXPAL= PARM_EXP+2;
+
+
+    // Unpacking the signals manually
     always_comb begin
-        idx=0;
-        CSA_sum         = get(W_SUM);
-        CSA_carry       = get(W_SUM);
-        A_Mant_high     = get(W_HIGH);
-        mv_halt         = get(1);
-        exp_mv_sign     = get(1);
-        carry_postcor   = get(1);
-        sub_sign        = get(1);
-        sign_aligned    = get(1);
-        Exp_aligned     = get(W_EXPAL);
-        bc_not_strange  = get(1);
-        mant_stk_out    = get(1);
-        spc_flags       = get(12);
-        rm_i            = get(3);
+        int idx;
+        idx = 0;
+        
+        // Unpacking CSA_sum
+        CSA_sum = stage1_bus_i[idx +: W_SUM]; 
+        idx = idx + W_SUM;
+        
+        // Unpacking CSA_carry
+        CSA_carry = stage1_bus_i[idx +: W_SUM]; 
+        idx = idx + W_SUM;
+
+        // Unpacking A_Mant_high
+        A_Mant_high = stage1_bus_i[idx +: W_HIGH]; 
+        idx = idx + W_HIGH;
+
+        // Unpacking mv_halt, exp_mv_sign, carry_postcor, etc.
+        mv_halt = stage1_bus_i[idx +: 1]; idx = idx + 1;
+        exp_mv_sign = stage1_bus_i[idx +: 1]; idx = idx + 1;
+        carry_postcor = stage1_bus_i[idx +: 1]; idx = idx + 1;
+        sub_sign = stage1_bus_i[idx +: 1]; idx = idx + 1;
+        sign_aligned = stage1_bus_i[idx +: 1]; idx = idx + 1;
+        
+        // Unpacking Exp_aligned
+        Exp_aligned = stage1_bus_i[idx +: W_EXPAL]; 
+        idx = idx + W_EXPAL;
+
+        // Unpacking bc_not_strange
+        bc_not_strange = stage1_bus_i[idx +: 1]; 
+        idx = idx + 1;
+
+        // Unpacking mant_stk_out
+        mant_stk_out = stage1_bus_i[idx +: 1]; 
+        idx = idx + 1;
+
+        // Unpacking spc_flags
+        spc_flags = stage1_bus_i[idx +: 12]; 
+        idx = idx + 12;
+
+        // Unpacking rm_i
+        rm_i = stage1_bus_i[idx +: 3]; 
+        idx = idx + 3;
     end
+
 
     // ---------- Re‑create low/high paths with EACAdder etc. ------------------------------
     wire [W_SUM-1:0] low_sum, low_sum_inv;

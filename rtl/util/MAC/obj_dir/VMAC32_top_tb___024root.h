@@ -1,0 +1,323 @@
+// Verilated -*- C++ -*-
+// DESCRIPTION: Verilator output: Design internal header
+// See VMAC32_top_tb.h for the primary calling header
+
+#ifndef VERILATED_VMAC32_TOP_TB___024ROOT_H_
+#define VERILATED_VMAC32_TOP_TB___024ROOT_H_  // guard
+
+#include "verilated.h"
+#include "verilated_timing.h"
+class VMAC32_top_tb_Compressor32;
+
+
+class VMAC32_top_tb__Syms;
+
+class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public VerilatedModule {
+  public:
+    // CELLS
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_3;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_0;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_1;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_2;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_0;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_1;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__top32;
+    VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__down32;
+
+    // DESIGN SPECIFIC STATE
+    // Anonymous structures to workaround compiler member-count bugs
+    struct {
+        CData/*0:0*/ MAC32_top_tb__DOT__clk;
+        CData/*0:0*/ MAC32_top_tb__DOT__rst_n;
+        CData/*1:0*/ MAC32_top_tb__DOT__fp_mode;
+        CData/*2:0*/ MAC32_top_tb__DOT__Rounding_mode_i;
+        CData/*2:0*/ MAC32_top_tb__DOT__dut__DOT__rm_reg1;
+        CData/*4:0*/ MAC32_top_tb__DOT__dut__DOT__flags_reg2;
+        CData/*4:0*/ MAC32_top_tb__DOT__dut__DOT__ffs;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT____Vcellout__u_s2__UF_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT____Vcellout__u_s2__OF_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT____Vcellout__u_s2__NV_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_underflow;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_overflow;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_Inf;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__C_Inf;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__A_Zero;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_Zero;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__C_Zero;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_NaN;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__C_NaN;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__Sub_Sign;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__A_Exp;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_Exp;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__C_Exp;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__Mv_halt;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__0__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__1__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__1__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__2__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__2__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__3__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__3__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__4__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__4__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__5__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__5__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__6__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__6__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__7__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__7__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__8__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__8__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__9__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__9__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__10__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__10__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__11__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__11__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__12__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__12__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__13__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__13__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__14__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__14__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__15__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__15__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__16__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__16__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__17__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__17__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__18__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__18__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__19__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__19__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__20__KET____DOT__FA__carry_i;
+    };
+    struct {
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__20__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__21__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__21__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__22__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__22__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__23__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__23__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__24__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__24__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__25__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__25__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__26__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__26__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__27__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__27__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__28__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__28__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__29__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__29__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__30__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__30__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__31__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__31__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__32__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__32__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__33__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__33__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__34__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__34__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__35__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__35__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__36__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__36__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__37__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__37__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__38__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__38__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__39__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__39__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__40__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__40__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__41__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__41__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__42__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__42__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__43__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__43__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__44__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__44__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__45__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__45__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__46__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__46__KET____DOT__FA__addend_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellout__genblk1__BRA__47__KET____DOT__FA__carry_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__47__KET____DOT__FA__carry_i;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__47__KET____DOT__FA__addend_i;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__shift;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__2__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__6__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__;
+    };
+    struct {
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__shift;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__2__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__6__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__shift;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__2__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__6__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Adder_sign;
+        CData/*6:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__shift_num;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__allzero;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Sign_result;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT__base_zeros;
+        CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT__lv1_zeros;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT__lv2_zeros;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT____Vcellinp__lzd_grouplv2_0__group_data_i;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT____Vcellinp__genblk2__BRA__0__KET____DOT__lzd_grouplv1__group_data_i;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT____Vcellinp__genblk2__BRA__2__KET____DOT__lzd_grouplv1__group_data_i;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__lod__DOT____Vcellinp__genblk2__BRA__3__KET____DOT__lzd_grouplv1__group_data_i;
+        CData/*6:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT__Shift_num;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT____VdfgRegularize_hc99b95d1_0_1;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Sticky_one;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_sticky;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Exp_result_norm;
+        CData/*1:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_lower;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__GRSbits;
+        CData/*5:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__exp_adj;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__incr;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_sub112__DOT__u_sub__DOT__C__BRA__7__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_sub112__DOT__u_sub__DOT__C__BRA__6__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__10__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__9__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__8__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__7__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__6__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__5__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__4__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__2__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_add_rnd__DOT__C__BRA__1__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_inc_exp__DOT__C__BRA__4__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_inc_exp__DOT__C__BRA__3__KET__;
+        CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_inc_exp__DOT__C__BRA__2__KET__;
+        CData/*0:0*/ __VdfgRegularize_h6171c202_5_0;
+        CData/*0:0*/ __VstlFirstIteration;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__clk__0;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__rst_n__0;
+        CData/*0:0*/ __VactContinue;
+        SData/*15:0*/ MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_result;
+        SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__Exp_mv;
+        SData/*12:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__mul1x;
+        SData/*12:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__mul2x;
+        SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Exp_norm;
+    };
+    struct {
+        SData/*8:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT__norm_amt;
+        SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT____VdfgRegularize_hc99b95d1_0_3;
+        SData/*10:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__rnd_sum;
+        IData/*31:0*/ MAC32_top_tb__DOT__A_i;
+        IData/*31:0*/ MAC32_top_tb__DOT__B_i;
+        IData/*31:0*/ MAC32_top_tb__DOT__C_i;
+        IData/*31:0*/ MAC32_top_tb__DOT__Result_o;
+        IData/*31:0*/ MAC32_top_tb__DOT__err_cnt;
+        IData/*31:0*/ MAC32_top_tb__DOT__vec_cnt;
+        IData/*31:0*/ MAC32_top_tb__DOT__cycle;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__A_reg1;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__B_reg1;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__C_reg1;
+        VlWide<5>/*154:0*/ MAC32_top_tb__DOT__dut__DOT__stage1_bus_reg1;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__A_i_fp32;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__B_i_fp32;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__C_i_fp32;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__A_true_input;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__B_true_input;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__C_true_input;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__result32_reg2;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__A_Mant;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_Mant;
+        VlWide<3>/*74:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__A_Mant_aligned;
+        VlWide<5>/*154:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__bus;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__unnamedblk1__DOT__idx;
+        VlWide<4>/*97:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__prenorm__DOT____VdfgRegularize_hd548ac0c_0_0;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__unnamedblk1__DOT__sig24;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__unnamedblk1__DOT__sig24;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__unnamedblk1__DOT__sig24;
+        VlWide<3>/*73:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__PosSum;
+        VlWide<3>/*73:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Mant_norm;
+        VlWide<3>/*75:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Rs_Mant;
+        IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__msb_inc__DOT____VdfgRegularize_hb50ef5f9_0_2;
+        IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_result_norm;
+        IData/*24:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_upper_rounded;
+        IData/*30:0*/ __VdfgRegularize_h6171c202_6_0;
+        IData/*31:0*/ __VactIterCount;
+        QData/*35:0*/ MAC32_top_tb__DOT__unnamedblk1__DOT__exp;
+        QData/*47:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth_PP_13;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_11_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_10_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_09_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_08_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_07_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_06_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_05_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_04_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_03_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_02_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_01_o;
+        QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_00_o;
+        QData/*47:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__low_sum;
+        QData/*47:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__eac__DOT____VdfgRegularize_hca792c16_0_0;
+        VlUnpacked<QData/*48:0*/, 12> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth_PP;
+        VlUnpacked<IData/*24:0*/, 13> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__booth_PP_tmp;
+        VlUnpacked<IData/*24:0*/, 13> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__booth_PP;
+        VlUnpacked<QData/*48:0*/, 9> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__csa_sum;
+        VlUnpacked<QData/*48:0*/, 9> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__csa_carry;
+        VlUnpacked<QData/*48:0*/, 9> MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__csa_shcy;
+        VlUnpacked<CData/*0:0*/, 6> __Vm_traceActivity;
+    };
+    VlQueue<QData/*35:0*/> MAC32_top_tb__DOT__exp_q;
+    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__a;
+    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__b;
+    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__c;
+    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__a;
+    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__b;
+    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__c;
+    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__aP;
+    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__b;
+    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__c;
+    VlDelayScheduler __VdlySched;
+    VlTriggerScheduler __VtrigSched_h5ef408c0__0;
+    VlTriggerScheduler __VtrigSched_h96d11fad__0;
+    VlTriggerVec<1> __VstlTriggered;
+    VlTriggerVec<4> __VactTriggered;
+    VlTriggerVec<4> __VnbaTriggered;
+
+    // INTERNAL VARIABLES
+    VMAC32_top_tb__Syms* const vlSymsp;
+
+    // CONSTRUCTORS
+    VMAC32_top_tb___024root(VMAC32_top_tb__Syms* symsp, const char* v__name);
+    ~VMAC32_top_tb___024root();
+    VL_UNCOPYABLE(VMAC32_top_tb___024root);
+
+    // INTERNAL METHODS
+    void __Vconfigure(bool first);
+};
+
+
+#endif  // guard

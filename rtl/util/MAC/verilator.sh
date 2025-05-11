@@ -13,6 +13,7 @@ FILES="
 
 # Include paths (for `include ""` support)
 INCLUDES="
+  -I$DIR/rtl
   -I$DIR/rtl/include
   -I$DIR/testbench_MAC32
 "
@@ -20,5 +21,5 @@ INCLUDES="
 echo "## Linting all files..."
 for f in $FILES; do
   echo "## Checking $f"
-  verilator --lint-only -Wall $INCLUDES "$f"
+  verilator --lint-only -Wall --timing $INCLUDES "$f"
 done

@@ -35,7 +35,9 @@
 //       here – replace with your existing C wrappers or packages.
 //------------------------------------------------------------
 
-module MAC_top_tb;
+`include "MAC32_top.sv"
+
+module MAC32_top_tb;
 
    //---------------------------------------------
    //  Clock & Reset
@@ -69,7 +71,7 @@ module MAC_top_tb;
    //  DUT instance – *rename* the module below if
    //  your top is still called MAC32_top.
    //---------------------------------------------
-   MAC_top dut (
+   MAC32_top dut (
       .clk           (clk),
       .rst_n         (rst_n),
       .fp_mode       (fp_mode),
@@ -120,6 +122,7 @@ module MAC_top_tb;
    // -------- FP32 task (mode 00) ----------------
    task automatic drive_fp32 (input real a, b, c);
       exp_t golden;
+      real res_real;
       fp_mode           = 2'b00;
       A_i               = real_to_fp32(a);
       B_i               = real_to_fp32(b);
@@ -127,7 +130,7 @@ module MAC_top_tb;
       //--------------------------------------------------
       //  Golden model in *real* (double precision)
       //--------------------------------------------------
-      real res_real     = a + b * c;
+      res_real     = a + b * c;
       golden.res        = real_to_fp32(res_real);
       //  **Flag modelling left as exercise**
       golden.OF =1'b0;
@@ -141,6 +144,7 @@ module MAC_top_tb;
    // -------- FP16 normal task (mode 01) ---------
    task automatic drive_fp16_norm (input real a, b, c);
       exp_t golden;
+      real res_real;
       fp_mode = 2'b01;
       //---------------------------------------------
       //  Pack half values into lower 16 bits; upper
@@ -152,7 +156,7 @@ module MAC_top_tb;
 
       // Golden: compute in real, convert back to half,
       // then zero‑extend to 32 bits to match DUT.
-      real res_real     = a + b * c;
+      res_real     = a + b * c;
       golden.res        = {16'h0000, float_to_half(res_real)};
       golden.OF =1'b0;
       golden.UF =1'b0;
@@ -165,12 +169,13 @@ module MAC_top_tb;
    // -------- FP16 mixed task (mode 10) ----------
    task automatic drive_fp16_mixed (input real a_fp32, b, c);
       exp_t golden;
+      real res_real;
       fp_mode = 2'b10;
       A_i = real_to_fp32(a_fp32); // 32 bits
       B_i = {16'h0000, float_to_half(b)};
       C_i = {16'h0000, float_to_half(c)};
 
-      real res_real     = a_fp32 + b * c;
+      res_real     = a_fp32 + b * c;
       golden.res        = real_to_fp32(res_real);
       golden.OF =1'b0;
       golden.UF =1'b0;
@@ -193,12 +198,12 @@ module MAC_top_tb;
          cycle <= cycle + 1;
 
          // Wait for two cycles of latency before checking.
-         if (cycle >= 2 && !exp_q.empty()) begin
+         if (cycle >= 2 && !exp_q.size() > 0) begin
             exp_t exp = exp_q.pop_front();
             if (Result_o !== exp.res) begin
                $error("[%0t] MISMATCH : got %h exp %h (mode %0d)",
                       $time, Result_o, exp.res, fp_mode);
-               err_cnt++;
+               err_cnt<= err_cnt + 1;
             end
             // Flag compares can be added the same way.
          end

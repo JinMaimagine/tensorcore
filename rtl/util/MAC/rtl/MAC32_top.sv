@@ -1,4 +1,5 @@
 // MAC_top.sv  -- 2‑Stage Pipeline (cut after CarrySaveAdder)
+// 此计算单元用于计算fp32/fp16格式的乘加运算（不包含INT8/INT4乘加单元）
 // =============================================================
 // Stage‑0  : purely combinational converters (fp16_to_fp32_conv)
 // Stage‑1a : ExponentProcessor ▸ PreNormalizer ▸ {Multiplier} ▸ CSA
@@ -104,7 +105,7 @@ module MAC32_top #(
     .fp32_o(C_i_fp32)
   );
 
-  wire [31:0] A_true_input, B_true_input, C_true_input;
+  logic [31:0] A_true_input, B_true_input, C_true_input;
   always_comb begin
     // select inputs based on mode
     if (fp_mode==2'b00) begin
