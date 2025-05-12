@@ -187,8 +187,108 @@ always_comb begin
 
         end else begin//C直接一次性取完,C在B的一端输入，SRAM_C与SRAM_B相同
             assert(mat == params::C) else $error("mat is not A,B,C");
+            //对C简化:C必须取32个周期,每次取8个,这些后面要写在axi中
             //应该改一下B的逻辑,将C也按照B的方式存储,到C就又要考虑A与B的存储了
             //TODO:C我准备一次性读完存到SYSTOLIC中
+            case(data_type)//burst需要32次,这是固定的
+                params::FP32: begin
+                    case(rc)
+                        2'b00: begin//M32N8
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            data_out_C_temp[burst_num[4:2]] = data_in;
+                        end
+                        2'b01: begin//M16N16
+                            we_C_temp[burst_num[3:1]]=8'hFF;
+                            data_out_C_temp[burst_num[3:1]] = data_in;
+                        end
+                        2'b10: begin//M8N32
+                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            data_out_C_temp[burst_num[2:0]] = data_in;
+                        end
+                        default: begin
+                            assert(0) else $error("rc is not 00,01,10");
+                        end
+                    endcase
+                end
+
+                params::FP16: begin
+                    case(rc)
+                        2'b00: begin//M32N8
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[4:2]][i] = {16'h0000,data_in[16*i +: 16]};
+                            end
+                        end
+                        2'b01: begin//M16N16
+                            we_C_temp[burst_num[3:1]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[3:1]][i] = {16'h0000,data_in[16*i +: 16]};
+                            end
+                        end
+                        2'b10: begin//M8N32
+                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[2:0]][i] = {16'h0000,data_in[16*i +: 16]};
+                            end
+                        end
+                        default: begin
+                            assert(0) else $error("rc is not 00,01,10");
+                        end
+                    endcase
+                end
+
+                params::INT8: begin
+                    case(rc)
+                        2'b00: begin//M32N8
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[4:2]][i] = {24'h000000,data_in[8*i +: 8]};
+                            end
+                        end
+                        2'b01: begin//M16N16
+                            we_C_temp[burst_num[3:1]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[3:1]][i] = {24'h000000,data_in[8*i +: 8]};
+                            end
+                        end
+                        2'b10: begin//M8N32
+                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[2:0]][i] = {24'h000000,data_in[8*i +: 8]};
+                            end
+                        end
+                        default: begin
+                            assert(0) else $error("rc is not 00,01,10");
+                        end
+                    endcase
+                end
+
+                params::INT4: begin
+                    case(rc)
+                        2'b00: begin//M32N8
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[4:2]][i] = {28'h0000000,data_in[4*i +: 4]};
+                            end
+                        end
+                        2'b01: begin//M16N16
+                            we_C_temp[{burst_num[3],burst_num[2],burst_num[1]}]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[3:1]][i] = {28'h0000000,data_in[4*i +: 4]};
+                            end
+                        end
+                        2'b10: begin//M8N32
+                            we_C_temp[{burst_num[2],burst_num[1],burst_num[0]}]=8'hFF;
+                            for(integer i=0;i<8;i++) begin
+                                data_out_C_temp[burst_num[2:0]][i] = {28'h0000000,data_in[4*i +: 4]};
+                            end
+                        end
+                        default: begin
+                            assert(0) else $error("rc is not 00,01,10");
+                        end
+                    endcase
+                end
+            endcase
         end
     end
 end

@@ -44,22 +44,7 @@ typedef enum logic [1:0] {
     INT8 = 'd2,
     INT4 = 'd3
 } type_t;
-typedef enum logic [1:0] {
-    ROW_FP32 = 'd0,//注意混合精度C是FP32
-    ROW_FP16 = 'd1,
-    ROW_INT8 = 'd2,
-    ROW_INT4 = 'd3
-} row_t;
-typedef enum logic [1:0] {
-    COL_FP32 = 'd0,//注意混合精度C是FP32
-    COL_FP16 = 'd1,
-    COL_INT8 = 'd2,
-    COL_INT4 = 'd3
-} col_t;
-typedef enum logic {
-    ROW = 'd0,//注意混合精度C是FP32
-    COL = 'd1
-} attr_t;
+
 typedef enum logic [1:0]{
     A = 'd0,//注意混合精度C是FP32
     B = 'd1,
@@ -69,6 +54,12 @@ typedef logic [1:0] rc_t;
 //对于A:2'b00:M32K16,2'b01:M16K16,2'b10:M8K16
 //对于B:2'b00:K16N8,2'b01:K16N16,2'b10:K16N32 
 //对于C:2'b00:M32N8,2'b01:M16N16,2'b10:M8N32
+typedef struct packed{
+int RD_MAXADDR;//SRAM中的是写的,这里是读,注意自动切
+type_t datatype;
+rc_t rc;
+}addrgen_t;
+//每个矩阵配置一个
 typedef struct packed{
     logic [31:0] A_BASE;//A的起始地址,一定为0
     logic [31:0] B_BASE;//B的起始地址，存完A之后的地址  m*k*width
@@ -100,6 +91,7 @@ typedef struct packed {
     int systolic_time;//systolic经历的周期
     int accumlate_time;
     int writeback_time;
+    logic need_accumlate;
     //int SRAM_ADDR_INC;//SRAM地址增量,就是32bit
     //一些time，分别是什么时候开始结束什么状态,
 } SYSTOLIC_pkg_t;
@@ -115,11 +107,13 @@ typedef enum logic [STATE_BIT-1:0] {
     READ_C  = 'd1,
     SYSTOLIC = 'd2,//有规律流动状态
     ACCUMULATE = 'd3,//累加状态
-    WAIT_A ='d4,//等待充A
-    WAIT_B='d5,//等待充B
-    WAIT_C='d6,//等待充C
-    WRITE_BACK='d7,
-    FINISH='d8  //完全算完
+    INIT_WAIT_A ='d4,//等待充A
+    INIT_WAIT_B='d5,//等待充B
+    INIT_WAIT_C='d6,//等待充C
+    WAIT_A='d7,
+    WAIT_B='d8,
+    WRITE_BACK='d9,
+    FINISH='d10  //完全算完
     // add new formats here
 } state_t;
 

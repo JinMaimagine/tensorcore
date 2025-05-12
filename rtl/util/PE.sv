@@ -5,7 +5,8 @@ module PE
 (
 	// interface to system
     input logic clk,                         // cLK = 200MHz
-    input logic rst,                       // RESET, Negedge is active                         
+    input logic rst,                       // RESET, Negedge is active   
+    input logic we,                      
     input logic enleft,                      // enable signal for the accelerator, high for active
     output logic enright,
     input logic enup,                        //因为systolic:PE依靠PE实现隔位延迟1
@@ -24,7 +25,8 @@ module PE
     input logic [31:0] in_b_above,
     output logic [31:0] out_b_below,
     input params::full_type_t compute_type,
-    output params::full_type_t compute_type_out
+    output params::full_type_t compute_type_out,
+    input logic ready//axiout_ready;
 	);
     //需要保证en的时候,c一定是有效的
     params::PE_pkg_t pe;
@@ -62,7 +64,25 @@ module PE
         .en(cmen),
         .clk(clk)
     );
-    
+    always@(posedge clk)
+    begin
+        if(rst)
+        begin
+            regfile_pointer <= 0;
+        end
+        else if(we)
+        begin
+            regfile[regfile_pointer*32+:32] <= c;
+            if(regfile_pointer==3)
+            begin
+            regfile_pointer <= 0;
+            end
+            else
+            begin
+            regfile_pointer <= regfile_pointer + 1;
+            end
+        end
+    end
     assign out_valid = counter_valid==2'b00&&en;
     //TODO:什么时候restart:重新开始算一轮
     logic restart;

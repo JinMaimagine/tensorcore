@@ -28,6 +28,7 @@ logic finish;
 assign finish=state==params::FINISH;
 //但是并不是systolic就可以流动,还要看是不是stop状态
 logic [31:0] counter;//TODO:可以缩小
+logic finish_systolic;//这是对应于两个counter,也就是说
 always_ff @(posedge clk) begin
     if(!rst) begin
         next_state <= params::IDLE;
@@ -67,7 +68,10 @@ always_ff @(posedge clk) begin
         params::SYSTOLIC: begin
             systolic_counter<=systolic_counter-1;
             if(systolic_counter==0) begin
-                
+                if(finish_systolic)
+                begin
+                    if()
+                end
             end
         end
         params::ACCUMULATE: begin
