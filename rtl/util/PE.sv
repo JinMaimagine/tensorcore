@@ -17,10 +17,8 @@ module PE
     // interface to PE row .....
     input logic [31:0] a_left,
     output logic [31:0] a_right,
-    input logic [31:0] c_left,
-    output logic [31:0] c_right,
-    input logic cin_left,
-    output logic cin_right,
+    input logic [31:0] c,
+    input logic cin,
     input logic [31:0] in_sum,
     output logic [31:0] out_sum,
     input logic [31:0] in_b_above,
@@ -37,7 +35,6 @@ module PE
     logic cinen;
     logic [31:0] a;
     logic [31:0] b;
-    logic [31:0] c;
     logic [32*N-1:0] regfile;//用于多存,后面累加,或者pipeline
     logic[$clog2(N)-1:0] regfile_pointer;//至于设置为多大有para_pkg决定
     assign a = a_left;
@@ -65,15 +62,7 @@ module PE
         .en(cmen),
         .clk(clk)
     );
-    CinENABLE _cinEN(
-        .c_left(c_left),
-        .c_right(c_right),
-        .cinenleft(cin_left),
-        .cinenright(cin_right),
-        .cinen(cinen),
-        .clk(clk),
-        .c(c)
-    );
+    
     assign out_valid = counter_valid==2'b00&&en;
     //TODO:什么时候restart:重新开始算一轮
     logic restart;

@@ -3,13 +3,15 @@
 //对于FP16:每两次rdaddr+1,就是间隔性读取
 //对于INT8:第一次rdaddr,下一次:rdaddr+
 //对于INT4:每八次rdaddr+1,就是间隔性读取
+`include "para_pkg.sv"
 module ADDRGEN_ROW_UNIT(
     input logic clk,
     input logic rst,
     input logic en_in,
     input logic cinen_in,
+    input params::state_t state,
     //TODO:int后面改为logic,暂时没算位数
-    output int rdaddr,
+    output logic [3:0] rdaddr,
     input logic[31:0] data_in,
     output logic[31:0] data_out
 );
@@ -29,7 +31,8 @@ module ADDRGEN_COL_UNIT(
     input logic en_in,
     input logic cinen_in,
     //TODO:int后面改为logic,暂时没算位数
-    output int rdaddr,
+    params::state_t state,
+    output logic[3:0] rdaddr,
     input logic[31:0] data_in,
     output logic[31:0] data_out
 );

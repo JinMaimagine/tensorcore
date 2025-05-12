@@ -57,31 +57,3 @@ always_ff @(posedge clk) begin
     end
 end
 endmodule
-module CinENABLE(//C向内输入时用这个EN
-input logic cinenleft,
-input logic [31:0] c_left,
-output logic [31:0] c_right,
-output logic [31:0] c,
-output logic cinen,
-output logic cinenright,
-input logic clk
-);
-logic [31:0] data;
-assign cinen=cinenleft;
-logic cinvalid;
-always_ff @(posedge clk) begin
-    if (cinenleft) begin
-        data <= c_left;
-        if(!cinvalid) begin
-            cinvalid <= 1;
-        end else begin
-            c_right <= data;
-            cinenright <= cinenleft;
-        end
-    end else begin
-        cinvalid <= 0;
-        cinenright <= 0;
-        data<=0;
-    end
-end
-endmodule

@@ -73,10 +73,16 @@ typedef struct packed{
     logic [31:0] A_BASE;//A的起始地址,一定为0
     logic [31:0] B_BASE;//B的起始地址，存完A之后的地址  m*k*width
     logic [31:0] C_BASE;//C的起始地址，存完A,B之后的地址 m*k*width+n*k*width
+    logic [31:0] D_BASE;//D的起始地址，存完A,B,C之后的地址 m*k*width+n*k*width
+    logic [2:0] sel;//100是A，010是B，001是C，000是D
     int recvbits;//接收的位数
     logic [4:0] burst_num;
     logic [7:0] burst_size;
-} AXI_t;
+    logic request_valid;
+} AXI_out_t;
+typedef struct packed{
+    logic finish;
+} AXI_in_t;
 localparam int PATTERN_BIT = 3;
 typedef enum logic [PATTERN_BIT-1:0] {
     NOMAL = 'd0,
@@ -87,8 +93,13 @@ typedef struct packed {
     int counter_A;//A要充多少次
     int counter_B;//B要充多少次(一次A会充多次B)
     pattern_t pattern;//数据流动的模式
-    AXI_t axi;//AXI相关配置,可能不需要能传输的最大bit数这么多,如果需要，这个参数可以删除
+    //把这些实现的信号实现在里面
+    //AXI_out_t axi;//AXI相关配置,可能不需要能传输的最大bit数这么多,如果需要，这个参数可以删除
+    //AXI_in_t axi_in;
     maxaddr_t MAX_SRAMADDR;
+    int systolic_time;//systolic经历的周期
+    int accumlate_time;
+    int writeback_time;
     //int SRAM_ADDR_INC;//SRAM地址增量,就是32bit
     //一些time，分别是什么时候开始结束什么状态,
 } SYSTOLIC_pkg_t;
@@ -97,7 +108,7 @@ typedef struct packed {
     logic[1:0] time2valid;//对于FP需要2 cycle,对于INT需要1 cycle
 } PE_pkg_t;
 
-localparam int STATE_BIT = 3;
+localparam int STATE_BIT = 4;
 //FP,INT进行pipeline都要2个cycle,不同的是INT后续有累加阶段累加，FP没有
 typedef enum logic [STATE_BIT-1:0] {
     IDLE    = 'd0,
@@ -107,7 +118,8 @@ typedef enum logic [STATE_BIT-1:0] {
     WAIT_A ='d4,//等待充A
     WAIT_B='d5,//等待充B
     WAIT_C='d6,//等待充C
-    FINISH='d7  //完全算完
+    WRITE_BACK='d7,
+    FINISH='d8  //完全算完
     // add new formats here
 } state_t;
 
