@@ -8,6 +8,7 @@
 #include "verilated.h"
 #include "verilated_timing.h"
 class VMAC32_top_tb_Compressor32;
+class VMAC32_top_tb___024unit;
 
 
 class VMAC32_top_tb__Syms;
@@ -15,6 +16,7 @@ class VMAC32_top_tb__Syms;
 class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public VerilatedModule {
   public:
     // CELLS
+    VMAC32_top_tb___024unit* __PVT____024unit;
     VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0;
     VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1;
     VMAC32_top_tb_Compressor32* __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2;
@@ -32,6 +34,10 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
     struct {
         CData/*0:0*/ MAC32_top_tb__DOT__clk;
         CData/*0:0*/ MAC32_top_tb__DOT__rst_n;
+        CData/*0:0*/ MAC32_top_tb__DOT__OF_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__UF_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__NX_o;
+        CData/*0:0*/ MAC32_top_tb__DOT__NV_o;
         CData/*1:0*/ MAC32_top_tb__DOT__fp_mode;
         CData/*2:0*/ MAC32_top_tb__DOT__Rounding_mode_i;
         CData/*2:0*/ MAC32_top_tb__DOT__dut__DOT__rm_reg1;
@@ -90,12 +96,12 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__17__KET____DOT__FA__carry_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__17__KET____DOT__FA__addend_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__18__KET____DOT__FA__carry_i;
+    };
+    struct {
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__18__KET____DOT__FA__addend_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__19__KET____DOT__FA__carry_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__19__KET____DOT__FA__addend_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__20__KET____DOT__FA__carry_i;
-    };
-    struct {
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__20__KET____DOT__FA__addend_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__21__KET____DOT__FA__carry_i;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__21__KET____DOT__FA__addend_i;
@@ -154,17 +160,19 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__47__KET____DOT__FA__addend_i;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__shift;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__exp32_norm;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__3__KET__;
+    };
+    struct {
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__2__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__6__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__;
-    };
-    struct {
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__shift;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__exp32_norm;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__3__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__2__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
@@ -174,6 +182,7 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc;
         CData/*3:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__shift;
+        CData/*7:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__exp32_norm;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__3__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__2__KET__;
         CData/*0:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__7__KET__;
@@ -219,15 +228,23 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         CData/*0:0*/ __VdfgRegularize_h6171c202_5_0;
         CData/*0:0*/ __VstlFirstIteration;
         CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__clk__0;
+    };
+    struct {
         CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__rst_n__0;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NV_o__0;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NX_o__0;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__OF_o__0;
+        CData/*0:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__UF_o__0;
+        CData/*0:0*/ __VactDidInit;
         CData/*0:0*/ __VactContinue;
         SData/*15:0*/ MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_result;
         SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__Exp_mv;
         SData/*12:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__mul1x;
         SData/*12:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT__mul2x;
+        SData/*8:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add112__DOT__C;
+        SData/*8:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add112__DOT__C;
+        SData/*8:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add112__DOT__C;
         SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Exp_norm;
-    };
-    struct {
         SData/*8:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT__norm_amt;
         SData/*9:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__norm__DOT____VdfgRegularize_hc99b95d1_0_3;
         SData/*10:0*/ MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__rnd_sum;
@@ -238,6 +255,9 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         IData/*31:0*/ MAC32_top_tb__DOT__err_cnt;
         IData/*31:0*/ MAC32_top_tb__DOT__vec_cnt;
         IData/*31:0*/ MAC32_top_tb__DOT__cycle;
+        IData/*31:0*/ MAC32_top_tb__DOT__a_bits;
+        IData/*31:0*/ MAC32_top_tb__DOT__b_bits;
+        IData/*31:0*/ MAC32_top_tb__DOT__c_bits;
         IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__A_reg1;
         IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__B_reg1;
         IData/*31:0*/ MAC32_top_tb__DOT__dut__DOT__C_reg1;
@@ -265,11 +285,17 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         IData/*23:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_result_norm;
         IData/*24:0*/ MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__rnd__DOT__Mant_upper_rounded;
         IData/*30:0*/ __VdfgRegularize_h6171c202_6_0;
+        IData/*31:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__A_i__0;
+        IData/*31:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__B_i__0;
+        IData/*31:0*/ __Vtrigprevexpr___TOP__MAC32_top_tb__DOT__C_i__0;
         IData/*31:0*/ __VactIterCount;
+        QData/*35:0*/ MAC32_top_tb__DOT__golden;
         QData/*35:0*/ MAC32_top_tb__DOT__unnamedblk1__DOT__exp;
         QData/*47:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth_PP_13;
         QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_11_o;
         QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_10_o;
+    };
+    struct {
         QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_09_o;
         QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_08_o;
         QData/*48:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT____Vcellout__booth__pp_07_o;
@@ -291,21 +317,16 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb___024root final : public Verila
         VlUnpacked<CData/*0:0*/, 6> __Vm_traceActivity;
     };
     VlQueue<QData/*35:0*/> MAC32_top_tb__DOT__exp_q;
-    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__a;
-    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__b;
-    double MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__c;
-    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__a;
-    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__b;
-    double MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__c;
-    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__aP;
-    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__b;
-    double MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__c;
+    double MAC32_top_tb__DOT__a;
+    double MAC32_top_tb__DOT__b;
+    double MAC32_top_tb__DOT__c;
+    double MAC32_top_tb__DOT__res_real;
     VlDelayScheduler __VdlySched;
     VlTriggerScheduler __VtrigSched_h5ef408c0__0;
     VlTriggerScheduler __VtrigSched_h96d11fad__0;
     VlTriggerVec<1> __VstlTriggered;
-    VlTriggerVec<4> __VactTriggered;
-    VlTriggerVec<4> __VnbaTriggered;
+    VlTriggerVec<13> __VactTriggered;
+    VlTriggerVec<13> __VnbaTriggered;
 
     // INTERNAL VARIABLES
     VMAC32_top_tb__Syms* const vlSymsp;

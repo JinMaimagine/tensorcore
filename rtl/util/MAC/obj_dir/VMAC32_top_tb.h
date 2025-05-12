@@ -9,12 +9,12 @@
 #define VERILATED_VMAC32_TOP_TB_H_  // guard
 
 #include "verilated.h"
-#include "svdpi.h"
 
 class VMAC32_top_tb__Syms;
 class VMAC32_top_tb___024root;
 class VerilatedVcdC;
 class VMAC32_top_tb_Compressor32;
+class VMAC32_top_tb___024unit;
 
 
 // This class is the main interface to the Verilated model
@@ -36,6 +36,7 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC32_top_tb VL_NOT_FINAL : public Verilated
     // CELLS
     // Public to allow access to /* verilator public */ items.
     // Otherwise the application code can consider these internals.
+    VMAC32_top_tb___024unit* const __PVT____024unit;
     VMAC32_top_tb_Compressor32* const __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0;
     VMAC32_top_tb_Compressor32* const __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1;
     VMAC32_top_tb_Compressor32* const __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2;

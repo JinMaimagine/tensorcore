@@ -19,7 +19,6 @@
 
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "VMAC32_top_tb__Syms.h"
 #include "VMAC32_top_tb.h"

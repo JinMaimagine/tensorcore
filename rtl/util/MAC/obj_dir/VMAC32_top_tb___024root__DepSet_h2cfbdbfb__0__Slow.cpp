@@ -19,6 +19,20 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___eval_static(VMAC32_top_tb___024root*
         = vlSelfRef.MAC32_top_tb__DOT__clk;
     vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__rst_n__0 
         = vlSelfRef.MAC32_top_tb__DOT__rst_n;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__A_i__0 
+        = vlSelfRef.MAC32_top_tb__DOT__A_i;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__B_i__0 
+        = vlSelfRef.MAC32_top_tb__DOT__B_i;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__C_i__0 
+        = vlSelfRef.MAC32_top_tb__DOT__C_i;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NV_o__0 
+        = vlSelfRef.MAC32_top_tb__DOT__NV_o;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NX_o__0 
+        = vlSelfRef.MAC32_top_tb__DOT__NX_o;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__OF_o__0 
+        = vlSelfRef.MAC32_top_tb__DOT__OF_o;
+    vlSelfRef.__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__UF_o__0 
+        = vlSelfRef.MAC32_top_tb__DOT__UF_o;
 }
 
 VL_ATTR_COLD void VMAC32_top_tb___024root___eval_static__TOP(VMAC32_top_tb___024root* vlSelf) {
@@ -118,18 +132,18 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
     MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT____VdfgRegularize_h59415cb9_0_22 = 0;
     IData/*24:0*/ MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT____VdfgRegularize_h59415cb9_0_23;
     MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__booth__DOT____VdfgRegularize_h59415cb9_0_23 = 0;
-    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__Vfuncout;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__Vfuncout = 0;
-    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x = 0;
-    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__Vfuncout;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__Vfuncout = 0;
-    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x = 0;
-    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__Vfuncout;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__Vfuncout = 0;
-    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x = 0;
+    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__Vfuncout;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__Vfuncout = 0;
+    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x = 0;
+    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__Vfuncout;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__Vfuncout = 0;
+    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x = 0;
+    CData/*3:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__Vfuncout;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__Vfuncout = 0;
+    SData/*9:0*/ __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x = 0;
     VlWide<3>/*95:0*/ __Vtemp_3;
     VlWide<3>/*95:0*/ __Vtemp_4;
     VlWide<3>/*95:0*/ __Vtemp_5;
@@ -143,6 +157,28 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
     VlWide<3>/*95:0*/ __Vtemp_26;
     VlWide<3>/*95:0*/ __Vtemp_38;
     // Body
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add112__DOT__C 
+        = ((0x80U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                     >> 7U)) | ((0x40U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                          >> 8U)) | 
+                                (0x20U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                          >> 9U))));
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add112__DOT__C 
+        = ((0x80U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                     >> 7U)) | ((0x40U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                          >> 8U)) | 
+                                (0x20U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                          >> 9U))));
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add112__DOT__C 
+        = ((0x80U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                     >> 7U)) | ((0x40U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                          >> 8U)) | 
+                                (0x20U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                          >> 9U))));
+    vlSelfRef.MAC32_top_tb__DOT__NX_o = (1U & ((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__flags_reg2) 
+                                               >> 1U));
+    vlSelfRef.MAC32_top_tb__DOT__NV_o = (1U & ((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__flags_reg2) 
+                                               >> 4U));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_overflow = 0U;
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_underflow = 0U;
     if ((0xffU != (0xffU & (vlSelfRef.MAC32_top_tb__DOT__dut__DOT__result32_reg2 
@@ -168,6 +204,48 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
                                           << 4U)) | 
                                 (0xfU & (vlSelfRef.MAC32_top_tb__DOT__dut__DOT__result32_reg2 
                                          >> 0x17U))));
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__exp32_norm 
+        = (((0x80U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                      >> 7U)) | (0x40U & ((~ (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                              >> 0xeU)) 
+                                          << 6U))) 
+           | ((0x20U & ((~ (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                            >> 0xeU)) << 5U)) | ((0x10U 
+                                                  & ((~ 
+                                                      (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                                       >> 0xeU)) 
+                                                     << 4U)) 
+                                                 | (0xfU 
+                                                    & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                                       >> 0xaU)))));
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__exp32_norm 
+        = (((0x80U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                      >> 7U)) | (0x40U & ((~ (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                              >> 0xeU)) 
+                                          << 6U))) 
+           | ((0x20U & ((~ (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                            >> 0xeU)) << 5U)) | ((0x10U 
+                                                  & ((~ 
+                                                      (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                                       >> 0xeU)) 
+                                                     << 4U)) 
+                                                 | (0xfU 
+                                                    & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                                       >> 0xaU)))));
+    vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__exp32_norm 
+        = (((0x80U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                      >> 7U)) | (0x40U & ((~ (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                              >> 0xeU)) 
+                                          << 6U))) 
+           | ((0x20U & ((~ (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                            >> 0xeU)) << 5U)) | ((0x10U 
+                                                  & ((~ 
+                                                      (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                                       >> 0xeU)) 
+                                                     << 4U)) 
+                                                 | (0xfU 
+                                                    & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                                       >> 0xaU)))));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_inc_exp__DOT__C__BRA__2__KET__ 
         = (IData)((0x1800000U == (0x1800000U & vlSelfRef.MAC32_top_tb__DOT__dut__DOT__result32_reg2)));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__B_Inf 
@@ -215,129 +293,129 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
         = (((IData)((0U != (0xffU & (vlSelfRef.MAC32_top_tb__DOT__dut__DOT__A_reg1 
                                      >> 0x17U)))) << 0x17U) 
            | (0x7fffffU & vlSelfRef.MAC32_top_tb__DOT__dut__DOT__A_reg1));
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x 
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x 
         = (0x3ffU & vlSelfRef.MAC32_top_tb__DOT__A_i);
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__Vfuncout 
-        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x))) 
-                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))) 
-            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x))))
-            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
-                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__Vfuncout 
+        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x))) 
+                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))) 
+            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x))))
+            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
+                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                          ? 1U : ((0x80U == (0x380U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                                   ? 2U : ((0x40U == 
                                            (0x3c0U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                                            ? 3U : (
                                                    (0x20U 
                                                     == 
                                                     (0x3e0U 
-                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                                                     ? 4U
                                                     : 
                                                    ((0x10U 
                                                      == 
                                                      (0x3f0U 
-                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                                                      ? 5U
                                                      : 
                                                     ((8U 
                                                       == 
                                                       (0x3f8U 
-                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                                                       ? 6U
                                                       : 7U)))))))
-            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__x)))
+            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__x)))
                 ? 8U : 9U));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc 
-        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__15__Vfuncout;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x 
+        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc10__0__Vfuncout;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x 
         = (0x3ffU & vlSelfRef.MAC32_top_tb__DOT__B_i);
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__Vfuncout 
-        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x))) 
-                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))) 
-            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x))))
-            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
-                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__Vfuncout 
+        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x))) 
+                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))) 
+            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x))))
+            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
+                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                          ? 1U : ((0x80U == (0x380U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                                   ? 2U : ((0x40U == 
                                            (0x3c0U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                                            ? 3U : (
                                                    (0x20U 
                                                     == 
                                                     (0x3e0U 
-                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                                                     ? 4U
                                                     : 
                                                    ((0x10U 
                                                      == 
                                                      (0x3f0U 
-                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                                                      ? 5U
                                                      : 
                                                     ((8U 
                                                       == 
                                                       (0x3f8U 
-                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                                                       ? 6U
                                                       : 7U)))))))
-            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__x)))
+            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__x)))
                 ? 8U : 9U));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc 
-        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__16__Vfuncout;
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x 
+        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc10__1__Vfuncout;
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x 
         = (0x3ffU & vlSelfRef.MAC32_top_tb__DOT__C_i);
-    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__Vfuncout 
-        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x))) 
-                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))) 
-            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x))))
-            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
-                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+    __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__Vfuncout 
+        = (((((((((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x))) 
+                  | (0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+                 | (0x80U == (0x380U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+                | (0x40U == (0x3c0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+               | (0x20U == (0x3e0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+              | (0x10U == (0x3f0U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+             | (8U == (0x3f8U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))) 
+            | (4U == (0x3fcU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x))))
+            ? ((0x200U == (0x200U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
+                ? 0U : ((0x100U == (0x300U & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                          ? 1U : ((0x80U == (0x380U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                                   ? 2U : ((0x40U == 
                                            (0x3c0U 
-                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+                                            & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                                            ? 3U : (
                                                    (0x20U 
                                                     == 
                                                     (0x3e0U 
-                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+                                                     & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                                                     ? 4U
                                                     : 
                                                    ((0x10U 
                                                      == 
                                                      (0x3f0U 
-                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+                                                      & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                                                      ? 5U
                                                      : 
                                                     ((8U 
                                                       == 
                                                       (0x3f8U 
-                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+                                                       & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                                                       ? 6U
                                                       : 7U)))))))
-            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__x)))
+            : ((2U == (0x3feU & (IData)(__Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__x)))
                 ? 8U : 9U));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc 
-        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__17__Vfuncout;
+        = __Vfunc_MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc10__2__Vfuncout;
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__A_Exp 
         = (((~ (IData)((0U != (0xffU & (vlSelfRef.MAC32_top_tb__DOT__dut__DOT__A_reg1 
                                         >> 0x17U))))) 
@@ -512,6 +590,12 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
                                                              == 
                                                              (3U 
                                                               & vlSelfRef.MAC32_top_tb__DOT__dut__DOT__C_reg1)))))));
+    vlSelfRef.MAC32_top_tb__DOT__OF_o = (1U & (((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__flags_reg2) 
+                                                >> 3U) 
+                                               | (IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_overflow)));
+    vlSelfRef.MAC32_top_tb__DOT__UF_o = (1U & (((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__flags_reg2) 
+                                                >> 2U) 
+                                               | (IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__fp32_to_fp16_conv_underflow)));
     vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_sub112__DOT__u_sub__DOT__C__BRA__7__KET__ 
         = ((vlSelfRef.MAC32_top_tb__DOT__dut__DOT__result32_reg2 
             >> 0x1dU) & (IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp32_to_fp16__DOT__u_sub112__DOT__u_sub__DOT__C__BRA__6__KET__));
@@ -1525,19 +1609,9 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
         }
     } else {
         vlSelfRef.MAC32_top_tb__DOT__dut__DOT__A_i_fp32 
-            = ((((0xc0000000U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
-                                 << 0x10U)) | (0x20000000U 
-                                               & ((~ 
-                                                   (vlSelfRef.MAC32_top_tb__DOT__A_i 
-                                                    >> 0xeU)) 
-                                                  << 0x1dU))) 
-                | ((0x10000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__A_i 
-                                       >> 0xeU)) << 0x1cU)) 
-                   | ((0x8000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__A_i 
-                                         >> 0xeU)) 
-                                     << 0x1bU)) | (0x7800000U 
-                                                   & (vlSelfRef.MAC32_top_tb__DOT__A_i 
-                                                      << 0xdU))))) 
+            = (((0x80000000U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
+                                << 0x10U)) | ((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__exp32_norm) 
+                                              << 0x17U)) 
                | (0x7fe000U & (vlSelfRef.MAC32_top_tb__DOT__A_i 
                                << 0xdU)));
     }
@@ -1594,19 +1668,9 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
         }
     } else {
         vlSelfRef.MAC32_top_tb__DOT__dut__DOT__B_i_fp32 
-            = ((((0xc0000000U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
-                                 << 0x10U)) | (0x20000000U 
-                                               & ((~ 
-                                                   (vlSelfRef.MAC32_top_tb__DOT__B_i 
-                                                    >> 0xeU)) 
-                                                  << 0x1dU))) 
-                | ((0x10000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__B_i 
-                                       >> 0xeU)) << 0x1cU)) 
-                   | ((0x8000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__B_i 
-                                         >> 0xeU)) 
-                                     << 0x1bU)) | (0x7800000U 
-                                                   & (vlSelfRef.MAC32_top_tb__DOT__B_i 
-                                                      << 0xdU))))) 
+            = (((0x80000000U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
+                                << 0x10U)) | ((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__exp32_norm) 
+                                              << 0x17U)) 
                | (0x7fe000U & (vlSelfRef.MAC32_top_tb__DOT__B_i 
                                << 0xdU)));
     }
@@ -1663,19 +1727,9 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___stl_sequent__TOP__0(VMAC32_top_tb___
         }
     } else {
         vlSelfRef.MAC32_top_tb__DOT__dut__DOT__C_i_fp32 
-            = ((((0xc0000000U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
-                                 << 0x10U)) | (0x20000000U 
-                                               & ((~ 
-                                                   (vlSelfRef.MAC32_top_tb__DOT__C_i 
-                                                    >> 0xeU)) 
-                                                  << 0x1dU))) 
-                | ((0x10000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__C_i 
-                                       >> 0xeU)) << 0x1cU)) 
-                   | ((0x8000000U & ((~ (vlSelfRef.MAC32_top_tb__DOT__C_i 
-                                         >> 0xeU)) 
-                                     << 0x1bU)) | (0x7800000U 
-                                                   & (vlSelfRef.MAC32_top_tb__DOT__C_i 
-                                                      << 0xdU))))) 
+            = (((0x80000000U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
+                                << 0x10U)) | ((IData)(vlSelfRef.MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__exp32_norm) 
+                                              << 0x17U)) 
                | (0x7fe000U & (vlSelfRef.MAC32_top_tb__DOT__C_i 
                                << 0xdU)));
     }
@@ -2237,10 +2291,37 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___dump_triggers__act(VMAC32_top_tb___0
         VL_DBG_MSGF("         'act' region trigger index 1 is active: @(negedge MAC32_top_tb.rst_n)\n");
     }
     if ((4ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 2 is active: @([true] __VdlySched.awaitingCurrentTime())\n");
+        VL_DBG_MSGF("         'act' region trigger index 2 is active: @( MAC32_top_tb.A_i)\n");
     }
     if ((8ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 3 is active: @(posedge MAC32_top_tb.rst_n)\n");
+        VL_DBG_MSGF("         'act' region trigger index 3 is active: @( MAC32_top_tb.B_i)\n");
+    }
+    if ((0x10ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 4 is active: @( MAC32_top_tb.C_i)\n");
+    }
+    if ((0x20ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 5 is active: @( MAC32_top_tb.NV_o)\n");
+    }
+    if ((0x40ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 6 is active: @( MAC32_top_tb.NX_o)\n");
+    }
+    if ((0x80ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 7 is active: @( MAC32_top_tb.OF_o)\n");
+    }
+    if ((0x100ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 8 is active: @( MAC32_top_tb.UF_o)\n");
+    }
+    if ((0x200ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 9 is active: @( MAC32_top_tb.clk)\n");
+    }
+    if ((0x400ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 10 is active: @( MAC32_top_tb.rst_n)\n");
+    }
+    if ((0x800ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 11 is active: @([true] __VdlySched.awaitingCurrentTime())\n");
+    }
+    if ((0x1000ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 12 is active: @(posedge MAC32_top_tb.rst_n)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -2261,10 +2342,37 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___dump_triggers__nba(VMAC32_top_tb___0
         VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(negedge MAC32_top_tb.rst_n)\n");
     }
     if ((4ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @([true] __VdlySched.awaitingCurrentTime())\n");
+        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @( MAC32_top_tb.A_i)\n");
     }
     if ((8ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @(posedge MAC32_top_tb.rst_n)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @( MAC32_top_tb.B_i)\n");
+    }
+    if ((0x10ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 4 is active: @( MAC32_top_tb.C_i)\n");
+    }
+    if ((0x20ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 5 is active: @( MAC32_top_tb.NV_o)\n");
+    }
+    if ((0x40ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 6 is active: @( MAC32_top_tb.NX_o)\n");
+    }
+    if ((0x80ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 7 is active: @( MAC32_top_tb.OF_o)\n");
+    }
+    if ((0x100ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 8 is active: @( MAC32_top_tb.UF_o)\n");
+    }
+    if ((0x200ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 9 is active: @( MAC32_top_tb.clk)\n");
+    }
+    if ((0x400ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 10 is active: @( MAC32_top_tb.rst_n)\n");
+    }
+    if ((0x800ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 11 is active: @([true] __VdlySched.awaitingCurrentTime())\n");
+    }
+    if ((0x1000ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 12 is active: @(posedge MAC32_top_tb.rst_n)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -2295,20 +2403,23 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->MAC32_top_tb__DOT__B_i = VL_RAND_RESET_I(32);
     vlSelf->MAC32_top_tb__DOT__C_i = VL_RAND_RESET_I(32);
     vlSelf->MAC32_top_tb__DOT__Result_o = VL_RAND_RESET_I(32);
+    vlSelf->MAC32_top_tb__DOT__OF_o = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__UF_o = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__NX_o = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__NV_o = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__exp_q.atDefault() = VL_RAND_RESET_Q(36);
     vlSelf->MAC32_top_tb__DOT__err_cnt = 0;
     vlSelf->MAC32_top_tb__DOT__vec_cnt = 0;
     vlSelf->MAC32_top_tb__DOT__cycle = 0;
+    vlSelf->MAC32_top_tb__DOT__a_bits = 0;
+    vlSelf->MAC32_top_tb__DOT__b_bits = 0;
+    vlSelf->MAC32_top_tb__DOT__c_bits = 0;
+    vlSelf->MAC32_top_tb__DOT__a = 0;
+    vlSelf->MAC32_top_tb__DOT__b = 0;
+    vlSelf->MAC32_top_tb__DOT__c = 0;
+    vlSelf->MAC32_top_tb__DOT__res_real = 0;
+    vlSelf->MAC32_top_tb__DOT__golden = VL_RAND_RESET_Q(36);
     vlSelf->MAC32_top_tb__DOT__unnamedblk1__DOT__exp = VL_RAND_RESET_Q(36);
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__a = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__b = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_2__DOT__unnamedblk2__DOT__c = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__a = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__b = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_3__DOT__unnamedblk3__DOT__c = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__aP = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__b = 0;
-    vlSelf->MAC32_top_tb__DOT__unnamedblk1_4__DOT__unnamedblk4__DOT__c = 0;
     vlSelf->MAC32_top_tb__DOT__dut__DOT__A_reg1 = VL_RAND_RESET_I(32);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__B_reg1 = VL_RAND_RESET_I(32);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__C_reg1 = VL_RAND_RESET_I(32);
@@ -2479,6 +2590,7 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__csa__DOT____Vcellinp__genblk1__BRA__47__KET____DOT__FA__addend_i = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__lzc = VL_RAND_RESET_I(4);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__shift = VL_RAND_RESET_I(4);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__exp32_norm = VL_RAND_RESET_I(8);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__unnamedblk1__DOT__sig24 = VL_RAND_RESET_I(24);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add1__DOT__C__BRA__2__KET__ = VL_RAND_RESET_I(1);
@@ -2487,8 +2599,10 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_0__DOT__u_add112__DOT__C = VL_RAND_RESET_I(9);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__lzc = VL_RAND_RESET_I(4);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__shift = VL_RAND_RESET_I(4);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__exp32_norm = VL_RAND_RESET_I(8);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__unnamedblk1__DOT__sig24 = VL_RAND_RESET_I(24);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add1__DOT__C__BRA__2__KET__ = VL_RAND_RESET_I(1);
@@ -2497,8 +2611,10 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_1__DOT__u_add112__DOT__C = VL_RAND_RESET_I(9);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__lzc = VL_RAND_RESET_I(4);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__shift = VL_RAND_RESET_I(4);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__exp32_norm = VL_RAND_RESET_I(8);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__unnamedblk1__DOT__sig24 = VL_RAND_RESET_I(24);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add1__DOT__C__BRA__2__KET__ = VL_RAND_RESET_I(1);
@@ -2507,6 +2623,7 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__5__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__4__KET__ = VL_RAND_RESET_I(1);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_sub113__DOT__u_sub__DOT__C__BRA__3__KET__ = VL_RAND_RESET_I(1);
+    vlSelf->MAC32_top_tb__DOT__dut__DOT__u_fp16_to_fp32_2__DOT__u_add112__DOT__C = VL_RAND_RESET_I(9);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__low_sum = VL_RAND_RESET_Q(48);
     VL_RAND_RESET_W(74, vlSelf->MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__PosSum);
     vlSelf->MAC32_top_tb__DOT__dut__DOT__u_s2__DOT__Adder_sign = VL_RAND_RESET_I(1);
@@ -2558,6 +2675,14 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___ctor_var_reset(VMAC32_top_tb___024ro
     vlSelf->__VdfgRegularize_h6171c202_6_0 = VL_RAND_RESET_I(31);
     vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__clk__0 = VL_RAND_RESET_I(1);
     vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__rst_n__0 = VL_RAND_RESET_I(1);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__A_i__0 = VL_RAND_RESET_I(32);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__B_i__0 = VL_RAND_RESET_I(32);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__C_i__0 = VL_RAND_RESET_I(32);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NV_o__0 = VL_RAND_RESET_I(1);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__NX_o__0 = VL_RAND_RESET_I(1);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__OF_o__0 = VL_RAND_RESET_I(1);
+    vlSelf->__Vtrigprevexpr___TOP__MAC32_top_tb__DOT__UF_o__0 = VL_RAND_RESET_I(1);
+    vlSelf->__VactDidInit = 0;
     for (int __Vi0 = 0; __Vi0 < 6; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = 0;
     }

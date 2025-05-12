@@ -6,6 +6,15 @@
 #include "VMAC32_top_tb__Syms.h"
 #include "VMAC32_top_tb___024root.h"
 
+VL_ATTR_COLD void VMAC32_top_tb___024root___eval_initial__TOP(VMAC32_top_tb___024root* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VMAC32_top_tb___024root___eval_initial__TOP\n"); );
+    VMAC32_top_tb__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Body
+    VL_WRITEF_NX("==== MAC32_top_tb simulation started ====\n",0);
+    vlSymsp->TOP____024unit.__VmonitorNum = 1U;
+}
+
 #ifdef VL_DEBUG
 VL_ATTR_COLD void VMAC32_top_tb___024root___dump_triggers__stl(VMAC32_top_tb___024root* vlSelf);
 #endif  // VL_DEBUG
@@ -29,17 +38,17 @@ void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT_
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0__0(VMAC32_top_tb_Compressor32* vlSelf);
-void VMAC32_top_tb___024root___nba_sequent__TOP__1(VMAC32_top_tb___024root* vlSelf);
+void VMAC32_top_tb___024root___nba_sequent__TOP__2(VMAC32_top_tb___024root* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_2__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_1__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_0__0(VMAC32_top_tb_Compressor32* vlSelf);
-void VMAC32_top_tb___024root___nba_sequent__TOP__2(VMAC32_top_tb___024root* vlSelf);
+void VMAC32_top_tb___024root___nba_sequent__TOP__3(VMAC32_top_tb___024root* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_1__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_0__0(VMAC32_top_tb_Compressor32* vlSelf);
-void VMAC32_top_tb___024root___nba_sequent__TOP__3(VMAC32_top_tb___024root* vlSelf);
+void VMAC32_top_tb___024root___nba_sequent__TOP__4(VMAC32_top_tb___024root* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__top32__0(VMAC32_top_tb_Compressor32* vlSelf);
 void VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__down32__0(VMAC32_top_tb_Compressor32* vlSelf);
-void VMAC32_top_tb___024root___nba_sequent__TOP__4(VMAC32_top_tb___024root* vlSelf);
+void VMAC32_top_tb___024root___nba_sequent__TOP__5(VMAC32_top_tb___024root* vlSelf);
 
 VL_ATTR_COLD void VMAC32_top_tb___024root___eval_stl(VMAC32_top_tb___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    VMAC32_top_tb___024root___eval_stl\n"); );
@@ -53,16 +62,16 @@ VL_ATTR_COLD void VMAC32_top_tb___024root___eval_stl(VMAC32_top_tb___024root* vl
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0));
-        VMAC32_top_tb___024root___nba_sequent__TOP__1(vlSelf);
+        VMAC32_top_tb___024root___nba_sequent__TOP__2(vlSelf);
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_2__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_2));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_1__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_1));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_0__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV2_0));
-        VMAC32_top_tb___024root___nba_sequent__TOP__2(vlSelf);
+        VMAC32_top_tb___024root___nba_sequent__TOP__3(vlSelf);
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_1__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_1));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_0__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_0));
-        VMAC32_top_tb___024root___nba_sequent__TOP__3(vlSelf);
+        VMAC32_top_tb___024root___nba_sequent__TOP__4(vlSelf);
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__top32__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__top32));
         VMAC32_top_tb_Compressor32___nba_sequent__TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__down32__0((&vlSymsp->TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__down32));
-        VMAC32_top_tb___024root___nba_sequent__TOP__4(vlSelf);
+        VMAC32_top_tb___024root___nba_sequent__TOP__5(vlSelf);
     }
 }

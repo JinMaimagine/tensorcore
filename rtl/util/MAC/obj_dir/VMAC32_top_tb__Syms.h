@@ -16,8 +16,7 @@
 // INCLUDE MODULE CLASSES
 #include "VMAC32_top_tb___024root.h"
 #include "VMAC32_top_tb_Compressor32.h"
-
-// DPI TYPES for DPI Export callbacks (Internal use)
+#include "VMAC32_top_tb___024unit.h"
 
 // SYMS CLASS (contains all model state)
 class alignas(VL_CACHE_LINE_BYTES)VMAC32_top_tb__Syms final : public VerilatedSyms {
@@ -42,10 +41,7 @@ class alignas(VL_CACHE_LINE_BYTES)VMAC32_top_tb__Syms final : public VerilatedSy
     VMAC32_top_tb_Compressor32     TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV3_1;
     VMAC32_top_tb_Compressor32     TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__down32;
     VMAC32_top_tb_Compressor32     TOP__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV4_Final__DOT__top32;
-
-    // SCOPE NAMES
-    VerilatedScope __Vscope_MAC32_top_tb;
-    VerilatedScope __Vscope_MAC32_top_tb__unnamedblk1;
+    VMAC32_top_tb___024unit        TOP____024unit;
 
     // CONSTRUCTORS
     VMAC32_top_tb__Syms(VerilatedContext* contextp, const char* namep, VMAC32_top_tb* modelp);

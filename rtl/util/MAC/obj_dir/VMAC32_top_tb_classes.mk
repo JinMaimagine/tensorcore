@@ -37,10 +37,11 @@ VM_CLASSES_SLOW += \
 	VMAC32_top_tb___024root__DepSet_h2cfbdbfb__0__Slow \
 	VMAC32_top_tb_Compressor32__Slow \
 	VMAC32_top_tb_Compressor32__DepSet_h3f3392bb__0__Slow \
+	VMAC32_top_tb___024unit__Slow \
+	VMAC32_top_tb___024unit__DepSet_h697824c9__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
-	VMAC32_top_tb__Dpi \
 	VMAC32_top_tb__Trace__0 \
 	VMAC32_top_tb__Trace__1 \
 	VMAC32_top_tb__Trace__2 \
@@ -55,7 +56,6 @@ VM_SUPPORT_SLOW += \
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \
 	verilated \
-	verilated_dpi \
 	verilated_vcd_c \
 	verilated_timing \
 	verilated_threads \

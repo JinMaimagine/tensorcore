@@ -28,9 +28,18 @@ VERILATOR_FLAGS += rtl/MAC32_top.sv
 VERILATOR_FLAGS += rtl/include/fp32_to_fp16_conv.sv
 VERILATOR_FLAGS += rtl/include/fp16_to_fp32_conv.sv
 VERILATOR_FLAGS += --top-module MAC32_top_tb
-VERILATOR_FLAGS += -CFLAGS "-std=c11"
+VERILATOR_FLAGS += sim_main.cpp        # 添加 C++ main
+VERILATOR_FLAGS += dpi/float_to_half.c # 保持原有的 DPI C 实现
+VERILATOR_FLAGS += -CFLAGS "-std=c++11"
 VERILATOR_FLAGS += -CFLAGS "-I/opt/homebrew/include"
 VERILATOR_FLAGS += -LDFLAGS "-L/opt/homebrew/lib"
+
+# DPI 编译选项
+VERILATOR_FLAGS += -CFLAGS "-I$(VERILATOR_ROOT)/include"
+VERILATOR_FLAGS += -CFLAGS "-I$(VERILATOR_ROOT)/include/vltstd"
+
+# 环境变量设置
+VERILATOR_ROOT ?= /opt/homebrew/share/verilator
 
 # Include 路径
 VERILATOR_FLAGS += -Irtl
@@ -42,7 +51,7 @@ VERILATOR_FLAGS += --exe
 VERILATOR_FLAGS += --build
 
 all:
-	verilator $(VERILATOR_FLAGS) dpi/float_to_half.c
+	VERILATOR_ROOT=$(VERILATOR_ROOT) verilator $(VERILATOR_FLAGS) dpi/float_to_half.c
 	@if [ -f obj_dir/VMAC32_top_tb ]; then \
 		./obj_dir/VMAC32_top_tb; \
     else \

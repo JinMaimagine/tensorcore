@@ -1,0 +1,81 @@
+.
+├── Adder.v
+├── CLA_4.v
+├── dpi
+│   └── float_to_half.c
+├── Makefile
+├── mult_INT4.sv
+├── mult_INT8.sv
+├── obj_dir
+│   ├── float_to_half.d
+│   ├── float_to_half.o
+│   ├── sim_main.d
+│   ├── VMAC32_top_tb___024root__DepSet_h2cfbdbfb__0__Slow.cpp
+│   ├── VMAC32_top_tb___024root__DepSet_h2cfbdbfb__0.cpp
+│   ├── VMAC32_top_tb___024root__DepSet_h4a014256__0__Slow.cpp
+│   ├── VMAC32_top_tb___024root__DepSet_h4a014256__0.cpp
+│   ├── VMAC32_top_tb___024root__Slow.cpp
+│   ├── VMAC32_top_tb___024root.h
+│   ├── VMAC32_top_tb___024unit__DepSet_h697824c9__0__Slow.cpp
+│   ├── VMAC32_top_tb___024unit__Slow.cpp
+│   ├── VMAC32_top_tb___024unit.h
+│   ├── VMAC32_top_tb__Dpi.cpp
+│   ├── VMAC32_top_tb__Dpi.h
+│   ├── VMAC32_top_tb__pch.h
+│   ├── VMAC32_top_tb__Syms.cpp
+│   ├── VMAC32_top_tb__Syms.h
+│   ├── VMAC32_top_tb__Trace__0__Slow.cpp
+│   ├── VMAC32_top_tb__Trace__0.cpp
+│   ├── VMAC32_top_tb__Trace__1__Slow.cpp
+│   ├── VMAC32_top_tb__Trace__1.cpp
+│   ├── VMAC32_top_tb__Trace__2.cpp
+│   ├── VMAC32_top_tb__TraceDecls__0__Slow.cpp
+│   ├── VMAC32_top_tb__ver.d
+│   ├── VMAC32_top_tb__verFiles.dat
+│   ├── VMAC32_top_tb_classes.mk
+│   ├── VMAC32_top_tb_Compressor32__DepSet_h3f3392bb__0__Slow.cpp
+│   ├── VMAC32_top_tb_Compressor32__DepSet_h51f864a4__0.cpp
+│   ├── VMAC32_top_tb_Compressor32__Slow.cpp
+│   ├── VMAC32_top_tb_Compressor32.h
+│   ├── VMAC32_top_tb.cpp
+│   ├── VMAC32_top_tb.h
+│   └── VMAC32_top_tb.mk
+├── pictures
+│   └── FPU_pipeline.jpg
+├── project_structure.txt
+├── rtl
+│   ├── include
+│   │   ├── Compressor32.v
+│   │   ├── Compressor42.v
+│   │   ├── EACAdder.v
+│   │   ├── FMA32_core.sv
+│   │   ├── fp16_to_fp32_conv.sv
+│   │   ├── fp32_to_fp16_conv.sv
+│   │   ├── FullAdder.v
+│   │   ├── LeadingOneDetector_Top.v
+│   │   ├── MSBIncrementer.v
+│   │   ├── Normalizer.v
+│   │   ├── PreNormalizer.v
+│   │   ├── R4Booth.v
+│   │   ├── RCA.sv
+│   │   ├── Rounder.v
+│   │   ├── SpecialCaseDetector.v
+│   │   ├── WallaceTree.v
+│   │   ├── ZeroDetector_Base.v
+│   │   └── ZeroDetector_Group.v
+│   └── MAC32_top.sv
+├── sim_main.cpp
+├── testbench_MAC32
+│   ├── MAC32_top_tb.sv
+│   ├── PATTERN_sample.v
+│   ├── PATTERN.v
+│   ├── TESTBED_sample.v
+│   └── TESTBED.v
+├── vendor
+│   ├── adder
+│   ├── cvfpu
+│   ├── multgen
+│   └── RISC-V_MAC
+└── verilator.sh
+
+12 directories, 67 files

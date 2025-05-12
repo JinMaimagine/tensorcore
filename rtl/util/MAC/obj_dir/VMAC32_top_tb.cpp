@@ -10,6 +10,7 @@
 VMAC32_top_tb::VMAC32_top_tb(VerilatedContext* _vcontextp__, const char* _vcname__)
     : VerilatedModel{*_vcontextp__}
     , vlSymsp{new VMAC32_top_tb__Syms(contextp(), _vcname__, this)}
+    , __PVT____024unit{vlSymsp->TOP.__PVT____024unit}
     , __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0{vlSymsp->TOP.__PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_0}
     , __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1{vlSymsp->TOP.__PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_1}
     , __PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2{vlSymsp->TOP.__PVT__MAC32_top_tb__DOT__dut__DOT__u_s1__DOT__wtree__DOT__LV1_2}
