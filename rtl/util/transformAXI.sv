@@ -23,7 +23,7 @@ module TRANS (
     output logic [7:0][7:0]             we_C
 );
 
-logic [7:0][7:0][31:0] data_out_A_temp;
+logic [7:0][7:0][7:0][3:0] data_out_A_temp;
 logic [7:0][7:0][3:0]  data_out_B_temp;
 logic [7:0][7:0][31:0]  data_out_C_temp;//直接写入systolic array中
 logic [7:0][7:0]       we_A_temp;
@@ -47,7 +47,7 @@ always_comb begin
     data_out_B_temp  = '0;
     data_out_C_temp  = '0;
 
-    if (valid) begin
+    if (valid) begin//直接将A,B全部读入,方便后续逻辑
         if (mat == params::A) begin
             case (data_type)
                 params::FP32: begin
@@ -57,29 +57,34 @@ always_comb begin
 
                 params::FP16: begin
                     we_A_temp[burst_num] = 8'hFF;
-                    data_out_A_temp[burst_num] = data_in;
+                    data_out_A_temp[burst_num][7:0][3:0] = data_in[127:0];
+                    data_out_A_temp[burst_num][7:0][7:4] = data_in[255:128];
+                    //we_A_temp[burst_num] = 8'h0F;//一次取8个,逻辑同FP32
+                    //data_out_A_temp[burst_num][7:0][3:0] = data_in[127:0];//一次取16bit*8
                 end
 
                 params::INT8: begin
                     we_A_temp[{burst_num[1:0], 1'b0}] = 8'h0F << {burst_num[2], 2'b00};
-                    data_out_A_temp[{burst_num[1:0], 1'b0}][{burst_num[2], 2'b00} +: 4] = data_in[127:0];
-
+                    data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[63:0];
+                    data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[127:64];
                     we_A_temp[{burst_num[1:0], 1'b1}] = 8'h0F << {burst_num[2], 2'b00};
-                    data_out_A_temp[{burst_num[1:0], 1'b1}][{burst_num[2], 2'b00} +: 4] = data_in[255:128];
+                    data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[191:128];
+                    data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[255:192];
                 end
 
                 params::INT4: begin
                     we_A_temp[{burst_num[0], 2'b00}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b00}][{burst_num[2:1], 1'b0} +: 2] = data_in[63:0];
-
+                    data_out_A_temp[{burst_num[0], 2'b00}][7:0][{burst_num[2:1], 1'b0}] = data_in[31:0];
+                    data_out_A_temp[{burst_num[0], 2'b00}][7:0][{burst_num[2:1], 1'b1}] = data_in[63:32];
                     we_A_temp[{burst_num[0], 2'b01}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b01}][{burst_num[2:1], 1'b0} +: 2] = data_in[127:64];
-
+                    data_out_A_temp[{burst_num[0], 2'b01}][7:0][{burst_num[2:1], 1'b0}] = data_in[95:64];
+                    data_out_A_temp[{burst_num[0], 2'b01}][7:0][{burst_num[2:1], 1'b1}] = data_in[127:96];
                     we_A_temp[{burst_num[0], 2'b10}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b10}][{burst_num[2:1], 1'b0} +: 2] = data_in[191:128];
-
+                    data_out_A_temp[{burst_num[0], 2'b10}][7:0][{burst_num[2:1], 1'b0}] = data_in[159:128];
+                    data_out_A_temp[{burst_num[0], 2'b10}][7:0][{burst_num[2:1], 1'b1}] = data_in[191:160];
                     we_A_temp[{burst_num[0], 2'b11}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b11}][{burst_num[2:1], 1'b0} +: 2] = data_in[255:192];
+                    data_out_A_temp[{burst_num[0], 2'b11}][7:0][{burst_num[2:1], 1'b0}] = data_in[223:192];
+                    data_out_A_temp[{burst_num[0], 2'b11}][7:0][{burst_num[2:1], 1'b1}] = data_in[255:224];
                 end
             endcase
 
@@ -93,14 +98,14 @@ always_comb begin
                 end
 
                 params::FP16: begin
-                    case (rc)
-                        2'b00: begin // N8
+                    case (rc)//B也按行存储,后面多加小心
+                        2'b00: begin // N8,一次取一行
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'h0F;
                                 data_out_B_temp[i][3:0] = data_in[16*i +: 16];
                             end
                         end
-                        2'b01, 2'b10: begin
+                        2'b01,2'b10: begin
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'hFF;
                                 data_out_B_temp[i] = {
@@ -120,7 +125,7 @@ always_comb begin
                         2'b00: begin // N8
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'h03;
-                                data_out_B_temp[i][1:0] = data_in[8*i +: 8];
+                                data_out_B_temp[i][1:0] = data_in[8*i+:8];
                             end
                         end
                         2'b01: begin
