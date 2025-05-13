@@ -58,6 +58,8 @@ typedef struct packed{
 int RD_MAXADDR;//SRAM中的是写的,这里是读,注意自动切
 type_t datatype;
 rc_t rc;
+logic resetA;
+logic resetB;
 }addrgen_t;
 //每个矩阵配置一个
 typedef struct packed{
@@ -102,6 +104,7 @@ typedef struct packed {
 
 localparam int STATE_BIT = 4;
 //FP,INT进行pipeline都要2个cycle,不同的是INT后续有累加阶段累加，FP没有
+//我需要在正确的时间将正确的数据放进去
 typedef enum logic [STATE_BIT-1:0] {
     IDLE    = 'd0,
     READ_C  = 'd1,
@@ -110,8 +113,8 @@ typedef enum logic [STATE_BIT-1:0] {
     INIT_WAIT_A ='d4,//等待充A
     INIT_WAIT_B='d5,//等待充B
     INIT_WAIT_C='d6,//等待充C
-    WAIT_A='d7,
-    WAIT_B='d8,
+    RESET_A='d7,
+    RESET_B='d8,
     WRITE_BACK='d9,
     FINISH='d10  //完全算完
     // add new formats here

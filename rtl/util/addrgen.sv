@@ -13,20 +13,27 @@ module ADDRGEN_A_UNIT(
     output logic [3:0] rdaddr
 );
 always_ff @(posedge clk) begin
-    
+    if(!rst)
+    begin
+    rdaddr<=0;
+    end
+    if(en_in)
+    begin
+        if(addrs.resetA)//在状态机的部分赋值
+        begin
+            rdaddr<=0;
+        end
+end
 end
 endmodule
 module ADDRGEN_B_UNIT(
     input logic clk,
     input logic rst,
     input logic en_in,
-    input logic cinen_in,
-    input logic sel,//dbuffer,sel哪一个
+    //input logic sel,//dbuffer,sel哪一个,sel是否应该选择哪个sram?不用sel了,一次已经全部读入
     //TODO:int后面改为logic,暂时没算位数
-    params::state_t state,
-    output logic[3:0] rdaddr,
-    input logic[31:0] data_in,
-    output logic[31:0] data_out
+    input params::addrgen_t addrs,
+    output logic[3:0] rdaddr
 );
 logic[31:0] data;
 logic valid;
@@ -35,5 +42,12 @@ always_ff @( posedge clk ) begin
     begin
         rdaddr <= 0;
     end
+    if(en_in)
+    begin
+        if(addrs.resetB)//在状态机的部分赋值
+        begin
+            rdaddr<=0;
+        end
+end
 end
 endmodule

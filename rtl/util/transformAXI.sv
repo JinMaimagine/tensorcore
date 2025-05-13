@@ -101,8 +101,8 @@ always_comb begin
                     case (rc)//B也按行存储,后面多加小心
                         2'b00: begin // N8,一次取一行
                             for (int i = 0; i < 8; i++) begin
-                                we_B_temp[i] = 8'h0F;
-                                data_out_B_temp[i][3:0] = data_in[16*i +: 16];
+                                we_B_temp[i] = 8'h0F<<{burst_num[3], 2'b0};
+                                data_out_B_temp[i][{burst_num[3], 2'b0}+:4] = data_in[16*i +: 16];
                             end
                         end
                         2'b01,2'b10: begin
@@ -124,14 +124,14 @@ always_comb begin
                     case (rc)
                         2'b00: begin // N8
                             for (int i = 0; i < 8; i++) begin
-                                we_B_temp[i] = 8'h03;
-                                data_out_B_temp[i][1:0] = data_in[8*i+:8];
+                                we_B_temp[i] = 8'h03<<{burst_num[3],1'b0};//并行度不够
+                                data_out_B_temp[i][{burst_num[3],1'b0}+:2] = data_in[8*i+:8];
                             end
                         end
                         2'b01: begin
                             for (int i = 0; i < 8; i++) begin
-                                we_B_temp[i] = 8'h0F;
-                                data_out_B_temp[i][3:0] = {
+                                we_B_temp[i] = 8'h0F<<{burst_num[3],2'b0};
+                                data_out_B_temp[i][{burst_num[3],2'b0}+:4] = {
                                     data_in[8*(i+8) +: 8],
                                     data_in[8*i +: 8]
                                 };
