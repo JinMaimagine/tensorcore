@@ -27,4 +27,15 @@ module Adder(mode,X,Y,Cin,S,Cout);
 //    CLA_4 add7(X[28],X[29],X[30],X[31],Y[28],Y[29],Y[30],Y[31],Cout6,S[28],S[29],S[30],S[31],Cout);          
  endmodule
  
+ module Adder_4(mode,X,Y,S);
+    input [127:0] X, Y;
+    input mode;//=1:32bit   =0:16bit
+    output[127:0]S;
+    //output Cout[3:0];//32bit应该不会进位?    
+    wire Cout[3:0];//TODO:我觉得目前不会进位其实&&Cout出来了也没必要处理
+    Adder add0(mode,X[31:0],Y[31:0],1'b0,S[31:0],Cout[0]);
+    Adder add1(mode,X[63:32],Y[63:32],1'b0,S[63:32],Cout[1]);
+    Adder add2(mode,X[95:64],Y[95:64],1'b0,S[95:64],Cout[2]);
+    Adder add3(mode,X[127:96],Y[127:96],1'b0,S[127:96],Cout[3]);    
+ endmodule
  

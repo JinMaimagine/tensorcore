@@ -55,11 +55,8 @@ typedef logic [1:0] rc_t;
 //对于B:2'b00:K16N8,2'b01:K16N16,2'b10:K16N32 
 //对于C:2'b00:M32N8,2'b01:M16N16,2'b10:M8N32
 typedef struct packed{
-int RD_MAXADDR;//SRAM中的是写的,这里是读,注意自动切
 type_t datatype;
 rc_t rc;
-logic resetA;
-logic resetB;
 }addrgen_t;
 //每个矩阵配置一个
 typedef struct packed{

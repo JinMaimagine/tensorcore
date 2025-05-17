@@ -9,7 +9,7 @@
 
 module TRANS (
     input  logic [255:0]                data_in,
-    input  logic [4:0]                  burst_num,   // 第几次传输，一次传输256bit
+    input  logic [5:0]                  burst_num,   // 第几次传输，一次传输256bit
     input  params::type_t              data_type,
     input  params::mat_t               mat,
     input  params::rc_t                rc,
@@ -64,12 +64,25 @@ always_comb begin
                 end
 
                 params::INT8: begin
+                    case(rc)
+                    2'b00:
+                    begin//这里每次只能传入8数据?没办法必须牺牲,我在考虑后面增加可以传入的数据个数,目前是在这个情况下每次只读8个INT8,但是这必须看综合的成本是否增加
+                    //这里弄个warning:可能总位宽要变了
+                        we_A_temp[burst_num[3:1]]=8'h03<<{burst_num[5:4],1'b0};
+                        data_out_A_temp[burst_num[3:1]][7:0][{burst_num[5:4],1'b0}+:2] = data_in[63:0];                        
+                    end
+                    2'b01,2'b10:begin
                     we_A_temp[{burst_num[1:0], 1'b0}] = 8'h0F << {burst_num[2], 2'b00};
                     data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[63:0];
                     data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[127:64];
                     we_A_temp[{burst_num[1:0], 1'b1}] = 8'h0F << {burst_num[2], 2'b00};
                     data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[191:128];
                     data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[255:192];
+                    end
+                    default: begin
+                        assert(0) else $error("rc is not 00,01,10");
+                    end
+                    endcase
                 end
 
                 params::INT4: begin
@@ -100,9 +113,10 @@ always_comb begin
                 params::FP16: begin
                     case (rc)//B也按行存储,后面多加小心
                         2'b00: begin // N8,一次取一行
+                        //注意TODO:B这里我改主意了,主要为了统一
                             for (int i = 0; i < 8; i++) begin
-                                we_B_temp[i] = 8'h0F<<{burst_num[3], 2'b0};
-                                data_out_B_temp[i][{burst_num[3], 2'b0}+:4] = data_in[16*i +: 16];
+                                we_B_temp[i] = 8'h0F<<{burst_num[0], 2'b0};
+                                data_out_B_temp[i][{burst_num[0], 2'b0}+:4] = data_in[16*i +: 16];
                             end
                         end
                         2'b01,2'b10: begin
@@ -166,7 +180,7 @@ always_comb begin
                         2'b01: begin
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'h03<<{burst_num[3], 1'b0};
-                                data_out_B_temp[i][2*burst_num[3]+:2] = {
+                                data_out_B_temp[i][{burst_num[3],1'b0}+:2] = {
                                     data_in[4*(i+8) +:4],
                                     data_in[4*i +:4]
                                 };
@@ -175,7 +189,7 @@ always_comb begin
                         2'b10: begin
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'h0F<<{burst_num[3], 1'b0,1'b0};
-                                data_out_B_temp[i][4*burst_num[3]+:4] = {
+                                data_out_B_temp[i][{burst_num[3],2'b0}+:4] = {
                                     data_in[4*(i+24) +:4],
                                     data_in[4*(i+16) +:4],
                                     data_in[4*(i+8) +:4],

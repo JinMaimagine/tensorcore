@@ -6,13 +6,13 @@
 module SRAM_A_BANK #(
     parameter WRWIDTH = 32,
     parameter RDWIDTH = 4,
-    parameter ENTRYS = 16
+    parameter ENTRYS = 64
 )(
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
     //TODO:后面讲MAX_ADDR改成generate形式
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [RDWIDTH-1:0] data_out,
     input logic [WRWIDTH-1:0] data_in,
     input logic we,
@@ -52,13 +52,13 @@ endmodule
 module SRAM_A_Unit#(
 parameter WRWIDTH = 32,
 parameter RDWIDTH = 4,
-parameter ENTRYS   = 16
+parameter ENTRYS   = 64
 )
 (
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][RDWIDTH-1:0] data_out,
     input logic [7:0][WRWIDTH-1:0] data_in,
     //每个含有8位
@@ -91,7 +91,7 @@ module SRAM_A #(//可以用来实例化SRAM_A
 )(
     input logic rst,
     input logic clk,
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     input logic [7:0][$clog2(ENTRYS)-1:0] rdaddr,
     output logic [7:0][7:0][RDWIDTH-1:0] data_out,
     input logic [7:0][7:0][WRWIDTH-1:0] data_in,
@@ -125,7 +125,7 @@ module SRAM_B_BANK #(
     input logic clk,
     input logic rst,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [WIDTH-1:0] data_out,
     input logic [WIDTH-1:0] data_in,
     input logic we,
@@ -166,7 +166,7 @@ parameter int unsigned ENTRYS = 16
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][WIDTH-1:0] data_out,
     input logic [7:0][WIDTH-1:0] data_in,
     input logic [7:0]we,
@@ -197,7 +197,7 @@ module SRAM_B #(
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [3:0] MAX_ADDR,
+    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][7:0][WIDTH-1:0] data_out,
     input logic [7:0][7:0][WIDTH-1:0] data_in,
     input logic [7:0][7:0]we,
