@@ -114,7 +114,7 @@
 `include "Normalizer.v"
 `include "Rounder.v"
 `include "ZeroDetector_Base.v"
-module MAC32_top #(
+module MAC32_pipeline2_top #(
     parameter PARM_RM       = 3,
     parameter PARM_XLEN     = 32,
     parameter PARM_RM_RNE   = 3'b000,
@@ -134,7 +134,7 @@ module MAC32_top #(
     input [PARM_XLEN - 1 : 0] B_i,
     input [PARM_XLEN - 1 : 0] C_i,
 
-    input wire mode,
+    // input wire mode,
     output [PARM_XLEN - 1 : 0] Result_o, // T (result_o) = A + (B * C)
     //output ready_o,
     input clk,

@@ -1,14 +1,18 @@
 // ---------------------------------------------------------------------
 // 32‑bit IEEE‑754 single‑precision → 16‑bit IEEE‑754 half‑precision
-//   * Round‑to‑nearest‑even (RNE)
+//   * Round‑to‑nearest‑even (RNE) 暂时只实现了这个
 //   * Generates subnormals, preserves NaN payload
 //   * result_o[15:0] = fp16, result_o[31:16] = 0
 // ---------------------------------------------------------------------
 `timescale 1ns/1ps
 `default_nettype none
 
-module fp32_to_fp16_conv (
+module fp32_to_fp16_conv #(
+    parameter PARM_RM       = 3,
+)
+(
     input  wire [31:0] fp32_i,
+    input [PARM_RM - 1 : 0] Rounding_mode_i, //TODO：现在不可指定，默认输入为000
     output logic [31:0] result_o,   // [15:0] = fp16, [31:16] = 0
     output logic        underflow_o,
     output logic        overflow_o
@@ -140,19 +144,23 @@ endmodule
 
 
 
-module FP32toFP16 (
+module FP32toFP16 #(
+    parameter PARM_RM = 3 // Rounding mode bits, currently unused
+)
+(
     input wire [31:0] result_i,
-    input wire mode,
+    input wire [PARM_RM - 1 : 0] Rounding_mode_i, // TODO: currently unused, default input is 000
+    input wire mode, // mode=1转换，mode=0不转换
     input wire OF_in,
     input wire UF_in,
     input wire NV_in,
-    input wire DZ_in,
+    // input wire DZ_in,
     input wire NX_in,
     output reg [31:0] result_o,
     output reg OF_out,
     output reg UF_out,
     output wire NV_out,
-    output wire DZ_out,
+    // output wire DZ_out,
     output wire NX_out
 );
 
@@ -164,6 +172,7 @@ module FP32toFP16 (
     wire        conv_of;
 
     fp32_to_fp16_conv u_fp32_to_fp16_conv (
+        .Rounding_mode_i (Rounding_mode_i),//TODO:目前没用，默认为000，如果修改直接改fp32_to_fp16_conv即可
         .fp32_i      (result_i),
         .result_o      (fp16_conv),
         .underflow_o (conv_uf),
@@ -179,13 +188,13 @@ module FP32toFP16 (
     wire is_inf = (result_i[30:23] == 8'hFF) && (result_i[22:0] == 0);
 
     always_comb begin
-        if (mode) begin
-            // mode==1 → passthrough
+        if (~mode) begin
+            // mode==0 → passthrough
             result_o = result_i;
             OF_out   = OF_in;
             UF_out   = UF_in;
         end else begin
-            // mode==0 → convert to fp16 (low 16 bits) and zero‑pad upper half
+            // mode==1 → convert to fp16 (low 16 bits) and zero‑pad upper half
             result_o = fp16_conv;
             OF_out   = conv_of;
             UF_out   = conv_uf;
@@ -193,7 +202,7 @@ module FP32toFP16 (
     end
 
     assign NV_out = NV_in | (~mode & isnan_i);      // propagate or set on NaN
-    assign DZ_out = DZ_in;                          //不会发生
+    // assign DZ_out = DZ_in;                          //不会发生
     assign NX_out = NX_in | ((~mode & inexact_i) && ~NV_out)| 
                             (conv_of && ~is_inf) | // propagate or set on inexact
                              conv_uf;  // propagate or set on underflow
