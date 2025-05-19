@@ -12,7 +12,6 @@ module SRAM_A_BANK #(
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
     //TODO:后面讲MAX_ADDR改成generate形式
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [RDWIDTH-1:0] data_out,
     input logic [WRWIDTH-1:0] data_in,
     input logic we,
@@ -38,12 +37,7 @@ always_ff @(posedge clk) begin
     else
     begin
         if (we) begin
-            if(wraddr==MAX_ADDR) begin
-                wraddr <= 0;
-            end
-            else begin
-                wraddr <= wraddr+SRAM_ADDR_INC;
-            end
+            wraddr <= wraddr+SRAM_ADDR_INC;
         end
     end
 end
@@ -58,7 +52,6 @@ parameter ENTRYS   = 64
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][RDWIDTH-1:0] data_out,
     input logic [7:0][WRWIDTH-1:0] data_in,
     //每个含有8位
@@ -75,7 +68,6 @@ generate
             .rst(rst),
             .clk(clk),
             .rdaddr(rdaddr),
-            .MAX_ADDR(MAX_ADDR),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),
@@ -91,7 +83,6 @@ module SRAM_A #(//可以用来实例化SRAM_A
 )(
     input logic rst,
     input logic clk,
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     input logic [7:0][$clog2(ENTRYS)-1:0] rdaddr,
     output logic [7:0][7:0][RDWIDTH-1:0] data_out,
     input logic [7:0][7:0][WRWIDTH-1:0] data_in,
@@ -108,7 +99,6 @@ generate
             .rst(rst),
             .clk(clk),
             .rdaddr(rdaddr[i]),
-            .MAX_ADDR(MAX_ADDR),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),
@@ -125,7 +115,6 @@ module SRAM_B_BANK #(
     input logic clk,
     input logic rst,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [WIDTH-1:0] data_out,
     input logic [WIDTH-1:0] data_in,
     input logic we,
@@ -149,12 +138,7 @@ always_ff @(posedge clk) begin
     else
     begin
         if (we) begin
-            if(wraddr==MAX_ADDR) begin
-                wraddr <= 0;
-            end
-            else begin
                 wraddr <= wraddr+1;
-            end
         end
     end
 end
@@ -166,7 +150,6 @@ parameter int unsigned ENTRYS = 16
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][WIDTH-1:0] data_out,
     input logic [7:0][WIDTH-1:0] data_in,
     input logic [7:0]we,
@@ -181,7 +164,6 @@ generate
             .rst(rst),
             .clk(clk),
             .rdaddr(rdaddr),
-            .MAX_ADDR(MAX_ADDR),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),
@@ -197,7 +179,6 @@ module SRAM_B #(
     input logic rst,
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
-    input [$clog2(ENTRYS)-1:0] MAX_ADDR,
     output logic [7:0][7:0][WIDTH-1:0] data_out,
     input logic [7:0][7:0][WIDTH-1:0] data_in,
     input logic [7:0][7:0]we,
@@ -209,9 +190,9 @@ generate
             .WIDTH(WIDTH),
             .ENTRYS(ENTRYS)
         ) sram_row (
+            .rst(rst),
             .clk(clk),
             .rdaddr(rdaddr),
-            .MAX_ADDR(MAX_ADDR),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),

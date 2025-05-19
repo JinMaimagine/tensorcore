@@ -13,7 +13,7 @@ module TRANS (
     input  params::type_t              data_type,
     input  params::mat_t               mat,
     input  params::rc_t                rc,
-    input  valid,
+    input  logic valid,
     input  logic                        clk,
     output logic [7:0][7:0][31:0]       data_out_A,
     output logic [7:0][7:0][3:0]        data_out_B,

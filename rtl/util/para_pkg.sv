@@ -2,12 +2,27 @@ package params;
 //always块必须能综合在一起,不然出现多个always块
 //取C：放C，取出A,B,开始systolic,继续doublebuffer取B,每完成一轮,取C，取A，继续doublebuffer取B，直到完成
 //`PARAM(FP,32,16,16,16)
+
+typedef enum logic [1:0]{
+    M32K16N8,
+    M16K16N16,
+    M8K16N32
+}shape_t;
+
 typedef enum logic [1:0] {
     FP32 = 'd0,//注意混合精度C是FP32
     FP16 = 'd1,
     INT8 = 'd2,
     INT4 = 'd3
 } type_t;
+
+
+typedef struct packed{
+shape_t compute_shape;
+type_t datatype;
+}compute_type_t;
+
+
 
 typedef enum logic [1:0]{
     A = 'd0,//注意混合精度C是FP32
@@ -40,6 +55,9 @@ typedef struct packed{
 } AXI_out_t;
 typedef struct packed{
     logic finish;
+    logic [255:0] data;
+    logic [31:0] burst_id;
+    logic valid;
 } AXI_in_t;
 //TODO:这些的bit是可以缩短的，并非一定要用int，后面根据最长的来优化吧
 typedef struct packed {
@@ -47,6 +65,7 @@ typedef struct packed {
     //AXI_out_t axi;//AXI相关配置,可能不需要能传输的最大bit数这么多,如果需要，这个参数可以删除
     //AXI_in_t axi_in;
     logic[31:0] systolic_time;//systolic经历的周期
+    logic[31:0] waitwrite_time;
     logic[31:0] writeback_time;
     //int SRAM_ADDR_INC;//SRAM地址增量,就是32bit
     //一些time，分别是什么时候开始结束什么状态,

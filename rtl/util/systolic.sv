@@ -1,6 +1,6 @@
 `include "PE.sv"
 `include "para_pkg.sv"
-module systolic (
+module SYSTOLIC (
 input logic clk,
 input logic rst,
 input logic[7:0] enleft,
