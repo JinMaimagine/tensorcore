@@ -1,88 +1,73 @@
-`include "sram.sv"
+`include "PE.sv"
 `include "para_pkg.sv"
-//基本的调度框架
-//systolic遵循一个原则:要么一直流动,要么保持，PE本身遵循这个规律,边界也要遵循这个规律
-module systolic #(
-parameter L=8,
-parameter ENTRYS=1024,
-parameter WIDTH=32
-)(
-    input logic clk,
-    input logic rst,
-    input logic start,
-    output params::AXI_out_t axi_out,
-    input params::AXI_in_t axi_in
+module systolic (
+input logic clk,
+input logic rst,
+input logic[7:0] enleft,
+input logic[7:0] enup,
+input logic[7:0][31:0] aleft,
+input logic[7:0][31:0] bup,
+input logic[7:0] cmleft,
+input logic[7:0] cmup,
+input logic[7:0][7:0] we,
+input logic[7:0][7:0][31:0] c,
+input logic wben,
+input params::addrgen_t addr_type,
+input logic mixed,
+output logic [7:0][7:0] out_ready,
+output logic [7:0][7:0][31:0] out_sum
 );
+logic [7:0][7:0] en_left;
+logic [7:0][7:0] en_up;
+logic [7:0][7:0] en_down;
+logic [7:0][7:0] en_right;
+logic [7:0][7:0] cm_left;
+logic [7:0][7:0] cm_up;
+logic [7:0][7:0] cm_right;
+logic [7:0][7:0] cm_down;
+logic [7:0][7:0][31:0] a_left;
+logic [7:0][7:0][31:0] a_right;
+logic [7:0][7:0][31:0] b_up;
+logic [7:0][7:0][31:0] b_down;
 
-//TODO:always logic
-params::SYSTOLIC_pkg_t systolic;
-params::state_t state;
-params::state_t next_state;
-logic [31:0] systolic_counter;//TODO:专门用于systolic状态的counter
-logic [31:0] accumlate_counter;//TODO:专门用于accum状态的counter
-assign state=next_state;
-
-logic stop;//停止:这是在float单元stage>原本定的时候
-//TODO:设置一个counterfinish,当counter==0时,表示完成
-logic finish;
-assign finish=state==params::FINISH;
-//但是并不是systolic就可以流动,还要看是不是stop状态
-logic [31:0] counter;//TODO:可以缩小
-logic finish_systolic;//这是对应于两个counter,也就是说
-always_ff @(posedge clk) begin
-    if(!rst) begin
-        next_state <= params::IDLE;
+generate 
+    for (genvar i = 0; i < 8; i++) begin
+        for (genvar j = 0; j < 8; j++) begin
+            PE #(.N(4)) pe (
+                .clk(clk),                       
+                .rst(rst),                                     
+                .enleft(en_left[i][j]),              
+                .enright(en_right[i][j]),
+                .enup(en_up[i][j]),
+                .endown(en_down[i][j]),
+                .cmleft(cm_left[i][j]),                    
+                .cmright(cm_right[i][j]),
+                .cmup(cm_up[i][j]),
+                .cmdown(cm_down[i][j]),
+                .a_left(a_left[i][j]),
+                .a_right(a_right[i][j]),
+                .mixed(mixed),
+                .we(we[i][j]),
+                .wben(wben),
+                .c(c[i][j]),
+                .out_sum(out_sum[i][j]),
+                .b_up(b_up[i][j]),
+                .b_down(b_down[i][j]),
+                .addr_type(addr_type),
+                .out_ready(out_ready[i][j])
+            );
+        end
     end
-    else begin
-    case (state)
-        params::IDLE: begin
-            if (start) begin
-                next_state <= params::READ_C;
-                axi_out.sel<=3'b001;
-                axi_out.request_valid<=1'b1;
-            end
-        end
-        params::READ_C: begin//这里是靠ready_valid C是全部填满
-            axi_out.request_valid<=1'b0;
-            if(axi_in.finish) begin//TODO:注意外部finish及时清零
-                next_state <= params::WAIT_A;
-                axi_out.sel<=3'b010;
-                axi_out.request_valid<=1'b1;
-            end
-        end
-        params::WAIT_A: begin//这里一次性将A填满 8*16*32bit
-            axi_out.request_valid<=1'b0;
-            if (axi_in.finish) begin
-                next_state <= params::WAIT_B;
-                axi_out.sel<=3'b100;
-                axi_out.request_valid<=1'b1;
-            end
-        end
-        params::WAIT_B: begin//这里一次性将B填满 16*16*32bit
-            axi_out.request_valid<=1'b0;
-            if (axi_in.finish) begin
-                next_state <= params::SYSTOLIC;
-                systolic_counter<=systolic.systolic_time;   
-            end
-        end
-        params::SYSTOLIC: begin
-            systolic_counter<=systolic_counter-1;
-            if(systolic_counter==0) begin
-                if(finish_systolic)
-                begin
-                    if()
-                end
-            end
-        end
-        params::ACCUMULATE: begin
-            accumlate_counter<=accumlate_counter-1;
-            if(accumlate_counter==0) begin
-                next_state<=params::WRITE_BACK;
-            end
-        end
-    endcase
+    for(genvar i = 0; i < 8; i++) begin
+    for(genvar j=0;j<8;j++)
+    begin
+        assign en_left[i][j] = (j==0)? enleft[i] : en_right[i][j-1];
+        assign en_up[i][j] = (i==0)? enup[j] : en_down[i-1][j];
+        assign cm_left[i][j] = (j==0)? cmleft[i] : cm_right[i][j-1];
+        assign cm_up[i][j] = (i==0)? cmup[j] : cm_down[i-1][j];
+        assign a_left[i][j] = (j==0)? aleft[i] : a_right[i][j-1];
+        assign b_up[i][j] = (i==0)? bup[j] : b_down[i-1][j];
     end
-end
-
-
+    end
+endgenerate
 endmodule

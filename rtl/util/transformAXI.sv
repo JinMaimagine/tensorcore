@@ -115,8 +115,8 @@ always_comb begin
                         2'b00: begin // N8,一次取一行
                         //注意TODO:B这里我改主意了,主要为了统一
                             for (int i = 0; i < 8; i++) begin
-                                we_B_temp[i] = 8'h0F<<{burst_num[0], 2'b0};
-                                data_out_B_temp[i][{burst_num[0], 2'b0}+:4] = data_in[16*i +: 16];
+                                we_B_temp[i] = 8'h0F;
+                                data_out_B_temp[i][3:0] = data_in[16*i +: 16];
                             end
                         end
                         2'b01,2'b10: begin
@@ -213,16 +213,16 @@ always_comb begin
                 params::FP32: begin
                     case(rc)
                         2'b00: begin//M32N8
-                            we_C_temp[burst_num[4:2]]=8'hFF;
-                            data_out_C_temp[burst_num[4:2]] = data_in;
+                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            data_out_C_temp[burst_num[2:0]] = data_in;
                         end
                         2'b01: begin//M16N16
                             we_C_temp[burst_num[3:1]]=8'hFF;
                             data_out_C_temp[burst_num[3:1]] = data_in;
                         end
                         2'b10: begin//M8N32
-                            we_C_temp[burst_num[2:0]]=8'hFF;
-                            data_out_C_temp[burst_num[2:0]] = data_in;
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            data_out_C_temp[burst_num[4:2]] = data_in;
                         end
                         default: begin
                             assert(0) else $error("rc is not 00,01,10");
@@ -233,9 +233,9 @@ always_comb begin
                 params::FP16: begin
                     case(rc)
                         2'b00: begin//M32N8
-                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[4:2]][i] = {16'h0000,data_in[16*i +: 16]};
+                                data_out_C_temp[burst_num[2:0]][i] = {16'h0000,data_in[16*i +: 16]};
                             end
                         end
                         2'b01: begin//M16N16
@@ -245,9 +245,9 @@ always_comb begin
                             end
                         end
                         2'b10: begin//M8N32
-                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            we_C_temp[burst_num[4:2]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[2:0]][i] = {16'h0000,data_in[16*i +: 16]};
+                                data_out_C_temp[burst_num[4:2]][i] = {16'h0000,data_in[16*i +: 16]};
                             end
                         end
                         default: begin
@@ -259,21 +259,21 @@ always_comb begin
                 params::INT8: begin
                     case(rc)
                         2'b00: begin//M32N8
-                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[4:2]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[2:0]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         2'b01: begin//M16N16
                             we_C_temp[burst_num[3:1]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[3:1]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[3:1]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         2'b10: begin//M8N32
-                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            we_C_temp[burst_num[4:2]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[2:0]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[4:2]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         default: begin
@@ -285,21 +285,21 @@ always_comb begin
                 params::INT4: begin
                     case(rc)
                         2'b00: begin//M32N8
-                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[4:2]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[2:0]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         2'b01: begin//M16N16
                             we_C_temp[{burst_num[3],burst_num[2],burst_num[1]}]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[3:1]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[3:1]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         2'b10: begin//M8N32
-                            we_C_temp[{burst_num[2],burst_num[1],burst_num[0]}]=8'hFF;
+                            we_C_temp[{burst_num[4:2]}]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[2:0]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[4:2]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         default: begin
