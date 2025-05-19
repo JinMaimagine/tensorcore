@@ -8,7 +8,7 @@
 `default_nettype none
 
 module fp32_to_fp16_conv #(
-    parameter PARM_RM       = 3,
+    parameter PARM_RM       = 3
 )
 (
     input  wire [31:0] fp32_i,
@@ -32,7 +32,7 @@ module fp32_to_fp16_conv #(
     logic [9:0] mant16_use_tmp; // 10‑bit mantissa for NaN
 
 
-    always_comb begin
+    always begin
         // Slice
         sign  = fp32_i[31];
         exp32 = fp32_i[30:23];
@@ -117,7 +117,7 @@ module fp32_to_fp16_conv #(
                                            (mant10[0] & round_bit & ~sticky);
 
                 logic [10:0] sum11     = {1'b0, mant10} + incr;
-                logic signed [7:0]  exp5      = half_exp;
+                logic signed [8:0]  exp5      = half_exp;
 
                 // Mantissa overflow → exp +1
                 if (sum11[10]) begin
@@ -187,7 +187,7 @@ module FP32toFP16 #(
     //输入是+inf或者-inf时，输出的fp16也是 +inf 或者 -inf，但是NX不用置为1
     wire is_inf = (result_i[30:23] == 8'hFF) && (result_i[22:0] == 0);
 
-    always_comb begin
+    always begin
         if (~mode) begin
             // mode==0 → passthrough
             result_o = result_i;

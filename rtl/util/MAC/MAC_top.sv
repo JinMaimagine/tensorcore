@@ -1,28 +1,23 @@
 /* MAC_top.sv
    模块功能
---------------------------------------------------------------
-|   mode.      |.     calculation.      |.   description.    |
-|    000.      |.      fp16(normal)     |.
-|    001.      |.      fp16(mix).       |.
-|    010.      |.      fp32(normal).    |.
-|    011.      |.      int4(normal)     |.
-|    100.      |.      int8(normal)     |.
-|    101.      |.      int4(mix)        |.
-|    110.      |.      int8(mix)        |.
+-------------------------------------------------------------------------
+|   mode.      |.     calculation.      |.   description.                    
+|    000.      |.      fp16(normal)     |.IN1=fp16, IN2=fp16, IN3=fp16.      
+|    001.      |.      fp16(mix).       |.IN1=fp16, IN2=fp16, IN3=fp32.      
+|    010.      |.      fp32(normal).    |.IN1=fp32, IN2=fp32, IN3=fp32.      
+|    011.      |.      int4(normal)     |.IN1=int4, IN2=int4, IN3=int4.        不用
+|(none)100.    |.(none)int8(normal)     |.IN1=int8, IN2=int8, IN3=int8.        不用
+|    100.      |.   输入IN3[127:0]       |.从低16位开始，相邻两个16位相加，输出32位*4  
+|    101.      |.      int4(mix)        |.IN1=int4, IN2=int4, IN3=int16       
+|    110.      |.      int8(mix)        |.IN1=int8, IN2=int8, IN3=int32       
+-------------------------------------------------------------------------
 */
-
-`include "FP16toFP32.v"
-`include "FP32toFP16.v"
-`include "MAC32_pipeline2_top.v"
+`include "MAC_ADDER.sv"
+`include "MAC_FP.sv"
+`include "MAC_IN3_Adjent16_add.sv"
 
 module MAC_top#(
-    parameter PARM_RM       = 3,
-    parameter PARM_XLEN     = 32,
-    parameter PARM_RM_RNE   = 3'b000,
-    parameter PARM_RM_RTZ   = 3'b001,
-    parameter PARM_RM_RDN   = 3'b010,
-    parameter PARM_RM_RUP   = 3'b011,
-    parameter PARM_RM_RMM   = 3'b100
+    parameter PARM_RM       = 3
 )
 (
     input logic clk,
@@ -62,7 +57,6 @@ module MAC_top#(
 
 //MAC_FP模块实例化
     MAC_FP #(
-        .PARM_XLEN(PARM_XLEN),
         .PARM_RM(PARM_RM)
     ) u_MAC_FP (
         .clk(clk),
@@ -94,24 +88,50 @@ module MAC_top#(
             3'b100: MAC_INT__mode = 1'b1; // INT8 normal模式
             3'b101: MAC_INT__mode = 1'b0; // INT4 mix模式
             3'b110: MAC_INT__mode = 1'b1; // INT8 mix模式
-            default: MAC_INT__mode = 2'b00; // 默认INT4 normal模式
+            default: MAC_INT__mode = 1'b0; // 默认INT4 normal模式
         endcase
     end
 
 //MAC_ADDER模块实例化
-    MAC_ADDER(
+    MAC_ADDER MAC_ADDER_u(
+        .clk(clk),
+        .rst(rst),
         .IN1(IN1),
         .IN2(IN2),
         .IN3(IN3),
         .mode(MAC_INT__mode),
         .OUT(MAC_INT__out)
-    )
+    );
+
+
+
+//-------------------------------------------------------------
+//                   IN3处理部分-相邻16bit相加
+//-------------------------------------------------------------
+
+logic [127:0] MAC_IN3_Adjent16_add_result; // IN3处理后的结果
+
+MAC_IN3_Adjent16_add MAC_IN3_Adjent16_add_u(
+    .clk(clk),
+    .rst(rst),
+    .IN3(IN3), // 输入IN3[127:0]
+    .OUT(MAC_IN3_Adjent16_add_result) // 输出OUT[127:0]，连接到MAC_ADDER的IN3
+);
+
+
+
+//-------------------------------------------------------------
+//                         输出部分
+//-------------------------------------------------------------
+
+
 
 //选择最终输出
     always_comb begin
         case(mode)
             3'b000, 3'b001, 3'b010: OUT = MAC_FP__out; // 浮点计算结果
-            3'b011, 3'b100, 3'b101, 3'b110: OUT = MAC_INT__out; // 整数计算结果
+            3'b011, 3'b101, 3'b110: OUT = MAC_INT__out; // 整数计算结果
+            3'b100: OUT = MAC_IN3_Adjent16_add_result; // IN3处理后的结果
             default: OUT = 128'h0; // 默认输出为0
         endcase
     end
