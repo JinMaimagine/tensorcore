@@ -17,11 +17,13 @@ parameter WIDTH=32
     input logic mixed,
     output params::AXI_out_t axi_out,
     input params::AXI_in_t axi_in,
-    input 
+    input params::compute_type_t compute_type
 );
 
 //TODO:always logic
 params::addrgen_t addrtype;
+assign addrtype.datatype=compute_type.data_type;
+assign addrtype.rc=compute_type.compute_shape==params::M32K16N8?2'b00:(compute_type.compute_shape==params::M16K16N16?2'b01:2'b10);//TODO:error这里可能有问题
 params::SYSTOLIC_pkg_t systolic;
 params::state_t state;
 params::state_t next_state;
@@ -82,7 +84,6 @@ always_ff @(posedge clk) begin
                     if(addrtype.datatype==params::INT4)
                     begin
                         next_state<=params::ACCUMULATE;
-                        accumlate_counter<=1;//1周期算完
                     end
                     else
                     begin
@@ -93,11 +94,8 @@ always_ff @(posedge clk) begin
             end
         end
         params::ACCUMULATE: begin
-            accumlate_counter<=accumlate_counter-1;
-            if(accumlate_counter==0) begin
-                next_state<=params::WRITE_BACK;
-                write_counter<=systolic.waitwrite_time;
-            end
+            next_state<=params::WRITE_BACK;
+            write_counter<=systolic.waitwrite_time;
         end
         params::WAIT_WRITE: begin
             write_counter<=write_counter-1;
@@ -116,6 +114,8 @@ always_ff @(posedge clk) begin
     endcase
     end
 end
+
+
 
 
 
@@ -167,7 +167,8 @@ TRANS trans_inst (
     .data_out_C  (data_out_C),
     .we_A        (we_A),
     .we_B        (we_B),
-    .we_C        (we_C)
+    .we_C        (we_C),
+    .mixed       (mixed)
 );
 
 
@@ -207,6 +208,10 @@ logic [7:0][31:0] control_b_data_in;
 logic [7:0][31:0] control_b_data_out;
 logic [7:0] control_b_en_out;
 logic [7:0] control_b_cmen_out;
+logic [7:0][31:0] rdaddr_a_out;
+logic [7:0][31:0] rdaddr_b_out;
+logic [7:0] re_a;
+logic [7:0] re_b;
 CONTROL_A control_a(
 .clk(clk),
 .rst(rst),
@@ -217,7 +222,9 @@ CONTROL_A control_a(
 .cmen(cmen_out_A),
 .addrtype(addrtype),
 .en_out(control_a_en_out),
-.cmen_out(control_a_cmen_out)
+.cmen_out(control_a_cmen_out),
+.rdaddr_out(rdaddr_a_out),
+.re(re_a)
 );
 
 
@@ -231,32 +238,36 @@ CONTROL_B control_b(
 .cmen(cmen_out_B),
 .addrtype(addrtype),
 .en_out(control_b_en_out),
-.cmen_out(control_b_cmen_out)
+.cmen_out(control_b_cmen_out),
+.rdaddr_out(rdaddr_b_out),
+.re(re_b)
 );
 
 
 SRAM_A sram_a (
     .rst(rst),
     .clk(clk),
-    .rdaddr(),
-    .data_out(),
-    .data_in(),
-    .we(),
-    .re()
+    .rdaddr(rdaddr_a_out),
+    .data_out(control_a_data_in),
+    .data_in(data_out_A),
+    .we(we_A),
+    .re(re_a)
 );
 
 SRAM_B sram_b (
     .rst(rst),
     .clk(clk),
-    .rdaddr(),
-    .data_out(),
-    .data_in(),
-    .we(),
-    .re()
+    .rdaddr(rdaddr_b_out),
+    .data_out(control_b_data_in),
+    .data_in(data_out_B),
+    .we(we_B),
+    .re(re_b)
 );
 
 logic wben;
-assign wben=state==params::WRITE
+assign wben=state==params::WRITE_BACK;
+logic [7:0][7:0][31:0] outsum;
+logic [7:0][7:0] out_ready;
 SYSTOLIC systolic_array(
     .clk(clk),
     .rst(rst),
@@ -266,13 +277,13 @@ SYSTOLIC systolic_array(
     .bup(control_b_data_out),
     .cmleft(control_a_cmen_out),
     .cmup(control_b_cmen_out),
-    .we(we_A),
+    .we(we_C),
     .c(data_out_C),
-    .wben(we_C),
+    .wben(wben),
     .addr_type(addrtype),
-    .mixed(1'b0),//TODO:暂时不考虑
-    .out_ready(),
-    .out_sum()
+    .mixed(mixed),
+    .out_ready(out_ready),
+    .out_sum(outsum)
 ); 
 
 

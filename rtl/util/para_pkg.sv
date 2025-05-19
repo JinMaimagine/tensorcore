@@ -19,7 +19,7 @@ typedef enum logic [1:0] {
 
 typedef struct packed{
 shape_t compute_shape;
-type_t datatype;
+type_t data_type;
 }compute_type_t;
 
 

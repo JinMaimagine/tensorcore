@@ -12,11 +12,15 @@ module CONTROL_A_UNIT(
     output logic cmen_out,
     output logic en_next,
     output logic cmen_next,
+    output logic re,
     input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
+    output logic [31:0] rdaddr_out,
     input logic [31:0] data_in,
     output logic[31:0] rdaddr_next,
     output logic[31:0] data_out
 );
+assign re=en_in;
+assign rdaddr_out = rdaddr;
 always_ff@(posedge clk) begin
     if (rst) begin
         en_out <= 0;
@@ -86,6 +90,7 @@ module CONTROL_B_UNIT(
     input logic rst,
     input logic en_in,
     input logic cmen_in,
+    output logic re,
     output logic en_out,
     output logic cmen_out,
     output logic en_next,
@@ -94,8 +99,11 @@ module CONTROL_B_UNIT(
     input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
     input logic [31:0] data_in,
     output logic [31:0] rdaddr_next,
-    output logic[31:0] data_out
+    output logic[31:0] data_out,
+    output logic [31:0] rdaddr_out
 );
+assign re=en_in;
+assign rdaddr_out = rdaddr;
 always_ff@(posedge clk) begin
     if (rst) begin
         en_out <= 0;
@@ -184,7 +192,9 @@ input logic en,
 input logic cmen,
 input params::addrgen_t addrtype,
 output logic [7:0] en_out,
-output logic [7:0] cmen_out
+output logic [7:0] cmen_out,
+output logic [7:0][31:0] rdaddr_out,
+output logic [7:0] re
 );
 logic [7:0] cmen_next;
 logic [7:0] en_next;
@@ -211,7 +221,9 @@ for (i = 0; i < 8; i++) begin: control_A
         .data_in(data_in[i]),
         .data_out(data_out[i]),
         .rdaddr_next(rdaddr_next[i]),
-        .addrtype(addrtype)
+        .addrtype(addrtype),
+        .rdaddr_out(rdaddr_out[i]),
+        .re(re[i])
     );
 end
 endgenerate
@@ -229,7 +241,9 @@ input logic en,
 input logic cmen,
 input params::addrgen_t addrtype,
 output logic [7:0] en_out,
-output logic [7:0] cmen_out
+output logic [7:0] cmen_out,
+output logic [7:0][31:0] rdaddr_out,
+output logic [7:0] re
 );
 logic [7:0] cmen_next;
 logic [7:0] en_next;
@@ -256,7 +270,9 @@ for (i = 0; i < 8; i++) begin: control_B
         .data_in(data_in[i]),
         .data_out(data_out[i]),
         .rdaddr_next(rdaddr_next[i]),
-        .addrtype(addrtype)
+        .addrtype(addrtype),
+        .rdaddr_out(rdaddr_out[i]),
+        .re(re[i])
     );
 end
 endgenerate

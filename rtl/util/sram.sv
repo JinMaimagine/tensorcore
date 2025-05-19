@@ -153,7 +153,7 @@ parameter int unsigned ENTRYS = 16
     output logic [7:0][WIDTH-1:0] data_out,
     input logic [7:0][WIDTH-1:0] data_in,
     input logic [7:0]we,
-    input logic [7:0]re
+    input logic re
 );
 generate
     for (genvar i = 0; i < 8; i++) begin: sram_row
@@ -167,7 +167,7 @@ generate
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),
-            .re(re[i])
+            .re(re)
         );
     end
 endgenerate
@@ -182,7 +182,7 @@ module SRAM_B #(
     output logic [7:0][7:0][WIDTH-1:0] data_out,
     input logic [7:0][7:0][WIDTH-1:0] data_in,
     input logic [7:0][7:0]we,
-    input logic [7:0][7:0]re
+    input logic [7:0]re
 );
 generate
     for (genvar i = 0; i < 8; i++) begin: sram_row

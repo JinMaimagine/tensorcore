@@ -13,6 +13,7 @@ module TRANS (
     input  params::type_t              data_type,
     input  params::mat_t               mat,
     input  params::rc_t                rc,
+    input  logic                        mixed,
     input  logic valid,
     input  logic                        clk,
     output logic [7:0][7:0][31:0]       data_out_A,
@@ -231,6 +232,28 @@ always_comb begin
                 end
 
                 params::FP16: begin
+                    if(mixed)
+                    begin
+                        case(rc)
+                        2'b00: begin//M32N8
+                            we_C_temp[burst_num[2:0]]=8'hFF;
+                            data_out_C_temp[burst_num[2:0]] = data_in;
+                        end
+                        2'b01: begin//M16N16
+                            we_C_temp[burst_num[3:1]]=8'hFF;
+                            data_out_C_temp[burst_num[3:1]] = data_in;
+                        end
+                        2'b10: begin//M8N32
+                            we_C_temp[burst_num[4:2]]=8'hFF;
+                            data_out_C_temp[burst_num[4:2]] = data_in;
+                        end
+                        default: begin
+                            assert(0) else $error("rc is not 00,01,10");
+                        end
+                    endcase
+                    end
+                    else
+                    begin
                     case(rc)
                         2'b00: begin//M32N8
                             we_C_temp[burst_num[2:0]]=8'hFF;
@@ -254,6 +277,7 @@ always_comb begin
                             assert(0) else $error("rc is not 00,01,10");
                         end
                     endcase
+                    end
                 end
 
                 params::INT8: begin
