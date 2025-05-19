@@ -20,7 +20,8 @@ params::SYSTOLIC_pkg_t systolic;
 params::state_t state;
 params::state_t next_state;
 logic [31:0] systolic_counter;//TODO:专门用于systolic状态的counter
-logic [31:0] accumlate_counter;//TODO:专门用于accum状态的counter
+logic [31:0] accumlate_counter;//TODO:专门用于accumlate状态的counter
+logic [31:0] write_counter;//TODO:专门用于write状态的counter
 assign state=next_state;
 
 logic stop;//停止:这是在float单元stage>原本定的时候
@@ -39,7 +40,7 @@ always_ff @(posedge clk) begin
         params::IDLE: begin
             if (start) begin
                 next_state <= params::READ_C;
-                axi_out.sel<=3'b001;
+                axi_out.sel<=3'b001;//C
                 axi_out.request_valid<=1'b1;
             end
         end
@@ -47,7 +48,7 @@ always_ff @(posedge clk) begin
             axi_out.request_valid<=1'b0;
             if(axi_in.finish) begin//TODO:注意外部finish及时清零
                 next_state <= params::LOAD_A;
-                axi_out.sel<=3'b010;
+                axi_out.sel<=3'b010;//B
                 axi_out.request_valid<=1'b1;
             end
         end
@@ -71,10 +72,10 @@ always_ff @(posedge clk) begin
             if(systolic_counter==0) begin
                 if(finish_systolic)
                 begin
-                    if(addrtype.datatype==params::FP32)
+                    if(addrtype.datatype==params::INT4)
                     begin
                         next_state<=params::ACCUMULATE;
-                        accumlate_counter<=systolic.accumlate_time;
+                        accumlate_counter<=1;//1周期算完
                     end
                     else
                     begin
@@ -87,6 +88,21 @@ always_ff @(posedge clk) begin
             accumlate_counter<=accumlate_counter-1;
             if(accumlate_counter==0) begin
                 next_state<=params::WRITE_BACK;
+            end
+        end
+        params::WAIT_WRITE: begin
+            write_counter<=write_counter-1;
+            if(write_counter==0) begin
+                next_state<=params::WRITE_BACK;
+            end
+        end
+        //负责写回
+        params::WRITE_BACK: begin
+            axi_out.request_valid<=1'b0;
+            if (axi_in.finish) begin
+                next_state <= params::FINISH;
+                axi_out.sel<=3'b000;
+                axi_out.request_valid<=1'b1;
             end
         end
     endcase

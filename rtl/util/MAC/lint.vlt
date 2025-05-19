@@ -1,0 +1,11 @@
+`verilator_config
+// ↓完全屏蔽文件的所有警告
+lint_off -file "*/mac/*.v"
+lint_off -file "*/mac/*.sv"
+lint_off -file "MAC/MAC_ADDER.sv"
+lint_off -file "*/mac/mult_INT8.sv"
+lint_off -file "*/mac/mult_INT4.sv"
+
+
+// 若以后要精确到某行某条警告，可写：
+// lint_off -rule UNOPTFLAT -file "*/MAC_FP.sv" -line 123

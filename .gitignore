@@ -3,3 +3,6 @@
 clear.sh
 .DS_Store
 2025年集创赛中科芯杯数据集说明
+mac_modified_FP32toFP16.patch
+rtl/util/MAC/build
+obj_dir

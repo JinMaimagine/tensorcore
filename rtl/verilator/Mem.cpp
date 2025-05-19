@@ -3,8 +3,8 @@
 #include<iostream>
 #include <memory>
 #include<vector>
+//这个就专门用来验证tensorcore(不包含AXI),后面再提供一个可行的转换
 enum class DataType {
-    INT4,
     INT8,
     FP16,
     FP32
@@ -12,6 +12,7 @@ enum class DataType {
 
 //FP32 
 class FP16{
+    //TODO:need check
     float to_float() const {//need more check
         uint16_t h = value;
         uint32_t sign = (h >> 15) & 0x1;
@@ -196,10 +197,13 @@ std::unique_ptr<Matrix> createMatrix(size_t rows, size_t cols, DataType type) {
 //FP32,INT8可以直接用,但是INT4,FP16不能
 
 
-int main()
-{
-    
-}
+//INT4需要我单独写和算
+class matrix_INT4{
+  private:
+    size_t rows;
+    size_t cols;
+    std::vector<uint8_t> buffer;
+};
 
 
 

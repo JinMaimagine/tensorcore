@@ -261,19 +261,19 @@ always_comb begin
                         2'b00: begin//M32N8
                             we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[2:0]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[2:0]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         2'b01: begin//M16N16
                             we_C_temp[burst_num[3:1]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[3:1]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[3:1]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         2'b10: begin//M8N32
                             we_C_temp[burst_num[4:2]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[4:2]][i] = {24'h000000,data_in[8*i +: 8]};
+                                data_out_C_temp[burst_num[4:2]][i] = {{24{data_in[8*i+7]}},data_in[8*i +: 8]};
                             end
                         end
                         default: begin
@@ -287,19 +287,19 @@ always_comb begin
                         2'b00: begin//M32N8
                             we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[2:0]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[2:0]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         2'b01: begin//M16N16
                             we_C_temp[{burst_num[3],burst_num[2],burst_num[1]}]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[3:1]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[3:1]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         2'b10: begin//M8N32
                             we_C_temp[{burst_num[4:2]}]=8'hFF;
                             for(integer i=0;i<8;i++) begin
-                                data_out_C_temp[burst_num[4:2]][i] = {28'h0000000,data_in[4*i +: 4]};
+                                data_out_C_temp[burst_num[4:2]][i] = {16'h0000,{12{data_in[4*i+3]}},data_in[4*i +: 4]};
                             end
                         end
                         default: begin

@@ -56,15 +56,15 @@ always_comb begin
            case(addrtype.rc)//对于A
             2'b00:
             begin//32*16
-                data_out={data_in[31:28],data_in[23:20],data_in[15:12],data_in[7:4],data_in[27:24],data_in[19:16],data_in[11:8],data_in[3:0]};
+                data_out=data_in;
             end
             2'b01:
             begin//16*16
-                data_out={2{data_in[15:12],data_in[7:4],data_in[11:8],data_in[3:0]}};
+                data_out={{2{data_in[15:8]}},{2{data_in[7:0]}}};
             end
             2'b10:
             begin//8*16
-                data_out={{4{data_in[7:4]}},{4{data_in[3:0]}}};
+                data_out={4{data_in[7:0]}};
             end
             default:begin
                 assert(0);
@@ -147,15 +147,15 @@ always_comb begin
             case(addrtype.rc)//对于B
             2'b00:
             begin//16*8
-                data_out={{4{data_in[7:4]}},{4{data_in[3:0]}}};
+                data_out={4{data_in[7:0]}};
             end
             2'b01:
             begin//16*16
-                data_out={2{data_in[15:0]}};
+                data_out={2{data_in[15:12],data_in[7:4],data_in[11:8],data_in[3:0]}};
             end
             2'b10:
             begin//16*32
-                data_out=data_in;
+                data_out={data_in[31:28],data_in[15:12],data_in[27:24],data_in[11:8],data_in[23:20],data_in[7:4],data_in[19:16],data_in[3:0]};
             end
             default:begin
                 assert(0);
