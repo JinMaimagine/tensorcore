@@ -45,19 +45,22 @@ typedef struct packed{
     logic [31:0] D_BASE;//D的起始地址，存完A,B,C之后的地址 m*k*width+n*k*width
 } baseaddr_t;
 typedef struct packed{
-    logic [31:0] BASE;//基本地址
-    logic [2:0] sel;//100是A，010是B，001是C，000是D
+    logic [31:0] BASE;//基本地址 以byte为单位
+    logic [2:0] sel;//100是A，010是B，001是C，000是D //sel好像也不需要了，我知道读什么
     logic issend;//D=1'b1,对于A,B,C=1'b0
-    logic[31:0] bits;//接收的位数
-    logic [4:0] burst_num;
-    logic [7:0] burst_size;
+    // logic[31:0] bits;//接收的位数,不需要了
+    logic [5:0] burst_num; //transition数量
+    logic [2:0] burst_size;//这个 burst_size 等价于 AXI4 协议中的每个 beat 的传输单位，
+                            //映射到 AXI 接口的 arsize
+                            //arsize = clog2(DATA_WIDTH/8)（即如果 DATA_WIDTH = 256，则 arsize = 5，每拍传输 32 字节）
     logic request_valid;//请求有效
 } AXI_out_t;
 typedef struct packed{
     logic finish;
     logic [255:0] data;
     logic [31:0] burst_id;
-    logic valid;
+    logic rvalid;
+    logic arready;
 } AXI_in_t;
 //TODO:这些的bit是可以缩短的，并非一定要用int，后面根据最长的来优化吧
 typedef struct packed {
