@@ -23,9 +23,7 @@ generate
         mult_INT4 mult4(.IN1(IN1[4*i+:4]),.IN2(IN2[4*i+:4]),.IN3(),.design_res(mult4_out[16*i+:8]));
     end
     assign out=mode?mult8_out:mult4_out;
-    for(i=0;i<4;i++) begin: MAC
-        Adder_4 _adder(.mode(mode),.X(IN3),.Y(out),.S(OUT));
-    end
+    Adder_4 _adder(.mode(mode),.X(IN3),.Y(out),.S(OUT));
 endgenerate
 
 

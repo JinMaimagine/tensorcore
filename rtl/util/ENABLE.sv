@@ -10,8 +10,8 @@ input logic enabove,
 output logic enbelow,
 output logic en,
 //TODO:实际只需要一次传递compute_type就行了,但这里是每个周期传递一次，后面改成一个模块吧
-input params::full_type_t compute_type_in,
-output params::full_type_t compute_type_out,
+input params::addrgen_t compute_type_in,
+output params::addrgen_t compute_type_out,
 input logic clk
 );
 assign en=enleft&&enabove;

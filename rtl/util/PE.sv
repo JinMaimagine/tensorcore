@@ -1,12 +1,11 @@
 `include "ENABLE.sv"
 `include "para_pkg.sv"
 module PE
-#(parameter N=8)
+#(parameter N=4)
 (
 	// interface to system
     input logic clk,                         // cLK = 200MHz
-    input logic rst,                       // RESET, Negedge is active   
-    input logic we,                      
+    input logic rst,                       // RESET, Negedge is active                     
     input logic enleft,                      // enable signal for the accelerator, high for active
     output logic enright,
     input logic enup,                        //因为systolic:PE依靠PE实现隔位延迟1
@@ -24,20 +23,17 @@ module PE
     output logic [31:0] out_sum,
     input logic [31:0] in_b_above,
     output logic [31:0] out_b_below,
-    input params::full_type_t compute_type,
-    output params::full_type_t compute_type_out,
-    input logic ready//axiout_ready;
+    input params::addrgen_t addr_type,
+    output params::addrgen_t addr_type_out
 	);
     //需要保证en的时候,c一定是有效的
     params::PE_pkg_t pe;
-    logic [1:0] counter_valid;
-    logic out_valid;
     logic en;
     logic cmen;
     logic cinen;
     logic [31:0] a;
     logic [31:0] b;
-    logic [32*N-1:0] regfile;//用于多存,后面累加,或者pipeline
+    logic [32*N-1:0] regfile;//就存4个数据,每个32bit
     logic[$clog2(N)-1:0] regfile_pointer;//至于设置为多大有para_pkg决定
     assign a = a_left;
     assign b = in_b_above;
@@ -53,8 +49,8 @@ module PE
         .enbelow(endown),
         .en(en),
         .clk(clk),
-        .compute_type_in(compute_type),
-        .compute_type_out(compute_type_out)
+        .compute_type_in(addr_type),
+        .compute_type_out(addr_type_out)
     );
     CMENABLE _CMENABLE(
         .enleft(cmleft),
@@ -64,41 +60,29 @@ module PE
         .en(cmen),
         .clk(clk)
     );
-    always@(posedge clk)
+    always_ff@(posedge clk)
     begin
         if(rst)
         begin
             regfile_pointer <= 0;
         end
-        else if(we)
+        else if(en)
         begin
-            regfile[regfile_pointer*32+:32] <= c;
-            if(regfile_pointer==3)
+            if(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)
             begin
-            regfile_pointer <= 0;
+                regfile_pointer<=regfile_pointer+1;
             end
-            else
+        end
+        //其它情况:Dontcare
+        else if(cmen)
+        begin
+            assert(addr_type.datatype==params::INT4) else $error("CMENABLE only support INT4");
+            for(integer i=0;i<4;i++)
             begin
-            regfile_pointer <= regfile_pointer + 1;
             end
         end
     end
-    assign out_valid = counter_valid==2'b00&&en;
-    //TODO:什么时候restart:重新开始算一轮
-    logic restart;
-    always@(posedge clk)
-    begin
-        if(rst)
-        begin
-            restart<=0;
-            counter_valid <= 2'b00;
-        end
-        else
-        begin
-            
-        end
-    end
-    // multiplier
+        // multiplier
     // accumulator (here use register to calculate and accumulate in one cycle)
     // registers for systolic dataflow
     

@@ -148,7 +148,7 @@ module FP32toFP16 (
 
     fp32_to_fp16_conv u_fp32_to_fp16_conv (
         .fp32_i      (result_i),
-        .result_o      (fp16_conv),
+        .fp16_o      (fp16_conv),
         .underflow_o (conv_uf),
         .overflow_o  (conv_of)
     );

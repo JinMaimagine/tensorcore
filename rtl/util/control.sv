@@ -14,43 +14,38 @@ module CONTROL_A_UNIT(
     output logic cmen_next,
     input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
     input logic [31:0] data_in,
-    output logic rdvalid,
-    output logic datavalid,
-    output int rdaddr_next,
+    output logic[31:0] rdaddr_next,
     output logic[31:0] data_out
 );
-logic [31:0] addr_reg;
-assign rdvalid=en_in;
-assign data_out=data_in;
 always_ff@(posedge clk) begin
-    addr_reg <= rdaddr;
     if (rst) begin
         en_out <= 0;
         cmen_out <= 0;
         rdaddr_next <= 0;
-        datavalid <= 0;
     end else begin
         en_out <= en_in;
         cmen_out <= cmen_in;
         rdaddr_next <= rdaddr;
-        datavalid<=rdvalid;
     end
 end
 always_comb begin
     case(addrtype.datatype)
+        params::FP16:begin
+        data_out = rdaddr_next[1]?{16'b0,data_in[31:16]}:{16'b0,data_in[15:0]};
+        end
         params::INT8:begin
             case(addrtype.rc)//对于A
             2'b00:
-            begin//32*8
-
+            begin//32*16
+                data_out=data_in;
             end
             2'b01:
             begin//16*16
-
+                data_out=rdaddr_next[1]?{data_out[31:24],data_out[31:24],data_in[15:8],data_in[15:8]}:{data_out[23:16],data_out[23:16],data_in[7:0],data_in[7:0]};
             end
             2'b10:
-            begin//8*32
-
+            begin//8*16
+                data_out=rdaddr_next[1]?{data_in[15:8],data_in[15:8],data_in[15:8],data_in[15:8]}:{data_in[7:0],data_in[7:0],data_in[7:0],data_in[7:0]};
             end
             default:begin
                 assert(0);
@@ -58,18 +53,18 @@ always_comb begin
             endcase
         end
         params::INT4:begin
-            case(addrtype.rc)//对于A
+           case(addrtype.rc)//对于A
             2'b00:
-            begin//32*8
-
+            begin//32*16
+                data_out={data_in[31:28],data_in[23:20],data_in[15:12],data_in[7:4],data_in[27:24],data_in[19:16],data_in[11:8],data_in[3:0]};
             end
             2'b01:
             begin//16*16
-
+                data_out={2{data_in[15:12],data_in[7:4],data_in[11:8],data_in[3:0]}};
             end
             2'b10:
-            begin//8*32
-
+            begin//8*16
+                data_out={{4{data_in[7:4]}},{4{data_in[3:0]}}};
             end
             default:begin
                 assert(0);
@@ -77,6 +72,7 @@ always_comb begin
             endcase
         end
         default:begin
+            data_out=data_in;
         end
     endcase
 end
@@ -97,42 +93,50 @@ module CONTROL_B_UNIT(
     input params::addrgen_t addrtype,
     input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
     input logic [31:0] data_in,
-    output logic rdvalid,
-    output logic datavalid,
     output logic [31:0] rdaddr_next,
     output logic[31:0] data_out
 );
-logic [31:0] addr_reg;
-assign rdvalid=en_in;
-assign data_out=data_in;
 always_ff@(posedge clk) begin
     if (rst) begin
         en_out <= 0;
         cmen_out <= 0;
         rdaddr_next <= 0;
-        datavalid <= 0;
     end else begin
         en_out <= en_in;
         cmen_out <= cmen_in;
         rdaddr_next <= rdaddr;
-        datavalid<=rdvalid;
     end
 end
 always_comb begin
     case(addrtype.datatype)
-        params::INT8:begin
-            case(addrtype.rc)//对于A
+    params::FP16:begin
+            case(addrtype.rc)//对于B
             2'b00:
-            begin//32*8
-
+            begin//16*8
+                data_out=data_in;
+            end
+            2'b01,2'b10:
+            begin//16*16
+                data_out=rdaddr_next[1]?{{16'b0,data_in[31:16]}}:{{16'b0,data_in[15:0]}};
+            end
+            default:begin
+                assert(0);
+            end
+            endcase
+        end
+        params::INT8:begin
+            case(addrtype.rc)//对于B
+            2'b00:
+            begin//16*8
+                data_out=rdaddr_next[1]?{4{data_in[15:8]}}:{4{data_in[7:0]}};
             end
             2'b01:
             begin//16*16
-
+                data_out=data_in;
             end
             2'b10:
-            begin//8*32
-
+            begin//16*32
+                data_out=data_in;
             end
             default:begin
                 assert(0);
@@ -140,18 +144,18 @@ always_comb begin
             endcase
         end
         params::INT4:begin
-            case(addrtype.rc)//对于A
+            case(addrtype.rc)//对于B
             2'b00:
-            begin//32*8
-
+            begin//16*8
+                data_out={{4{data_in[7:4]}},{4{data_in[3:0]}}};
             end
             2'b01:
             begin//16*16
-
+                data_out={2{data_in[15:0]}};
             end
             2'b10:
-            begin//8*32
-
+            begin//16*32
+                data_out=data_in;
             end
             default:begin
                 assert(0);
@@ -159,6 +163,7 @@ always_comb begin
             endcase
         end
         default:begin
+            data_out=data_in;
         end
     endcase
 end
@@ -173,12 +178,11 @@ module CONTROL_A(
 input logic clk,
 input logic rst,
 input logic [31:0] rdaddr,
-output logic [7:0] datavalid,
-output logic [7:0] rdvalid,
 input logic [7:0][31:0] data_in,
 output logic [7:0][31:0] data_out,
 input logic en,
 input logic cmen,
+input params::addrgen_t addrtype,
 output logic [7:0] en_out,
 output logic [7:0] cmen_out
 );
@@ -206,9 +210,8 @@ for (i = 0; i < 8; i++) begin: control_A
         .rdaddr(rdaddr_in[i]),
         .data_in(data_in[i]),
         .data_out(data_out[i]),
-        .rdvalid(rdvalid[i]),
-        .datavalid(datavalid[i]),
-        .rdaddr_next(rdaddr_next[i])
+        .rdaddr_next(rdaddr_next[i]),
+        .addrtype(addrtype)
     );
 end
 endgenerate
@@ -220,12 +223,11 @@ module CONTROL_B(
 input logic clk,
 input logic rst,
 input logic [31:0] rdaddr,
-output logic [7:0] datavalid,
-output logic [7:0] rdvalid,
 input logic [7:0][31:0] data_in,
 output logic [7:0][31:0] data_out,
 input logic en,
 input logic cmen,
+input params::addrgen_t addrtype,
 output logic [7:0] en_out,
 output logic [7:0] cmen_out
 );
@@ -253,9 +255,8 @@ for (i = 0; i < 8; i++) begin: control_B
         .rdaddr(rdaddr_in[i]),
         .data_in(data_in[i]),
         .data_out(data_out[i]),
-        .rdvalid(rdvalid[i]),
-        .datavalid(datavalid[i]),
-        .rdaddr_next(rdaddr_next[i])
+        .rdaddr_next(rdaddr_next[i]),
+        .addrtype(addrtype)
     );
 end
 endgenerate

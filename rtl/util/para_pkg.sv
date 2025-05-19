@@ -105,15 +105,12 @@ localparam int STATE_BIT = 4;
 typedef enum logic [STATE_BIT-1:0] {
     IDLE    = 'd0,
     READ_C  = 'd1,
-    SYSTOLIC = 'd2,//有规律流动状态
-    ACCUMULATE = 'd3,//累加状态
-    INIT_WAIT_A ='d4,//等待充A
-    INIT_WAIT_B='d5,//等待充B
-    INIT_WAIT_C='d6,//等待充C
-    RESET_A='d7,
-    RESET_B='d8,
-    WRITE_BACK='d9,
-    FINISH='d10  //完全算完
+    LOAD_A ='d2,//等待充A
+    LOAD_B='d3,//等待充B
+    SYSTOLIC = 'd4,//有规律流动状态
+    ACCUMULATE = 'd5,//累加状态
+    WRITE_BACK='d6,
+    FINISH='d7  //完全算完
     // add new formats here
 } state_t;
 
