@@ -58,8 +58,16 @@ always_ff @(posedge clk) begin
                                 axi_out.burst_size <= $clog2(256/8); 
                             end
                             params::FP16: begin
+                                if(!mixed)
+                                begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(128/8);
+                                end
+                                else
+                                begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                                end
                             end
                             params::INT8: begin
                                 axi_out.burst_num <= 6'd31; 
@@ -78,8 +86,16 @@ always_ff @(posedge clk) begin
                                 axi_out.burst_size <= $clog2(256/8); 
                             end
                             params::FP16: begin
+                                if(!mixed)
+                                begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(128/8);
+                                end
+                                else
+                                begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                                end
                             end
                             params::INT8: begin
                                 axi_out.burst_num <= 6'd31; 
@@ -98,8 +114,16 @@ always_ff @(posedge clk) begin
                                 axi_out.burst_size <= $clog2(256/8); 
                             end
                             params::FP16: begin
+                                if(!mixed)
+                                begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(128/8);
+                                end
+                                else
+                                begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                                end
                             end
                             params::INT8: begin
                                 axi_out.burst_num <= 6'd31; 
