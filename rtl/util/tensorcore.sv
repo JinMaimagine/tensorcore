@@ -44,38 +44,244 @@ always_ff @(posedge clk) begin
     end
     else begin
     case(state)
-   /*
+
         params::IDLE: begin
             if (start) begin
                 next_state <= params::READ_C;
                 axi_out.sel<=3'b001;//C
+                axi_out.BASE <= 32'h00010000; //C的起始地址,待指定
+                case(compute_type.compute_shape) //C的装载数据
+                    params::M32K16N8: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(128/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(64/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(32/8);
+                            end
+                        endcase
+                    end
+                    params::M16K16N16: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(128/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(64/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(32/8);
+                            end
+                        endcase
+                    end
+                    default: begin //M8K16N32
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(128/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(64/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(32/8);
+                            end
+                        endcase
+                    end
+                endcase
                 axi_out.request_valid<=1'b1;
             end
         end
         params::READ_C: begin//这里是靠ready_valid C是全部填满
-            axi_out.request_valid<=1'b0;
+            if(axi_in.arready) begin
+                axi_out.request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
+            end
+            else begin
+                axi_out.request_valid<=1'b1;
+            end
             if(axi_in.finish) begin//TODO:注意外部finish及时清零
                 next_state <= params::LOAD_A;
-                axi_out.sel<=3'b010;//B
+                axi_out.sel<=3'b100;//A
                 axi_out.request_valid<=1'b1;
+                axi_out.BASE <= 32'h00100000; //A的起始地址,待指定
+                case(compute_type.compute_shape)//A的装载数据
+                    params::M32K16N8: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd63; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd7; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                        endcase
+                    end
+                    params::M16K16N16: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd7; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd3; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                        endcase
+                    end
+                    default: begin //M8K16N32
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd7; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd3; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd1; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                        endcase
+                    end
+                endcase
+
             end
         end
         params::LOAD_A: begin//这里一次性将A填满 8*16*32bit
-            axi_out.request_valid<=1'b0;
+            if(axi_in.arready) begin
+                axi_out.request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
+            end
+            else begin
+                axi_out.request_valid<=1'b1;
+            end
             if (axi_in.finish) begin
                 next_state <= params::LOAD_B;
-                axi_out.sel<=3'b100;
+                axi_out.sel<=3'b010;
                 axi_out.request_valid<=1'b1;
+                axi_out.BASE <= 32'h01000000; //B的起始地址,待指定
+                case(compute_type.compute_shape)  //B的装载数据
+                    params::M32K16N8: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd15;
+                                axi_out.burst_size <= $clog2(128/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd15;
+                                axi_out.burst_size <= $clog2(64/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(32/8);
+                            end
+                        endcase
+                    end
+                    params::M16K16N16: begin
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(128/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(64/8);
+                            end
+                        endcase
+                    end
+                    default: begin //M8K16N32
+                        case(compute_type.datatype)
+                            params::FP32: begin
+                                axi_out.burst_num <= 6'd63; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            params::FP16: begin
+                                axi_out.burst_num <= 6'd31; 
+                                axi_out.burst_size <= $clog2(256/8);
+                            end
+                            params::INT8: begin
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(256/8); 
+                            end
+                            default: begin //INT4
+                                axi_out.burst_num <= 6'd15; 
+                                axi_out.burst_size <= $clog2(128/8);
+                            end
+                        endcase
+                    end
+                endcase
+
             end
         end
         params::LOAD_B: begin//这里一次性将B填满 16*16*32bit
-            axi_out.request_valid<=1'b0;
+            if(axi_in.arready) begin
+                axi_out.request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
+            end
+            else begin
+                axi_out.request_valid<=1'b1;
+            end
+
             if (axi_in.finish) begin
                 next_state <= params::SYSTOLIC;
                 systolic_counter<=systolic.systolic_time;   
             end
         end
-        */
   
         params::SYSTOLIC: begin
             systolic_counter<=systolic_counter-1;
