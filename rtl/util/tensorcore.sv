@@ -10,6 +10,7 @@ parameter WIDTH=32
     input logic clk,
     input logic rst,
     input logic start,
+    input logic mixed, //混合精度
     output params::AXI_out_t axi_out,
     input params::AXI_in_t axi_in,
     input params::addrgen_t addrtype
@@ -41,6 +42,21 @@ always_ff @(posedge clk) begin
             if (start) begin
                 next_state <= params::READ_C;
                 axi_out.sel<=3'b001;//C
+                axi_out.issend<=1'b0;//C是读的
+                case(addrtype.datatype)
+                    params::INT4: begin
+                        systolic.systolic_time <= 8; // INT4 systolic time
+                        systolic.writeback_time <= 1; // INT4 writeback time
+                    end
+                    params::FP16: begin
+                        systolic.systolic_time <= 16; // FP16 systolic time
+                        systolic.writeback_time <= 2; // FP16 writeback time
+                    end
+                    default: begin
+                        systolic.systolic_time <= 32; // Default systolic time
+                        systolic.writeback_time <= 4; // Default writeback time
+                    end
+                endcase
                 axi_out.request_valid<=1'b1;
             end
         end

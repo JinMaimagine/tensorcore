@@ -174,7 +174,7 @@ module FP32toFP16 #(
     fp32_to_fp16_conv u_fp32_to_fp16_conv (
         .Rounding_mode_i (Rounding_mode_i),//TODO:目前没用，默认为000，如果修改直接改fp32_to_fp16_conv即可
         .fp32_i      (result_i),
-        .fp16_o      (fp16_conv),
+        .result_o      (fp16_conv),
         .underflow_o (conv_uf),
         .overflow_o  (conv_of)
     );
