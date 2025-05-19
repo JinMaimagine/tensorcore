@@ -51,62 +51,62 @@
 module FP16toFP32#(
     parameter PARM_XLEN = 32
 )(
-    input  wire mode,
+    input  wire mode, // mode=1表示转换,mode=0表示不转换直接pass
     input  wire [PARM_XLEN-1:0] fp16,
     output reg [PARM_XLEN-1:0] fp32
 );
-reg sign;
-reg [7:0] exponent;
-reg [22:0] mantissa;
-reg signed [4:0] i;
-wire fp16_sign;
-wire [4:0] fp16_exponent;
-wire [9:0] fp16_mantissa;
-reg finish;
+    reg sign;
+    reg [7:0] exponent;
+    reg [22:0] mantissa;
+    reg signed [4:0] i;
+    wire fp16_sign;
+    wire [4:0] fp16_exponent;
+    wire [9:0] fp16_mantissa;
+    reg finish;
 
-assign fp16_sign=fp16[15];
-assign fp16_exponent=fp16[14:10];
-assign fp16_mantissa=fp16[9:0];
-always@(*)
-begin
-    mantissa=0;
-    sign=fp16_sign;
-    if(fp16_exponent==5'b11111) begin
-        exponent=8'b11111111;
-        mantissa={fp16_mantissa,13'b0};//反正已经NAN了,随便
-    end
-    else if(fp16_exponent==5'b00000) begin
-        if(fp16_mantissa==10'b0000000000) begin
-            exponent=8'b00000000;
-            mantissa=23'b0;
-        end
-        else begin
-           finish=0;
-           for(i=9;i>=0;i=i-1)
-           begin
-            if(!finish)
-            begin
-            if(fp16_mantissa[i]==1) begin
-                finish=1;
-                mantissa=fp16_mantissa<<(10-i);
-                exponent=112-(10-i)+1;
-            end
-            end
-           end
-    end
-    end
-    else//normal
+    assign fp16_sign=fp16[15];
+    assign fp16_exponent=fp16[14:10];
+    assign fp16_mantissa=fp16[9:0];
+    always@(*)
     begin
-        exponent=112+{3'b0,fp16_exponent};
-        mantissa={fp16_mantissa,13'b0};
+        mantissa=0;
+        sign=fp16_sign;
+        if(fp16_exponent==5'b11111) begin
+            exponent=8'b11111111;
+            mantissa={fp16_mantissa,13'b0};//反正已经NAN了,随便
+        end
+        else if(fp16_exponent==5'b00000) begin
+            if(fp16_mantissa==10'b0000000000) begin
+                exponent=8'b00000000;
+                mantissa=23'b0;
+            end
+            else begin
+            finish=0;
+            for(i=9;i>=0;i=i-1)
+            begin
+                if(!finish)
+                begin
+                if(fp16_mantissa[i]==1) begin
+                    finish=1;
+                    mantissa=fp16_mantissa<<(10-i);
+                    exponent=112-(10-i)+1;
+                end
+                end
+            end
+        end
+        end
+        else//normal
+        begin
+            exponent=112+{3'b0,fp16_exponent};
+            mantissa={fp16_mantissa,13'b0};
+        end
     end
-end
-always@(*)
-begin
-    if (mode == 1'b1) begin
-        fp32={sign,exponent[7:0],mantissa[22:0]};
-    end else begin
-        fp32=fp16;//说明传入不是fp16
+    always@(*)
+    begin
+        if (mode == 1'b1) begin
+            fp32={sign,exponent[7:0],mantissa[22:0]};
+        end else begin
+            fp32=fp16;//说明传入不是fp16
+        end
     end
-end
 endmodule
