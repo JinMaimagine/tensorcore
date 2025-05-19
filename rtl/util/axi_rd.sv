@@ -27,9 +27,9 @@ module axi_tensor_rd #(
     output                     m_axi_rready,
 
     // stream to compute core (one beat == DATA_WIDTH bits)
-    output [DATA_WIDTH-1:0]    m_dat,
-    output                     m_valid,
-    input                      m_ready,
+    // output [DATA_WIDTH-1:0]    m_dat,
+    // output                     m_valid,
+    // input                      m_ready,
 
     //跟tensorcore的交互
     input params::AXI_out_t axi_out,
@@ -50,6 +50,7 @@ module axi_tensor_rd #(
     assign axi_in.data = m_axi_rdata;
     assign axi_in.arready = m_axi_arready;
     assign axi_in.valid = m_axi_rvalid;
+    assign m_axi_rready = 1'b1; //总是准备好接收数据
 
     //计数目前是第多少个有效数据DATA，并传回给burst_id
     reg [31:0] count_burst_id;
