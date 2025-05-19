@@ -59,7 +59,7 @@ typedef struct packed{
     logic finish;
     logic [255:0] data;
     logic [31:0] burst_id;
-    logic rvalid;
+    logic valid;
     logic arready;
 } AXI_in_t;
 //TODO:这些的bit是可以缩短的，并非一定要用int，后面根据最长的来优化吧

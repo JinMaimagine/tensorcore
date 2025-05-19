@@ -52,7 +52,7 @@ always_ff @(posedge clk) begin
                 axi_out.BASE <= 32'h00010000; //C的起始地址,待指定
                 case(compute_type.compute_shape) //C的装载数据
                     params::M32K16N8: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -72,7 +72,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     params::M16K16N16: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -92,7 +92,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     default: begin //M8K16N32
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -129,7 +129,7 @@ always_ff @(posedge clk) begin
                 axi_out.BASE <= 32'h00100000; //A的起始地址,待指定
                 case(compute_type.compute_shape)//A的装载数据
                     params::M32K16N8: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd63; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -149,7 +149,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     params::M16K16N16: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -169,7 +169,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     default: begin //M8K16N32
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd15; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -206,7 +206,7 @@ always_ff @(posedge clk) begin
                 axi_out.BASE <= 32'h01000000; //B的起始地址,待指定
                 case(compute_type.compute_shape)  //B的装载数据
                     params::M32K16N8: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd15; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -226,7 +226,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     params::M16K16N16: begin
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd31; 
                                 axi_out.burst_size <= $clog2(256/8); 
@@ -246,7 +246,7 @@ always_ff @(posedge clk) begin
                         endcase
                     end
                     default: begin //M8K16N32
-                        case(compute_type.datatype)
+                        case(compute_type.data_type)
                             params::FP32: begin
                                 axi_out.burst_num <= 6'd63; 
                                 axi_out.burst_size <= $clog2(256/8); 

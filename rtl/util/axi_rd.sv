@@ -1,3 +1,4 @@
+
 module axi_tensor_rd #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 256,       // must be power‑of‑2, 32 … 1024
