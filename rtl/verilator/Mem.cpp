@@ -196,10 +196,6 @@ std::unique_ptr<Matrix> createMatrix(size_t rows, size_t cols, DataType type) {
 //FP32,INT8可以直接用,但是INT4,FP16不能
 
 
-int main()
-{
-    
-}
 
 
 
