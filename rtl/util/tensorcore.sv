@@ -47,7 +47,7 @@ assign finish=state==params::FINISH;
 //但是并不是systolic就可以流动,还要看是不是stop状态
 logic [31:0] counter;//TODO:可以缩小
 always_ff @(posedge clk) begin
-    if(!rst) begin
+    if(rst) begin
         next_state <= params::IDLE;
     end
     else begin

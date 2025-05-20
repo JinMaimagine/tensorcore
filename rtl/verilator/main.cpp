@@ -7,6 +7,26 @@
 
 #define MAX_BURST_SIZE 8
 
+/*
+input logic clk,
+input logic rst,
+input logic start,
+input logic mixed,
+output axi_out_request_valid,
+output logic [2:0] axi_out_sel,
+output logic [31:0] axi_out_BASE,
+output logic [5:0] axi_out_burst_num,
+output logic [2:0] axi_out_burst_size,
+input logic axi_in_arready,
+input logic axi_in_finish,
+input logic axi_in_valid,
+input logic [255:0] axi_in_data,
+input logic [31:0] axi_in_burst_id,
+input params::compute_type_t compute_type
+*/
+
+
+
 // Function to drive the tensorcore IO signals and implement the state machine
 void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
     // Clock and reset
@@ -16,10 +36,11 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
     top->rst = rst;
     top->start = 0;
     top->mixed = 0; // 先设置正常的测试
-    for(int wi = 0; wi < 10; ++wi) {
-        top->axi_in[wi] = 0;
-    }
-    
+    top->axi_in_arready = 0;
+    top->axi_in_finish = 0;
+    top->axi_in_valid = 0;
+    top->axi_in_burst_id = 0;
+    //此时对于data dont care
 
     // Simulation setup
     int cycle_count = 0;
@@ -33,7 +54,9 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
     std::mt19937 rng(std::random_device{}());
 
     // Example setup, change for different precisions
-    Options opt = parse_opts(2, (char*[]){"./tensorcore_test", "fp16", "mixed", "32"});
+    const char* argv[] = {"./tensorcore_test", "fp16", "mixed"};
+    Options opt = parse_opts(3, const_cast<char**>(argv));
+
 
     // Prepare buffers for A, B, C, D
     std::vector<uint8_t> bufA, bufB, bufC, bufD;
@@ -68,60 +91,44 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
         }
 
         // Handle the state machine logic
-        if (top->start && !in_transfer_state) {
+        if (top->start && !in_transfer_state && top->axi_out_request_valid) {
             in_transfer_state = true;
-            top->axi_out.request_valid = 1; // Start AXI transaction
             burst_id = 0;
         }
 
         if (in_transfer_state) {
-            if (top->axi_out.request_valid) {
-                // Simulate data transfer by filling the AXI output signal
-                // Here we are sending data from tensorcore to Verilator (axi_out)
+            if (top->axi_out_request_valid) {
                 if (burst_id < burst_num) {
-                    // Fill data from the matrix buffer (for simplicity, we use a dummy value here)
-                    // Normally, we'd extract the actual data from the matrix buffer based on burst_id
-                    top->axi_out.data = 0x12345678; // Dummy data, to be replaced by actual matrix data
+                    top->axi_in_data = 0x12345678; 
 
-                    // Simulate burst size
-                    top->axi_out.burst_id = burst_id;
+                    top->axi_in_burst_id = burst_id;
 
-                    // Simulate delay between bursts (1 to 8 cycles random delay)
                     std::uniform_int_distribution<int> dist(1, 8);
                     int delay = dist(rng);
                     if (delay > 1) {
-                        // No data transfer for the next few cycles, keep valid = 0
-                        top->axi_out.valid = 0;
+                        top->axi_in_valid = 0;
                     } else {
-                        top->axi_out.valid = 1; // Only valid for 1 cycle of transfer
+                        top->axi_in_valid = 1;
                     }
 
                     burst_id++;
                 } else {
-                    // Set finish signal once all bursts are done
-                    top->axi_out.finish = 1;
-                    in_transfer_state = false; // Back to idle state
+                    top->axi_in_finish = 1;
+                    in_transfer_state = false; 
                 }
             }
         }
 
-        // Handle axi_in to simulate input data from Verilator (to tensorcore)
-        if (top->axi_in.valid) {
-            // Simulate the reception of data from Verilator to tensorcore
-            // You can add more logic here to interact with tensorcore based on axi_in
-            // E.g., you can modify tensorcore's input matrix or control signals here
-            top->axi_in.arready = 1; // Acknowledge the data reception
+        if (top->axi_in_valid) {
+            top->axi_in_arready = 1; 
         }
 
-        // Call the Verilator simulation tick function
         top->eval();
 
-        // Write the VCD trace (if enabled)
         if (tfp) {
             tfp->dump(cycle_count);
         }
 
-        // Increment the cycle count
         cycle_count++;
     }
 }

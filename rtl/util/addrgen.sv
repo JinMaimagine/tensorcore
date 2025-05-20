@@ -20,7 +20,7 @@ module ADDRGEN_UNIT(
 );
 logic [31:0] counteraddr;
 always_ff @(posedge clk) begin
-    if(!rst)
+    if(rst)
     begin
     rdaddr_A<=0;
     rdaddr_B<=0;
