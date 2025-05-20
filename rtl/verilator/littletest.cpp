@@ -29,7 +29,6 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-#include <cctype>
 
 // ------------------------------ half / int4 ---------------------------------
 #include "half.hpp"              // header‑only half‑precision by Christoph Hohn
@@ -202,32 +201,32 @@ int main(int argc, char** argv){
 
     switch(opt.dtype){
         case DType::INT4:
-            fma_case<int4_t,int4_t,int4_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::INT8:
-            fma_case<int8_t,int8_t,int8_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::FP16:
             if(opt.mixed){
                 // A,B = half ; C,D = float
-                fma_case<half,half,float,float,32,16, 8>("M32K16×K16N8+M32N8 (mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float,16,16,16>("M16K16×K16N16+M16N16(mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float, 8,16,32>("M8K16×K16N32+M8N32 (mixed)", rng,opt.chunk);
+                fma_case<half,half,float,float,8,4,2>("M32K16×K16N8+M32N8 (mixed)", rng,opt.chunk);
+                fma_case<half,half,float,float,4,4,4>("M16K16×K16N16+M16N16(mixed)", rng,opt.chunk);
+                fma_case<half,half,float,float, 2,4,8>("M8K16×K16N32+M8N32 (mixed)", rng,opt.chunk);
             } else {
                 // pure fp16 everywhere
-                fma_case<half,half,half,half,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-                fma_case<half,half,half,half,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-                fma_case<half,half,half,half, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+                fma_case<half,half,half,half,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+                fma_case<half,half,half,half,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+                fma_case<half,half,half,half, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             }
             break;
         case DType::FP32:
-            fma_case<float,float,float,float,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<float,float,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<float,float,float,float, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            fma_case<float,float,float,float,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            fma_case<float,float,float,float,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            fma_case<float,float,float,float, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
     }
 

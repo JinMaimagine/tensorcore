@@ -1,25 +1,24 @@
-// matrix_fma.cpp — Generate & print matrices A, B, C, D and byte‑buffers for Verilator
+// axi_memory_tb.cpp – Verilator testbench integrating test.cpp matrix generation
 // -----------------------------------------------------------------------------
-// Compile:  g++ -std=c++17 -O3 matrix_fma.cpp -o matrix_fma
-// Usage:    ./matrix_fma <dtype> [mixed] [chunk_size]
-//           dtype       = int4 | int8 | fp16 | fp32   (case‑insensitive)
-//           mixed       = optional flag (only valid with fp16)
-//                        • absent      → pure FP16  (A,B,C,D 全用 fp16)
-//                        • "mixed"     → 混合精度   (A,B = fp16 , C,D = fp32)
-//           chunk_size  = optional正整数 (≥8 且 8 的倍数, 默认 32)
-//
-// Shapes simulated (row‑major):
-//   1) 32×16 · 16×8  + 32×8
-//   2) 16×16 · 16×16 + 16×16
-//   3)  8×16 · 16×32 +  8×32
-//
-// For each case the program
-//   • prints A, B, C, D in table form
-//   • serialises A, B, C (row‑major) into byte vectors
-//   • dumps those vectors in <chunk_size>‑byte words, ready for a 256‑bit AXI
+// Drives three matrices (C → A → B) for every combination of
+//   • shape  : (M32K16N8, M16K16N16, M8K16N32)
+//   • dtype  : FP32, FP16, INT8, INT4
+// Data are produced with the same templates/structures found in the user's
+// original **test.cpp** so that the DUT receives real matrix elements instead
+// of dummy random payload.  The burst timing still inserts a 0‑7 cycle random
+// gap between beats to emulate memory latency.
+// -----------------------------------------------------------------------------
+// Build example (waveform enabled with TRACE):
+//   verilator -Wall --trace -cc tensorcore.sv para_pkg.sv \
+//             -exe axi_memory_tb.cpp -CFLAGS "-std=c++17" && make -C obj_dir -j
 // -----------------------------------------------------------------------------
 
+#include "Vtensorcore.h"
+#include "verilated.h"
+#include "verilated_vcd_c.h"
+
 #include <algorithm>
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <iomanip>
@@ -29,10 +28,12 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-#include <cctype>
 
-// ------------------------------ half / int4 ---------------------------------
-#include "half.hpp"              // header‑only half‑precision by Christoph Hohn
+// --------------------- HALF‑PRECISION SUPPORT ------------------------------
+// Users’ test.cpp relies on the header‑only half.hpp from <https://sourceforge.net/projects/half>.
+// Place half.hpp next to this file or adjust include path accordingly.
+#include "half.hpp"
+
 using half_float::half;
 
 struct int4_t {                  // 4‑bit signed container
@@ -192,44 +193,4 @@ static Options parse_opts(int argc, char** argv){
     if(idx<argc){ int v=std::stoi(argv[idx]); if(v<=0||v%8){ std::cerr<<"chunk_size must be positive and multiple of 8\n"; std::exit(1);} o.chunk=v; }
 
     return o;
-}
-
-// --------------------------------- main -------------------------------------
-
-int main(int argc, char** argv){
-    Options opt = parse_opts(argc, argv);
-    std::mt19937 rng(std::random_device{}());
-
-    switch(opt.dtype){
-        case DType::INT4:
-            fma_case<int4_t,int4_t,int4_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
-            break;
-        case DType::INT8:
-            fma_case<int8_t,int8_t,int8_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
-            break;
-        case DType::FP16:
-            if(opt.mixed){
-                // A,B = half ; C,D = float
-                fma_case<half,half,float,float,32,16, 8>("M32K16×K16N8+M32N8 (mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float,16,16,16>("M16K16×K16N16+M16N16(mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float, 8,16,32>("M8K16×K16N32+M8N32 (mixed)", rng,opt.chunk);
-            } else {
-                // pure fp16 everywhere
-                fma_case<half,half,half,half,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-                fma_case<half,half,half,half,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-                fma_case<half,half,half,half, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
-            }
-            break;
-        case DType::FP32:
-            fma_case<float,float,float,float,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<float,float,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<float,float,float,float, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
-            break;
-    }
-
-    return 0;
 }

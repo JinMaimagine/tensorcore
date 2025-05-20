@@ -63,13 +63,15 @@ typedef struct packed{
     logic arready; //tensorcore检测到arready之后request_valid才能拉低
 } AXI_in_t;
 //TODO:这些的bit是可以缩短的，并非一定要用int，后面根据最长的来优化吧
+
+//对于每个datatype列case
 typedef struct packed {
     //把这些实现的信号实现在里面
     //AXI_out_t axi;//AXI相关配置,可能不需要能传输的最大bit数这么多,如果需要，这个参数可以删除
     //AXI_in_t axi_in;
-    logic[31:0] systolic_time;//systolic经历的周期
-    logic[31:0] waitwrite_time;
-    logic[31:0] writeback_time;
+    logic[31:0] systolic_time ;//systolic经历的周期   第一个传入到第一个计算完:  //INT4:8,INT8:2*8,FP16,FP32:8*8
+    logic[31:0] waitwrite_time;//暂时定为10
+    logic[31:0] writeback_time;//暂时不用
     //int SRAM_ADDR_INC;//SRAM地址增量,就是32bit
     //一些time，分别是什么时候开始结束什么状态,
 } SYSTOLIC_pkg_t;
