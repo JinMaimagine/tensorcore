@@ -77,6 +77,14 @@ logic [31:0] counter;//TODO:可以缩小
 always_ff @(posedge clk) begin
     if(rst) begin
         next_state <= params::IDLE;
+        axi_out_request_valid <= 1'b0;
+        axi_out_sel <= 3'b000;
+        axi_out_BASE <= 32'b0;
+        axi_out_burst_num <= 6'b0;
+        axi_out_burst_size <= 3'b0;
+        systolic_counter <= 32'b0;
+        write_counter <= 32'b0;
+
     end
     else begin
     case(state)
