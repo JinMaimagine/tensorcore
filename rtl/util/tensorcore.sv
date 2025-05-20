@@ -32,7 +32,8 @@ parameter WIDTH=32
 params::addrgen_t addrtype;
 assign addrtype.datatype=compute_type.data_type;
 assign addrtype.rc=compute_type.compute_shape==params::M32K16N8?2'b00:(compute_type.compute_shape==params::M16K16N16?2'b01:2'b10);//TODO:error这里可能有问题
-SYSTOLIC_pkg_t systolic;params::state_t state;
+params::SYSTOLIC_pkg_t systolic;
+params::state_t state;
 params::state_t next_state;
 logic [31:0] systolic_counter;//TODO:专门用于systolic状态的counter
 logic [31:0] accumlate_counter;//TODO:专门用于accumlate状态的counter
@@ -46,7 +47,7 @@ assign finish=state==params::FINISH;
 
 //SYSTOLIC_pkg_t systolic赋值
 always_comb begin
-    case(compute_type.datatype)
+    case(compute_type.data_type)
         params::FP32: begin
             systolic.systolic_time = 32'd64;
             systolic.waitwrite_time = 32'd10;
