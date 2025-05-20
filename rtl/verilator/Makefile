@@ -4,21 +4,21 @@ OBJDIR      = $(abspath $(CURDIR)/../../obj_dir)
 VERILATORDIR = $(abspath $(CURDIR))
 
 # 让 verilator 生成到 obj_dir
+#--Wno-UNDRIVEN 信号被读取但是没有驱动
 $(OBJDIR)/V$(TOP).mk:
 	@mkdir -p $(OBJDIR)
 	verilator -Wall --trace \
 	--Wno-LATCH \
+	--Wno-UNDRIVEN \
 	--Wno-UNUSEDSIGNAL \
 	--Wno-CASEINCOMPLETE \
 	--Wno-UNUSEDPARAM \
-	--Wno-UNDRIVEN \
 	--Wno-WIDTHTRUNC \
 	--Wno-WIDTHEXPAND \
 	--Wno-GENUNNAMED \
 	--Wno-TIMESCALEMOD \
 	--Wno-DECLFILENAME \
 	--Wno-VARHIDDEN \
-	--Wno-MODDUP \
 	--Wno-PINCONNECTEMPTY \
 	--Wno-MODDUP \
 	--Wno-EOFNEWLINE \

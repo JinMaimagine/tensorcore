@@ -120,6 +120,7 @@ void dump_buffer(const std::vector<uint8_t>& buf, size_t chunk) {
 
 // ------------------ FMA kernel (templated on all types) ---------------------
 
+// ------------------ FMA kernel (templated on all types) ---------------------
 template <typename TA, typename TB, typename TC, typename TD,
           size_t M, size_t K, size_t N>
 void fma_case(const std::string& label, std::mt19937& rng, size_t chunk) {
@@ -145,14 +146,16 @@ void fma_case(const std::string& label, std::mt19937& rng, size_t chunk) {
     print_matrix(D, "D = A*B + C");
 
     // serialise A/B/C for Verilog stimulus
-    std::vector<uint8_t> bufA, bufB, bufC;
-    A.flatten(bufA); B.flatten(bufB); C.flatten(bufC);
+    std::vector<uint8_t> bufA, bufB, bufC, bufD;
+    A.flatten(bufA); B.flatten(bufB); C.flatten(bufC); D.flatten(bufD);  // Serialize D
 
     std::cout << "\n--- Flattened buffers (chunk=" << chunk << " bytes) ---\n";
     std::cout << "A buffer (" << bufA.size() << " bytes):\n"; dump_buffer(bufA, chunk);
     std::cout << "B buffer (" << bufB.size() << " bytes):\n"; dump_buffer(bufB, chunk);
     std::cout << "C buffer (" << bufC.size() << " bytes):\n"; dump_buffer(bufC, chunk);
+    std::cout << "D buffer (" << bufD.size() << " bytes):\n"; dump_buffer(bufD, chunk); // Output D's buffer
 }
+
 
 // ------------------------------- CLI Parse ----------------------------------
 
@@ -198,14 +201,14 @@ int main(int argc, char** argv){
 
     switch(opt.dtype){
         case DType::INT4:
-            fma_case<int4_t,int4_t,int4_t,int4_t,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int4_t,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int4_t, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            fma_case<int4_t,int4_t,int4_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::INT8:
-            fma_case<int8_t,int8_t,int8_t,int8_t,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int8_t,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int8_t, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int,32,16, 8>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            fma_case<int8_t,int8_t,int8_t,int, 8,16,32>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::FP16:
             if(opt.mixed){
