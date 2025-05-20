@@ -1,4 +1,4 @@
-TOP       	?= top
+TOP       	?= tensorcore
 TOPDIR		= $(abspath $(CURDIR)/../util)
 OBJDIR      = $(abspath $(CURDIR)/../../obj_dir)
 VERILATORDIR = $(abspath $(CURDIR))
@@ -7,6 +7,24 @@ VERILATORDIR = $(abspath $(CURDIR))
 $(OBJDIR)/V$(TOP).mk:
 	@mkdir -p $(OBJDIR)
 	verilator -Wall --trace \
+	--Wno-LATCH \
+	--Wno-UNUSEDSIGNAL \
+	--Wno-CASEINCOMPLETE \
+	--Wno-UNUSEDPARAM \
+	--Wno-UNDRIVEN \
+	--Wno-WIDTHTRUNC \
+	--Wno-WIDTHEXPAND \
+	--Wno-GENUNNAMED \
+	--Wno-TIMESCALEMOD \
+	--Wno-DECLFILENAME \
+	--Wno-VARHIDDEN \
+	--Wno-MODDUP \
+	--Wno-PINCONNECTEMPTY \
+	--Wno-MODDUP \
+	--Wno-EOFNEWLINE \
+	-I$(abspath $(CURDIR)/../util) \
+	-I$(abspath $(CURDIR)/../util/MAC) \
+	-I$(abspath $(CURDIR)/../util/MAC/mac) \
 	--cc --exe --Mdir $(OBJDIR) \
 	$(TOPDIR)/$(TOP).sv main.cpp \
 	--top-module $(TOP)

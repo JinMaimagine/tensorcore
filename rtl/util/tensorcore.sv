@@ -44,7 +44,6 @@ always_ff @(posedge clk) begin
     end
     else begin
     case(state)
-
         params::IDLE: begin
             if (start) begin
                 next_state <= params::READ_C;
