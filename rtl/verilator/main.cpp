@@ -4,6 +4,7 @@
 #include "Vtensorcore.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
+#include <cstdint>
 
 #define MAX_BURST_SIZE 8
 
@@ -42,16 +43,16 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
     top->axi_in_burst_id = 0;
     //此时对于data dont care
 
+    //这里指定测试的类型
+    std::mt19937 rng(std::random_device{}());
+    auto fmacase=FmaCase<float,float,float,float,4,4,4>("M16K16×K16N16+M16N16", rng,32);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
-    bool transfer_done = false;
 
     uint32_t burst_id = 0;
     uint32_t burst_num = 31; // Example burst_num: 32 data items to transfer
     uint32_t burst_size = 4; // Burst size in bytes (e.g., 4 bytes per burst)
-
-    std::mt19937 rng(std::random_device{}());
 
     // Example setup, change for different precisions
     const char* argv[] = {"./tensorcore_test", "fp16", "mixed"};
@@ -62,7 +63,7 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
     
 
     // Now initialize the axi_in values for transfer (to simulate input data from Verilator)
-    while (!Verilated::gotFinish() && cycle_count < 1000) {
+    while (!Verilated::gotFinish() && cycle_count < 500) {
         clk = !clk;
         top->clk = clk;
 
@@ -79,20 +80,22 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
         } else if (cycle_count == 20) {
             top->start = 0; // Deactivate after starting
         }
-
+        top->axi_in_arready = 0;
         // Handle the state machine logic
+        std::vector<uint8_t>buf;
         if (top->start && !in_transfer_state && top->axi_out_request_valid) {
             in_transfer_state = true;
             burst_id = 0;
+            top->axi_in_arready = 1;
             switch(top->axi_out_sel) {
-            case 0:
-                top->axi_out_sel = 0; // A
-                break;
-            case 1:
-                top->axi_out_sel = 1; // B
+            case 4:
+                buf=fmacase.bufA;
                 break;
             case 2:
-                top->axi_out_sel = 2; // C
+                buf=fmacase.bufB;
+                break;
+            case 1:
+                buf=fmacase.bufC;
                 break;
             default:
                 assert(false); // Invalid state
@@ -106,9 +109,10 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
 
         if (in_transfer_state) {
             if (top->axi_in_valid) {
-                if (burst_id < burst_num) {
-                    top->axi_in_burst_id = burst_id;
+                top->axi_in_burst_id = burst_id;
+                if (top->axi_in_burst_id < burst_num) {
                     burst_id++;
+
                 } else {
                     top->axi_in_finish = 1;
                     in_transfer_state = false; 

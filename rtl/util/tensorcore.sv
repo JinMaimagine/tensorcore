@@ -47,7 +47,7 @@ assign finish=state==params::FINISH;
 
 //SYSTOLIC_pkg_t systolic赋值
 always_comb begin
-    case(compute_type.datatype)
+    case(compute_type.data_type)
         params::FP32: begin
             systolic.systolic_time = 32'd64;
             systolic.waitwrite_time = 32'd10;

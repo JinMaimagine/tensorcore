@@ -123,38 +123,46 @@ void dump_buffer(const std::vector<uint8_t>& buf, size_t chunk) {
 // ------------------ FMA kernel (templated on all types) ---------------------
 template <typename TA, typename TB, typename TC, typename TD,
           size_t M, size_t K, size_t N>
-void fma_case(const std::string& label, std::mt19937& rng, size_t chunk) {
-    Matrix<TA, M, K> A; A.random_fill(rng);
-    Matrix<TB, K, N> B; B.random_fill(rng);
-    Matrix<TC, M, N> C; C.random_fill(rng);
-    Matrix<TD, M, N> D;                    // output container
-
-    for (size_t i = 0; i < M; ++i) {
-        for (size_t j = 0; j < N; ++j) {
-            float acc = 0.0f;
-            for (size_t k = 0; k < K; ++k)
-                acc += static_cast<float>(A(i,k)) * static_cast<float>(B(k,j));
-            acc += static_cast<float>(C(i,j));
-            D(i,j) = static_cast<TD>(acc); // cast down if TD == half
-        }
-    }
-
-    std::cout << "\n=== " << label << " ===";
-    print_matrix(A, "A");
-    print_matrix(B, "B");
-    print_matrix(C, "C");
-    print_matrix(D, "D = A*B + C");
-
-    // serialise A/B/C for Verilog stimulus
+class FmaCase {
+public:
     std::vector<uint8_t> bufA, bufB, bufC, bufD;
-    A.flatten(bufA); B.flatten(bufB); C.flatten(bufC); D.flatten(bufD);  // Serialize D
 
-    std::cout << "\n--- Flattened buffers (chunk=" << chunk << " bytes) ---\n";
-    std::cout << "A buffer (" << bufA.size() << " bytes):\n"; dump_buffer(bufA, chunk);
-    std::cout << "B buffer (" << bufB.size() << " bytes):\n"; dump_buffer(bufB, chunk);
-    std::cout << "C buffer (" << bufC.size() << " bytes):\n"; dump_buffer(bufC, chunk);
-    std::cout << "D buffer (" << bufD.size() << " bytes):\n"; dump_buffer(bufD, chunk); // Output D's buffer
-}
+    FmaCase(const std::string& label, std::mt19937& rng, size_t chunk) {
+        Matrix<TA, M, K> A; A.random_fill(rng);
+        Matrix<TB, K, N> B; B.random_fill(rng);
+        Matrix<TC, M, N> C; C.random_fill(rng);
+        Matrix<TD, M, N> D;
+
+        // 执行 A * B + C 并保存到 D
+        for (size_t i = 0; i < M; ++i) {
+            for (size_t j = 0; j < N; ++j) {
+                float acc = 0.0f;
+                for (size_t k = 0; k < K; ++k)
+                    acc += static_cast<float>(A(i,k)) * static_cast<float>(B(k,j));
+                acc += static_cast<float>(C(i,j));
+                D(i,j) = static_cast<TD>(acc); // cast down if TD == half
+            }
+        }
+
+        std::cout << "\n=== " << label << " ===";
+        print_matrix(A, "A");
+        print_matrix(B, "B");
+        print_matrix(C, "C");
+        print_matrix(D, "D = A*B + C");
+
+        // 序列化
+        A.flatten(bufA);
+        B.flatten(bufB);
+        C.flatten(bufC);
+        D.flatten(bufD);
+
+        std::cout << "\n--- Flattened buffers (chunk=" << chunk << " bytes) ---\n";
+        std::cout << "A buffer (" << bufA.size() << " bytes):\n"; dump_buffer(bufA, chunk);
+        std::cout << "B buffer (" << bufB.size() << " bytes):\n"; dump_buffer(bufB, chunk);
+        std::cout << "C buffer (" << bufC.size() << " bytes):\n"; dump_buffer(bufC, chunk);
+        std::cout << "D buffer (" << bufD.size() << " bytes):\n"; dump_buffer(bufD, chunk);
+    }
+};
 
 
 // ------------------------------- CLI Parse ----------------------------------
@@ -201,32 +209,32 @@ int main(int argc, char** argv){
 
     switch(opt.dtype){
         case DType::INT4:
-            fma_case<int4_t,int4_t,int4_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int4_t,int4_t,int4_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            FmaCase<int4_t,int4_t,int4_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            FmaCase<int4_t,int4_t,int4_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            FmaCase<int4_t,int4_t,int4_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::INT8:
-            fma_case<int8_t,int8_t,int8_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<int8_t,int8_t,int8_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            FmaCase<int8_t,int8_t,int8_t,int,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            FmaCase<int8_t,int8_t,int8_t,int,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            FmaCase<int8_t,int8_t,int8_t,int, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
         case DType::FP16:
             if(opt.mixed){
                 // A,B = half ; C,D = float
-                fma_case<half,half,float,float,8,4,2>("M32K16×K16N8+M32N8 (mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float,4,4,4>("M16K16×K16N16+M16N16(mixed)", rng,opt.chunk);
-                fma_case<half,half,float,float, 2,4,8>("M8K16×K16N32+M8N32 (mixed)", rng,opt.chunk);
+                FmaCase<half,half,float,float,8,4,2>("M32K16×K16N8+M32N8 (mixed)", rng,opt.chunk);
+                FmaCase<half,half,float,float,4,4,4>("M16K16×K16N16+M16N16(mixed)", rng,opt.chunk);
+                FmaCase<half,half,float,float, 2,4,8>("M8K16×K16N32+M8N32 (mixed)", rng,opt.chunk);
             } else {
                 // pure fp16 everywhere
-                fma_case<half,half,half,half,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-                fma_case<half,half,half,half,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
-                fma_case<half,half,half,half, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+                FmaCase<half,half,half,half,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+                FmaCase<half,half,half,half,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+                FmaCase<half,half,half,half, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             }
             break;
         case DType::FP32:
-            fma_case<float,float,float,float,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
-            fma_case<float,float,float,float,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
-            fma_case<float,float,float,float, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
+            FmaCase<float,float,float,float,8,4,2>("M32K16×K16N8+M32N8 ", rng,opt.chunk);
+            FmaCase<float,float,float,float,4,4,4>("M16K16×K16N16+M16N16", rng,opt.chunk);
+            FmaCase<float,float,float,float, 2,4,8>("M8K16×K16N32+M8N32 ", rng,opt.chunk);
             break;
     }
 
