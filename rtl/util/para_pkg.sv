@@ -19,7 +19,7 @@ typedef enum logic [1:0] {
 
 typedef struct packed{
 shape_t compute_shape;
-type_t data_type;
+type_t datatype;
 }compute_type_t;
 
 
@@ -60,7 +60,7 @@ typedef struct packed{
     logic [255:0] data;
     logic [31:0] burst_id;
     logic valid;
-    logic arready;
+    logic arready; //tensorcore检测到arready之后request_valid才能拉低
 } AXI_in_t;
 //TODO:这些的bit是可以缩短的，并非一定要用int，后面根据最长的来优化吧
 

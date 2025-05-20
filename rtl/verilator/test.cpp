@@ -29,6 +29,7 @@
 #include <string>
 #include <type_traits>
 #include <vector>
+#include <cctype>
 
 // ------------------------------ half / int4 ---------------------------------
 #include "half.hpp"              // header‑only half‑precision by Christoph Hohn
