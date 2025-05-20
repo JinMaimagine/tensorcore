@@ -59,17 +59,7 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
 
 
     // Prepare buffers for A, B, C, D
-    std::vector<uint8_t> bufA, bufB, bufC, bufD;
-
-    // We assume matrices A, B, C, D are filled correctly here:
-    // Fill them based on the specified options
-    if (opt.dtype == DType::FP16 && opt.mixed) {
-        // A and B are FP16, C and D are FP32 in mixed mode
-        fma_case<half, half, float, float, 32, 16, 8>("Mixed FP16 for A,B and FP32 for C,D", rng, chunk);
-    } else {
-        // Handle other cases as per previous logic
-        fma_case<half, half, half, half, 32, 16, 8>("Pure FP16", rng, chunk);
-    }
+    
 
     // Now initialize the axi_in values for transfer (to simulate input data from Verilator)
     while (!Verilated::gotFinish() && cycle_count < 1000) {
@@ -94,33 +84,36 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
         if (top->start && !in_transfer_state && top->axi_out_request_valid) {
             in_transfer_state = true;
             burst_id = 0;
+            switch(top->axi_out_sel) {
+            case 0:
+                top->axi_out_sel = 0; // A
+                break;
+            case 1:
+                top->axi_out_sel = 1; // B
+                break;
+            case 2:
+                top->axi_out_sel = 2; // C
+                break;
+            default:
+                assert(false); // Invalid state
+                break;
         }
 
+        }
+
+        top->axi_in_valid=1;
+
+
         if (in_transfer_state) {
-            if (top->axi_out_request_valid) {
+            if (top->axi_in_valid) {
                 if (burst_id < burst_num) {
-                    top->axi_in_data = 0x12345678; 
-
                     top->axi_in_burst_id = burst_id;
-
-                    std::uniform_int_distribution<int> dist(1, 8);
-                    int delay = dist(rng);
-                    if (delay > 1) {
-                        top->axi_in_valid = 0;
-                    } else {
-                        top->axi_in_valid = 1;
-                    }
-
                     burst_id++;
                 } else {
                     top->axi_in_finish = 1;
                     in_transfer_state = false; 
                 }
             }
-        }
-
-        if (top->axi_in_valid) {
-            top->axi_in_arready = 1; 
         }
 
         top->eval();

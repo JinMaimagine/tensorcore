@@ -148,6 +148,7 @@ void fma_case(const std::string& label, std::mt19937& rng, size_t chunk) {
     print_matrix(D, "D = A*B + C");
 
     // serialise A/B/C for Verilog stimulus
+    public std::vector<uint8_t> bufA, bufB, bufC, bufD;
     std::vector<uint8_t> bufA, bufB, bufC, bufD;
     A.flatten(bufA); B.flatten(bufB); C.flatten(bufC); D.flatten(bufD);  // Serialize D
 
