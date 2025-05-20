@@ -26,6 +26,7 @@
 #include <string>
 #include <type_traits>
 #include <vector>
+#include <cctype>
 
 // half‑precision support (header‑only)
 #include "half.hpp"
@@ -99,12 +100,12 @@ void fma_case(const std::string& label, std::mt19937& rng) {
         }
     }
 
-    double checksum = 0.0;
-    for (size_t i = 0; i < M; ++i)
-        for (size_t j = 0; j < N; ++j)
-            checksum += D[i][j];
+    // double checksum = 0.0;
+    // for (size_t i = 0; i < M; ++i)
+    //     for (size_t j = 0; j < N; ++j)
+    //         checksum += D[i][j];
 
-    std::cout << label << "  ==>  checksum: " << std::setprecision(10) << checksum << '\n';
+    // std::cout << label << "  ==>  checksum: " << std::setprecision(10) << checksum << '\n';
 }
 
 // ------------------------- Dispatcher --------------------------

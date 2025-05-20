@@ -32,24 +32,41 @@ module axi_tensor_rd #(
     // input                      m_ready,
 
     //跟tensorcore的交互
-    input params::AXI_out_t axi_out,
-    output params::AXI_in_t axi_in,
+    // input params::AXI_out_t axi_out,
+    // output params::AXI_in_t axi_in,
+    
+    //给tensorcore axi_in的返回
+    output logic [255:0] axi_in_data,
+    output logic axi_in_finish,
+    output logic axi_in_valid,
+    input logic axi_in_arready,
+    output logic [31:0] axi_in_burst_id,
+
+    //tensorcore传过来的请求
+    input logic [31:0] axi_out_BASE,
+    input logic [5:0] axi_out_burst_num,
+    input logic [2:0] axi_out_burst_size,
+    input logic axi_out_request_valid,
+    input logic [2:0] axi_out_sel,
+    input logic axi_out_issend
+
+
 
 );
 
 //处理axi_out的请求
-    assign m_axi_araddr = axi_out.BASE;
-    assign m_axi_arlen = {2'b0,axi_out.burst_num};
-    assign m_axi_arsize = axi_out.burst_size;
-    assign m_axi_arvalid = axi_out.request_valid;
+    assign m_axi_araddr = axi_out_BASE;
+    assign m_axi_arlen = {2'b0,axi_out_burst_num};
+    assign m_axi_arsize = axi_out_burst_size;
+    assign m_axi_arvalid = axi_out_request_valid;
     
 
 
 //处理axi_in的返回
-    assign axi_in.finish = m_axi_rlast;
-    assign axi_in.data = m_axi_rdata;
-    assign axi_in.arready = m_axi_arready;
-    assign axi_in.valid = m_axi_rvalid;
+    assign axi_in_finish = m_axi_rlast;
+    assign axi_in_data = m_axi_rdata;
+    assign axi_in_arready = m_axi_arready;
+    assign axi_in_valid = m_axi_rvalid;
     assign m_axi_rready = 1'b1; //总是准备好接收数据
 
     //计数目前是第多少个有效数据DATA，并传回给burst_id
@@ -63,7 +80,7 @@ module axi_tensor_rd #(
             count_burst_id <= count_burst_id + 1;//每拿一个数据计数+1
         end
     end
-    assign axi_in.burst_id = count_burst_id;
+    assign axi_in_burst_id = count_burst_id;
 
 
 
