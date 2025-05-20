@@ -26,54 +26,84 @@ input logic [31:0] axi_in_burst_id,
 input params::compute_type_t compute_type
 */
 
+struct DUT: public Vtensorcore {
+protected:
+    VerilatedVcdC * tfp = nullptr;
+    uint64_t sim_clock = 0;
+public:
+    using Vtensorcore::Vtensorcore;
+    ~DUT() {
+        if(tfp) tfp->close();
+        delete tfp;
+    }
+    void open_vcd(const char * file) {
+        tfp = new VerilatedVcdC;
+        this->trace(tfp, 99);
+        tfp->open(file);
+    }
+    void init() {
+        this->rst = 1;
+        this->step(1);
+        this->rst = 0;
+    }
+    void step(int num_clocks=1) {
+        for(int i = 0; i < num_clocks; i++) {
+            this->clk = 0;
+            this->eval();
+            if(this->tfp) {
+                tfp->dump(sim_clock);
+                sim_clock++;
+            }
+            this->clk = 1;
+            this->eval();
+            if(this->tfp) {
+                tfp->dump(sim_clock);
+                sim_clock++;
+            }
+        }
+    }
+    // uint8_t * lhs_ptr = (uint8_t*)&lhs_ptr_0;
+    // uint8_t * lhs_col = (uint8_t*)&lhs_col_0;
+    // uint8_t * lhs_data = (uint8_t*)&lhs_data_0;
+    // uint8_t * rhs = (uint8_t*)&rhs_0;
+    // uint8_t * out = (uint8_t*)&out_0;
+};
 
 
 // Function to drive the tensorcore IO signals and implement the state machine
-void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
+void run_tensorcore_test(DUT* top,size_t chunk) {
     // Clock and reset
-    bool clk = false;
-    bool rst = true; // Start with reset high
-    top->clk = clk;
-    top->rst = rst;
+    std::cout<<"running tensorcore test"<<std::endl;
     top->start = 0;
     top->mixed = 0; // 先设置正常的测试
     top->axi_in_arready = 0;
     top->axi_in_finish = 0;
     top->axi_in_valid = 0;
     top->axi_in_burst_id = 0;
+    top->compute_type = 0;//{compute_shape,data_type}
+    top->init();
     //此时对于data dont care
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
-    auto fmacase=FmaCase<float,float,float,float,4,4,4>("M16K16×K16N16+M16N16", rng,32);
+    auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
 
     uint32_t burst_id = 0;
-    uint32_t burst_num = 31; // Example burst_num: 32 data items to transfer
-    uint32_t burst_size = 4; // Burst size in bytes (e.g., 4 bytes per burst)
 
     // Example setup, change for different precisions
-    const char* argv[] = {"./tensorcore_test", "fp16", "mixed"};
-    Options opt = parse_opts(3, const_cast<char**>(argv));
-
 
     // Prepare buffers for A, B, C, D
     
-
+    int bytes_per_beat;
     // Now initialize the axi_in values for transfer (to simulate input data from Verilator)
+     std::vector<uint8_t>buf;
     while (!Verilated::gotFinish() && cycle_count < 500) {
-        clk = !clk;
-        top->clk = clk;
-
-        // Reset logic (to keep simulation clean)
-        if (cycle_count == 0) {
-            top->rst = 1;
-        } else {
-            top->rst = 0;
-        }
-
+         std::cout<<"a new cycle "<<cycle_count<<std::endl;
+        top->axi_in_finish=0;//每次清零
+        top->axi_in_valid = 0;//正常每次清零
         // Simulation of the "start" signal (can be set externally in a real test)
         if (cycle_count == 10) { // Example: activate start after 10 cycles
             top->start = 1;
@@ -82,7 +112,6 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
         }
         top->axi_in_arready = 0;
         // Handle the state machine logic
-        std::vector<uint8_t>buf;
         if (top->start && !in_transfer_state && top->axi_out_request_valid) {
             in_transfer_state = true;
             burst_id = 0;
@@ -104,15 +133,27 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
 
         }
 
-        top->axi_in_valid=1;
 
-
+        //burst_id*burst_size开始,将buf往后读取burst_size个byte,传入axi_in_data开始的burst_size个byte,
+        //axi_in_data是int [8]的数组
         if (in_transfer_state) {
+            top->axi_in_valid=1;
             if (top->axi_in_valid) {
                 top->axi_in_burst_id = burst_id;
-                if (top->axi_in_burst_id < burst_num) {
+                for (int w = 0; w < 8; ++w) {
+                    top->axi_in_data[w] = 0;//后面为了验证稳定性,可能就会赋随机值
+                }
+                // 从 buf 的 offset = burst_id*burst_size 开始，取 burst_size 字节
+                bytes_per_beat = 1u << top->axi_out_burst_size;
+                int base = burst_id * bytes_per_beat;
+                for (int i = 0; i < bytes_per_beat; ++i) {
+                    uint8_t v = buf[base + i];
+                    int word_idx   = i / 4;         // 每 4 字节一个 32bit word
+                    int byte_shift = (i % 4) * 8;   // byte 在 word 内的偏移
+                    top->axi_in_data[word_idx] |= uint32_t(v) << byte_shift;
+                }
+                if (top->axi_in_burst_id < top->axi_out_burst_num) {
                     burst_id++;
-
                 } else {
                     top->axi_in_finish = 1;
                     in_transfer_state = false; 
@@ -120,12 +161,7 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
             }
         }
 
-        top->eval();
-
-        if (tfp) {
-            tfp->dump(cycle_count);
-        }
-
+        top->step();
         cycle_count++;
     }
 }
@@ -133,23 +169,13 @@ void run_tensorcore_test(Vtensorcore* top, VerilatedVcdC* tfp, size_t chunk) {
 int main(int argc, char** argv) {
     // Initialize Verilator context
     Verilated::commandArgs(argc, argv);
-    Vtensorcore* top = new Vtensorcore;
-
+    Verilated::traceEverOn(true);
+    DUT* top = new DUT;
+    top->open_vcd("tensorcore.vcd"); 
     // Prepare the VCD trace file if you want to visualize waveforms
-    VerilatedVcdC* tfp = nullptr;
-    if (true) { // Enable waveform output
-        tfp = new VerilatedVcdC;
-        top->trace(tfp, 99);
-        tfp->open("tensorcore_test.vcd");
-    }
 
     // Run the test simulation
-    run_tensorcore_test(top, tfp, 32); // Adjust chunk_size (default is 32)
-
-    // Clean up
-    if (tfp) {
-        tfp->close();
-    }
+    run_tensorcore_test(top,32); // Adjust chunk_size (default is 32)
 
     delete top;
     return 0;
