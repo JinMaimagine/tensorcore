@@ -32,8 +32,7 @@ parameter WIDTH=32
 params::addrgen_t addrtype;
 assign addrtype.datatype=compute_type.data_type;
 assign addrtype.rc=compute_type.compute_shape==params::M32K16N8?2'b00:(compute_type.compute_shape==params::M16K16N16?2'b01:2'b10);//TODO:error这里可能有问题
-params::SYSTOLIC_pkg_t systolic;
-params::state_t state;
+SYSTOLIC_pkg_t systolic;params::state_t state;
 params::state_t next_state;
 logic [31:0] systolic_counter;//TODO:专门用于systolic状态的counter
 logic [31:0] accumlate_counter;//TODO:专门用于accumlate状态的counter
@@ -44,6 +43,35 @@ assign state=next_state;
 //TODO:设置一个counterfinish,当counter==0时,表示完成
 logic finish;
 assign finish=state==params::FINISH;
+
+//SYSTOLIC_pkg_t systolic赋值
+always_comb begin
+    case(compute_type.datatype)
+        params::FP32: begin
+            systolic.systolic_time = 32'd64;
+            systolic.waitwrite_time = 32'd10;
+            // systolic.writeback_time = 32'd10;
+        end
+        params::FP16: begin
+            systolic.systolic_time = 32'd64;
+            systolic.waitwrite_time = 32'd10;
+            // systolic.writeback_time = 32'd10;
+        end
+        params::INT8: begin
+            systolic.systolic_time = 32'd16;
+            systolic.waitwrite_time = 32'd10;
+            // systolic.writeback_time = 32'd10;
+        end
+        default: begin //INT4
+            systolic.systolic_time = 32'd8;
+            systolic.waitwrite_time = 32'd10;
+            // systolic.writeback_time = 32'd10;
+        end
+    endcase
+end
+
+
+
 //但是并不是systolic就可以流动,还要看是不是stop状态
 logic [31:0] counter;//TODO:可以缩小
 always_ff @(posedge clk) begin
