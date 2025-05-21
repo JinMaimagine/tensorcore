@@ -79,9 +79,9 @@ module PE
         begin
             enFP <= 0;
         end
-        else if(en)
+        else
         begin
-            enFP <= 1;
+        enFP<=en;
         end
     end
     DATAENABLE _ENABLE(

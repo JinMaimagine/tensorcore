@@ -49,22 +49,22 @@ assign finish=state==params::FINISH;
 always_comb begin
     case(compute_type.data_type)
         params::FP32: begin
-            systolic.systolic_time = 32'd64;
+            systolic.systolic_time = 32'd63;//32'd64-1
             systolic.waitwrite_time = 32'd10;
             // systolic.writeback_time = 32'd10;
         end
         params::FP16: begin
-            systolic.systolic_time = 32'd64;
+            systolic.systolic_time = 32'd63;
             systolic.waitwrite_time = 32'd10;
             // systolic.writeback_time = 32'd10;
         end
         params::INT8: begin
-            systolic.systolic_time = 32'd16;
+            systolic.systolic_time = 32'd15;//32'd16-1
             systolic.waitwrite_time = 32'd10;
             // systolic.writeback_time = 32'd10;
         end
         default: begin //INT4
-            systolic.systolic_time = 32'd8;
+            systolic.systolic_time = 32'd7;//32'd8-1
             systolic.waitwrite_time = 32'd10;
             // systolic.writeback_time = 32'd10;
         end
@@ -179,9 +179,6 @@ always_ff @(posedge clk) begin
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
             end
-            else begin
-                axi_out_request_valid<=1'b1;
-            end
             if(axi_in_finish) begin//TODO:注意外部finish及时清零
                 next_state <= params::LOAD_A;
                 axi_out_sel<=3'b100;//A
@@ -256,9 +253,6 @@ always_ff @(posedge clk) begin
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
             end
-            else begin
-                axi_out_request_valid<=1'b1;
-            end
             if (axi_in_finish) begin
                 next_state <= params::LOAD_B;
                 axi_out_sel<=3'b010;
@@ -332,9 +326,6 @@ always_ff @(posedge clk) begin
         params::LOAD_B: begin//这里一次性将B填满 16*16*32bit
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
-            end
-            else begin
-                axi_out_request_valid<=1'b1;
             end
 
             if (axi_in_finish) begin

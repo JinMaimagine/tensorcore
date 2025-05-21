@@ -24,6 +24,7 @@ module TRANS (
     output logic [7:0][7:0]             we_C
 );
 
+//8个bank,每个bank 4bit
 logic [7:0][7:0][7:0][3:0] data_out_A_temp;
 logic [7:0][7:0][3:0]  data_out_B_temp;
 logic [7:0][7:0][31:0]  data_out_C_temp;//直接写入systolic array中

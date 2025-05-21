@@ -30,10 +30,10 @@ always_ff @(posedge clk) begin
     cmen_out_A<=0;
     cmen_out_B<=0;
     end
+    en_out_A<=en_in;
+    en_out_B<=en_in;
     if(en_in)
     begin
-        en_out_A<=1;
-        en_out_B<=1;
         counteraddr<=counteraddr+1;
         begin
             case(addrs.datatype)
@@ -108,10 +108,9 @@ always_ff @(posedge clk) begin
             endcase
         end
 end
-else if(cmin)
-        begin
-            cmen_out_A<=1;
-            cmen_out_B<=1;
-        end
+
+            cmen_out_A<=cmin;
+            cmen_out_B<=cmin;
+
 end
 endmodule

@@ -80,13 +80,15 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     top->axi_in_finish = 0;
     top->axi_in_valid = 0;
     top->axi_in_burst_id = 0;
-    top->compute_type = 0;//{compute_shape,data_type}
+    //top->compute_type=0;
+    top->compute_type = 2;//{compute_shape,data_type}
     top->init();
     //此时对于data dont care
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
-    auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    auto fmacase=FmaCase<uint8_t,uint8_t,uint8_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
@@ -112,7 +114,7 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
         }
         top->axi_in_arready = 0;
         // Handle the state machine logic
-        if (top->start && !in_transfer_state && top->axi_out_request_valid) {
+        if (!in_transfer_state && top->axi_out_request_valid) {
             in_transfer_state = true;
             burst_id = 0;
             top->axi_in_arready = 1;
