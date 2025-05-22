@@ -24,28 +24,28 @@ module axi_tensor_rd #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 256,       // must be power‑of‑2, 32 … 1024
     parameter ID_WIDTH   = 4,
-    parameter MAX_BURST  = 256         // beats per burst (2…256)
+    parameter MAX_BURST  = 16         // beats per burst (2…256)
 )(
     // global
     input                      aclk,
     input                      aresetn,
 
-    // AXI4‑Full MASTER  (read‑only subset)
+    // AXI4‑Full SLAVE  (read‑only subset)
     // – AW/W/B channels are tied‑off inside.
-    output [ID_WIDTH-1:0]      m_axi_arid,
-    output [ADDR_WIDTH-1:0]    m_axi_araddr,
-    output [7:0]               m_axi_arlen,
-    output [2:0]               m_axi_arsize,
-    output [1:0]               m_axi_arburst,
-    output                     m_axi_arvalid,
-    input                      m_axi_arready,
+    input  [ID_WIDTH-1:0]      s_axi_arid,
+    input  [ADDR_WIDTH-1:0]    s_axi_araddr,
+    input  [7:0]               s_axi_arlen,
+    input  [2:0]               s_axi_arsize,
+    input  [1:0]               s_axi_arburst,
+    input                      s_axi_arvalid,
+    output                     s_axi_arready,
 
-    input  [ID_WIDTH-1:0]      m_axi_rid,
-    input  [DATA_WIDTH-1:0]    m_axi_rdata,
-    input  [1:0]               m_axi_rresp,
-    input                      m_axi_rlast,
-    input                      m_axi_rvalid,
-    output                     m_axi_rready,
+    output [ID_WIDTH-1:0]      s_axi_rid,
+    output [DATA_WIDTH-1:0]    s_axi_rdata,
+    output [1:0]               s_axi_rresp,
+    output                     s_axi_rlast,
+    output                     s_axi_rvalid,
+    input                      s_axi_rready,
 
     // stream to compute core (one beat == DATA_WIDTH bits)
     output [DATA_WIDTH-1:0]    m_dat,
@@ -72,22 +72,12 @@ module axi_tensor_rd #(
 
     assign rd_idle = 1'b1;    // placeholder
     assign rd_done = 1'b0;
-
-    // AXI4 read address channel (as master)
-    assign m_axi_arid    = '0;
-    assign m_axi_araddr  = '0;
-    assign m_axi_arlen   = 8'd0;
-    assign m_axi_arsize  = $clog2(DATA_WIDTH/8);
-    assign m_axi_arburst = 2'b01; // INCR
-    assign m_axi_arvalid = 1'b0; // placeholder – assert once per burst
-
-    // AXI4 read data channel (as master)
-    assign m_axi_rready  = m_ready;
-
-    // Stream out from AXI read data
-    assign m_dat   = m_axi_rdata;
-    assign m_valid = m_axi_rvalid;
-
+    assign s_axi_arready = 1'b1; // always ready (one outstanding max)
+    assign s_axi_rvalid  = m_valid;
+    assign s_axi_rdata   = m_dat;
+    assign s_axi_rid     = s_axi_arid;
+    assign s_axi_rresp   = 2'b00;
+    assign s_axi_rlast   = 1'b1;  // every beat is last when len==0 design
 
 endmodule
 

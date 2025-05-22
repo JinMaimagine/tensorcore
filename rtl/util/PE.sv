@@ -26,7 +26,8 @@ module PE
     input logic [31:0] b_up,
     output logic [31:0] b_down,
     input params::addrgen_t addr_type,
-    input logic out_ready
+    input logic out_ready,
+    output logic [32*N-1:0] regfile//就存4个数据,每个32bit
 	);
     //需要保证en的时候,c一定是有效的
     logic enFP;//FP进行了pipeline,所以enFP要空一个周期
@@ -41,7 +42,7 @@ module PE
     logic [2:0] mode;
     logic [127:0] IN3;
     logic [127:0] OUT;
-    logic [32*N-1:0] regfile;//就存4个数据,每个32bit
+
     logic[1:0] regfile_pointer;//至于设置为多大有para_pkg决定
     assign a = a_left;
     assign b = b_up;

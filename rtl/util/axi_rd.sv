@@ -11,7 +11,7 @@ module axi_tensor_rd #(
 
     // AXI4‑Full MASTER  (read‑only subset)
     // – AW/W/B channels are tied‑off inside.
-    output [ID_WIDTH-1:0]      m_axi_arid,
+    // output [ID_WIDTH-1:0]      m_axi_arid,
     output [ADDR_WIDTH-1:0]    m_axi_araddr,
     output [7:0]               m_axi_arlen,//transition 数量
     output [2:0]               m_axi_arsize,
@@ -19,9 +19,9 @@ module axi_tensor_rd #(
     output                     m_axi_arvalid,
     input                      m_axi_arready,
 
-    input  [ID_WIDTH-1:0]      m_axi_rid,
+    // input  [ID_WIDTH-1:0]      m_axi_rid,
     input  [DATA_WIDTH-1:0]    m_axi_rdata,
-    input  [1:0]               m_axi_rresp,
+    // input  [1:0]               m_axi_rresp,
     input                      m_axi_rlast,
     input                      m_axi_rvalid,
     output                     m_axi_rready,

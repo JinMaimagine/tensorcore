@@ -15,7 +15,8 @@ input logic wben,
 input params::addrgen_t addr_type,
 input logic mixed,
 output logic [7:0][7:0] out_ready,
-output logic [7:0][7:0][31:0] out_sum
+output logic [7:0][7:0][31:0] out_sum,
+output logic [7:0][7:0][127:0] regfile
 );
 logic [7:0][7:0] en_left;
 logic [7:0][7:0] en_up;
@@ -29,6 +30,11 @@ logic [7:0][7:0][31:0] a_left;
 logic [7:0][7:0][31:0] a_right;
 logic [7:0][7:0][31:0] b_up;
 logic [7:0][7:0][31:0] b_down;
+
+//新增引出的regfile
+logic [7:0][7:0][32*4-1:0] regfiles;
+assign regfile = regfiles;
+
 
 generate 
     for (genvar i = 0; i < 8; i++) begin
@@ -55,9 +61,12 @@ generate
                 .b_down(b_down[i][j]),
                 .addr_type(addr_type),
                 .out_ready(out_ready[i][j])
+                .regfile(regfiles[i][j])
             );
         end
     end
+    
+
     for(genvar i = 0; i < 8; i++) begin
     for(genvar j=0;j<8;j++)
     begin
