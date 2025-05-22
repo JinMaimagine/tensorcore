@@ -38,15 +38,31 @@ module MAC_FP#(
     wire [31:0] mac32_result;
 
 	//告诉FP16toFP32模块是pass还是转换
-	logic FP16toFP32_convert_enb;
+	logic A_convert_enb;
+	logic B_convert_enb;
+	logic C_convert_enb;
+
 	always_comb begin
 		case(mode)
-			2'b00: FP16toFP32_convert_enb = 1; // FP16 normal模式
-			2'b01: FP16toFP32_convert_enb = 1; // FP16 mix模式
-			2'b10: FP16toFP32_convert_enb = 0; // FP32 normal模式
-			default: FP16toFP32_convert_enb = 0; // 其他模式
+			2'b00: begin
+				A_convert_enb = 1; // FP16 normal模式
+				B_convert_enb = 1; // FP16 normal模式
+				C_convert_enb = 1; // FP16 normal模式
+			end
+			2'b01: begin
+				A_convert_enb = 1; // FP16 mix模式
+				B_convert_enb = 1; // FP16 mix模式
+				C_convert_enb = 0; // FP16 mix模式
+			end
+			default: begin //2'b10
+				A_convert_enb = 0; // FP32 normal模式
+				B_convert_enb = 0; // FP32 normal模式
+				C_convert_enb = 0; // FP32 normal模式
+			end
+
 		endcase
 	end
+			
     
     // FP16到FP32的转换模块实例化
     FP16toFP32 #(
@@ -54,7 +70,7 @@ module MAC_FP#(
 	)
 	u_fp16_to_fp32_1
 	(
-		.mode(FP16toFP32_convert_enb),
+		.mode(A_convert_enb),
         .fp16(IN1),
         .fp32(fp32_in1)
     );
@@ -64,7 +80,7 @@ module MAC_FP#(
 	)
 	u_fp16_to_fp32_2
 	(
-		.mode(FP16toFP32_convert_enb),
+		.mode(B_convert_enb),
         .fp16(IN2),
         .fp32(fp32_in2)
     );
@@ -74,7 +90,7 @@ module MAC_FP#(
 	)
 	u_fp16_to_fp32_3
 	(
-		.mode(FP16toFP32_convert_enb),
+		.mode(C_convert_enb),
         .fp16(IN3[31:0]), // 只取IN3的低32位
         .fp32(fp32_in3)
     );
