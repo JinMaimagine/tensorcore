@@ -196,8 +196,8 @@ always_ff @(posedge clk) begin
                                 axi_out_burst_size <= $clog2(256/8);
                             end
                             params::INT8: begin
-                                axi_out_burst_num <= 6'd15; 
-                                axi_out_burst_size <= $clog2(256/8); 
+                                axi_out_burst_num <= 6'd63; 
+                                axi_out_burst_size <= $clog2(64/8); 
                             end
                             default: begin //INT4
                                 axi_out_burst_num <= 6'd7; 
@@ -465,8 +465,8 @@ logic [7:0][31:0] control_b_data_in;
 logic [7:0][31:0] control_b_data_out;
 logic [7:0] control_b_en_out;
 logic [7:0] control_b_cmen_out;
-logic [7:0][31:0] rdaddr_a_out;
-logic [7:0][31:0] rdaddr_b_out;
+logic [7:0][5:0] rdaddr_a_out;
+logic [7:0][5:0] rdaddr_b_out;
 logic [7:0] re_a;
 logic [7:0] re_b;
 CONTROL_A control_a(

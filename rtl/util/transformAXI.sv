@@ -25,7 +25,7 @@ module TRANS (
 );
 
 //8个bank,每个bank 4bit
-logic [7:0][7:0][7:0][3:0] data_out_A_temp;
+logic [7:0][7:0][31:0] data_out_A_temp;
 logic [7:0][7:0][3:0]  data_out_B_temp;
 logic [7:0][7:0][31:0]  data_out_C_temp;//直接写入systolic array中
 logic [7:0][7:0]       we_A_temp;
@@ -59,8 +59,11 @@ always_comb begin
 
                 params::FP16: begin
                     we_A_temp[burst_num] = 8'hFF;
-                    data_out_A_temp[burst_num][7:0][3:0] = data_in[127:0];
-                    data_out_A_temp[burst_num][7:0][7:4] = data_in[255:128];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[burst_num][i][15:0] = data_in[16*i+:16];
+                    data_out_A_temp[burst_num][i][31:16] = data_in[(16*i+128)+:16];
+                    end
                     //we_A_temp[burst_num] = 8'h0F;//一次取8个,逻辑同FP32
                     //data_out_A_temp[burst_num][7:0][3:0] = data_in[127:0];//一次取16bit*8
                 end
@@ -71,15 +74,21 @@ always_comb begin
                     begin//这里每次只能传入8数据?没办法必须牺牲,我在考虑后面增加可以传入的数据个数,目前是在这个情况下每次只读8个INT8,但是这必须看综合的成本是否增加
                     //这里弄个warning:可能总位宽要变了
                         we_A_temp[burst_num[3:1]]=8'h03<<{burst_num[5:4],1'b0};
-                        data_out_A_temp[burst_num[3:1]][7:0][{burst_num[5:4],1'b0}+:2] = data_in[63:0];                        
+                        for(integer i=0;i<8;i++)
+                        begin
+                        data_out_A_temp[burst_num[3:1]][i][{burst_num[5:4],3'b0}+:8] = data_in[8*i+:8];
+                        end                        
                     end
                     2'b01,2'b10:begin
                     we_A_temp[{burst_num[1:0], 1'b0}] = 8'h0F << {burst_num[2], 2'b00};
-                    data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[63:0];
-                    data_out_A_temp[{burst_num[1:0], 1'b0}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[127:64];
                     we_A_temp[{burst_num[1:0], 1'b1}] = 8'h0F << {burst_num[2], 2'b00};
-                    data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b00} +: 2] = data_in[191:128];
-                    data_out_A_temp[{burst_num[1:0], 1'b1}][7:0][{burst_num[2], 2'b10} +: 2] = data_in[255:192];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[{burst_num[1:0], 1'b0}][i][{burst_num[2], 4'b0000} +: 8] = data_in[8*i+:8];
+                    data_out_A_temp[{burst_num[1:0], 1'b0}][i][{burst_num[2], 4'b1000} +: 8] = data_in[(8*i+64)+:8];
+                    data_out_A_temp[{burst_num[1:0], 1'b1}][i][{burst_num[2], 4'b0000} +: 8] = data_in[(8*i+128)+:8];
+                    data_out_A_temp[{burst_num[1:0], 1'b1}][i][{burst_num[2], 4'b1000} +: 8] = data_in[(8*i+192)+:8];
+                    end
                     end
                     default: begin
                         assert(0) else $error("rc is not 00,01,10");
@@ -89,17 +98,29 @@ always_comb begin
 
                 params::INT4: begin
                     we_A_temp[{burst_num[0], 2'b00}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b00}][7:0][{burst_num[2:1], 1'b0}] = data_in[31:0];
-                    data_out_A_temp[{burst_num[0], 2'b00}][7:0][{burst_num[2:1], 1'b1}] = data_in[63:32];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[{burst_num[0], 2'b00}][i][{burst_num[2:1], 3'b000}+:4] = data_in[4*i+:4];
+                    data_out_A_temp[{burst_num[0], 2'b00}][i][{burst_num[2:1], 3'b100}+:4] = data_in[(4*i+32)+:4];
+                    end
                     we_A_temp[{burst_num[0], 2'b01}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b01}][7:0][{burst_num[2:1], 1'b0}] = data_in[95:64];
-                    data_out_A_temp[{burst_num[0], 2'b01}][7:0][{burst_num[2:1], 1'b1}] = data_in[127:96];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[{burst_num[0], 2'b01}][i][{burst_num[2:1], 3'b000}+:4] = data_in[(4*i+64)+:4];
+                    data_out_A_temp[{burst_num[0], 2'b01}][i][{burst_num[2:1], 3'b100}+:4] = data_in[(4*i+96)+:4];
+                    end
                     we_A_temp[{burst_num[0], 2'b10}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b10}][7:0][{burst_num[2:1], 1'b0}] = data_in[159:128];
-                    data_out_A_temp[{burst_num[0], 2'b10}][7:0][{burst_num[2:1], 1'b1}] = data_in[191:160];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[{burst_num[0], 2'b10}][i][{burst_num[2:1], 3'b000}+:4] = data_in[(4*i+128)+:4];
+                    data_out_A_temp[{burst_num[0], 2'b10}][i][{burst_num[2:1], 3'b100}+:4] = data_in[(4*i+160)+:4];
+                    end
                     we_A_temp[{burst_num[0], 2'b11}] = 8'h03 << {burst_num[2:1], 1'b0};
-                    data_out_A_temp[{burst_num[0], 2'b11}][7:0][{burst_num[2:1], 1'b0}] = data_in[223:192];
-                    data_out_A_temp[{burst_num[0], 2'b11}][7:0][{burst_num[2:1], 1'b1}] = data_in[255:224];
+                    for(integer i=0;i<8;i++)
+                    begin
+                    data_out_A_temp[{burst_num[0], 2'b11}][i][{burst_num[2:1], 3'b000}+:4] = data_in[(4*i+192)+:4];
+                    data_out_A_temp[{burst_num[0], 2'b11}][i][{burst_num[2:1], 3'b100}+:4] = data_in[(4*i+224)+:4];
+                    end
                 end
             endcase
 

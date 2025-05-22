@@ -84,8 +84,12 @@ public:
             } else if constexpr (std::is_same_v<T, half>) {
                 uint16_t h; std::memcpy(&h, &e, 2);
                 out.insert(out.end(), reinterpret_cast<uint8_t*>(&h), reinterpret_cast<uint8_t*>(&h) + 2);
-            } else {
-                out.push_back(static_cast<uint8_t>(static_cast<int>(e)));
+            } else if constexpr (std::is_same_v<T,int>) {
+                uint32_t w; std::memcpy(&w, &e, 4);
+                out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
+            }
+            else {
+            out.push_back(static_cast<uint8_t>(static_cast<int>(e)));
             }
         }
     }

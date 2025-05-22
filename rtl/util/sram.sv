@@ -181,7 +181,7 @@ module SRAM_B #(
 )(
     input logic rst,
     input logic clk,
-    input logic [$clog2(ENTRYS)-1:0] rdaddr,
+    input logic [7:0][$clog2(ENTRYS)-1:0] rdaddr,
     output logic [7:0][7:0][WIDTH-1:0] data_out,
     input logic [7:0][7:0][WIDTH-1:0] data_in,
     input logic [7:0][7:0]we,
@@ -195,7 +195,7 @@ generate
         ) sram_row (
             .rst(rst),
             .clk(clk),
-            .rdaddr(rdaddr),
+            .rdaddr(rdaddr[i]),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),

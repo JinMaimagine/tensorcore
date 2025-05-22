@@ -8,6 +8,7 @@ VERILATORDIR = $(abspath $(CURDIR))
 $(OBJDIR)/V$(TOP).mk:
 	@mkdir -p $(OBJDIR)
 	verilator -Wall --trace \
+	-CFLAGS   "-std=c++17" \
 	--Wno-LATCH \
 	--Wno-UNDRIVEN \
 	--Wno-UNUSEDSIGNAL \

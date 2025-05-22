@@ -81,14 +81,20 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     top->axi_in_valid = 0;
     top->axi_in_burst_id = 0;
     //top->compute_type=0;
-    top->compute_type = 2;//{compute_shape,data_type}
+    //top->compute_type = 1;//{compute_shape,compute_type}
+    //top->compute_type = 2;//int8,32,16,8 //{compute_shape,data_type}
+    //top->compute_type = 6;//int8,16,16,16
+    //top->compute_type = 10;//int8,8,16,32
     top->init();
     //此时对于data dont care
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
     //auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
-    auto fmacase=FmaCase<uint8_t,uint8_t,uint8_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<half,half,half,half,32,16,8>("M32K16×K16N8+M32N8 ", rng,chunk);
+    //auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
@@ -175,9 +181,9 @@ int main(int argc, char** argv) {
     DUT* top = new DUT;
     top->open_vcd("tensorcore.vcd"); 
     // Prepare the VCD trace file if you want to visualize waveforms
-
     // Run the test simulation
     run_tensorcore_test(top,32); // Adjust chunk_size (default is 32)
+    //目前还在可视化阶段,我应该弄一个函数,将D矩阵切成8*8的大块(先按行,然后再按照列),然后维度在3维,先按照行切在按照列切,这样能与原来的部分很好的相融合
 
     delete top;
     return 0;

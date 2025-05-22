@@ -1,6 +1,8 @@
 `include "ENABLE.sv"
 `include "para_pkg.sv"
 `include "MAC_top.sv"
+
+
 module PE
 #(parameter N=4)
 (
@@ -157,14 +159,14 @@ module PE
         begin
             regfile[{regfile_pointer,5'b0}+:32] <= c;
         end
-        else if(enFP)
+        if(enFP)
         begin
             if(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)
             begin
                 regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
             end
         end
-        else if(en)
+        if(en)
         begin
             if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
             begin

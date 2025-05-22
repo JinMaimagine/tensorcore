@@ -13,14 +13,14 @@ module CONTROL_A_UNIT(
     output logic en_next,
     output logic cmen_next,
     output logic re,
-    input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
-    output logic [29:0] rdaddr_out,
+    input logic [7:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
+    output logic [5:0] rdaddr_out,
     input logic [31:0] data_in,
-    output logic[31:0] rdaddr_next,
+    output logic[7:0] rdaddr_next,
     output logic[31:0] data_out
 );
 assign re=en_in;
-assign rdaddr_out = rdaddr[31:2];
+assign rdaddr_out = rdaddr[7:2];
 always_ff@(posedge clk) begin
     if (rst) begin
         en_out <= 0;
@@ -45,7 +45,7 @@ always_comb begin
             end
             2'b01:
             begin//16*16
-                data_out=rdaddr_next[1]?{data_out[31:24],data_out[31:24],data_in[15:8],data_in[15:8]}:{data_out[23:16],data_out[23:16],data_in[7:0],data_in[7:0]};
+                data_out=rdaddr_next[1]?{data_in[31:24],data_in[31:24],data_in[15:8],data_in[15:8]}:{data_in[23:16],data_in[23:16],data_in[7:0],data_in[7:0]};
             end
             2'b10:
             begin//8*16
@@ -96,14 +96,14 @@ module CONTROL_B_UNIT(
     output logic en_next,
     output logic cmen_next,
     input params::addrgen_t addrtype,
-    input logic [31:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
+    input logic [7:0] rdaddr,//TODO:int后面改为logic,暂时没算位数
     input logic [31:0] data_in,
-    output logic [31:0] rdaddr_next,
+    output logic [7:0] rdaddr_next,
     output logic[31:0] data_out,
-    output logic [29:0] rdaddr_out
+    output logic [5:0] rdaddr_out
 );
 assign re=en_in;
-assign rdaddr_out = rdaddr[31:2];
+assign rdaddr_out = rdaddr[7:2];
 always_ff@(posedge clk) begin
     if (rst) begin
         en_out <= 0;
@@ -140,7 +140,7 @@ always_comb begin
             end
             2'b01:
             begin//16*16
-                data_out=data_in;
+                data_out=rdaddr_next[1]?{2{data_in[31:16]}}:{2{data_in[15:0]}};
             end
             2'b10:
             begin//16*32
@@ -185,7 +185,7 @@ endmodule
 module CONTROL_A(
 input logic clk,
 input logic rst,
-input logic [31:0] rdaddr,
+input logic [7:0] rdaddr,
 input logic [7:0][31:0] data_in,
 output logic [7:0][31:0] data_out,
 input logic en,
@@ -193,15 +193,15 @@ input logic cmen,
 input params::addrgen_t addrtype,
 output logic [7:0] en_out,
 output logic [7:0] cmen_out,
-output logic [7:0][29:0] rdaddr_out,
+output logic [7:0][5:0] rdaddr_out,
 output logic [7:0] re
 );
 logic [7:0] cmen_next;
 logic [7:0] en_next;
 logic [7:0] cmen_in;
 logic [7:0] en_in;
-logic [7:0][31:0] rdaddr_next;
-logic [7:0][31:0] rdaddr_in;
+logic [7:0][7:0] rdaddr_next;
+logic [7:0][7:0] rdaddr_in;
 assign cmen_in = {cmen_next[6:0],cmen};
 assign en_in = {en_next[6: 0],en};
 assign rdaddr_in = {rdaddr_next[6:0],rdaddr};
@@ -234,7 +234,7 @@ endmodule
 module CONTROL_B(
 input logic clk,
 input logic rst,
-input logic [31:0] rdaddr,
+input logic [7:0] rdaddr,
 input logic [7:0][31:0] data_in,
 output logic [7:0][31:0] data_out,
 input logic en,
@@ -242,15 +242,15 @@ input logic cmen,
 input params::addrgen_t addrtype,
 output logic [7:0] en_out,
 output logic [7:0] cmen_out,
-output logic [7:0][29:0] rdaddr_out,
+output logic [7:0][5:0] rdaddr_out,
 output logic [7:0] re
 );
 logic [7:0] cmen_next;
 logic [7:0] en_next;
 logic [7:0] cmen_in;
 logic [7:0] en_in;
-logic [7:0][31:0] rdaddr_next;
-logic [7:0][31:0] rdaddr_in;
+logic [7:0][7:0] rdaddr_next;
+logic [7:0][7:0] rdaddr_in;
 assign cmen_in = {cmen_next[6:0],cmen};
 assign en_in = {en_next[6: 0],en};
 assign rdaddr_in = {rdaddr_next[6:0],rdaddr};
