@@ -1,6 +1,6 @@
 //将PE当中的计算结果写回
 //当前版本输出到DRAM当中的存储格式与计算顺序有关，没有实现重整矩阵
-//
+`include "para_pkg.sv"
 module axi_tensor_wr#(
     parameter ADDR_WIDTH = 32,
     parameter MAX_BURST  = 256
@@ -30,7 +30,7 @@ module axi_tensor_wr#(
     output logic [ADDR_WIDTH-1:0] axi_awaddr,//地址,默认置为0
     output logic [7:0] axi_awlen,//beats个数 256（普通模式）或者128（特殊模式）
     output logic [2:0] axi_awsize,//一个beat的大小 确定是32bits
-    output logic [1:0] axi_awburst //传输类型 incr 2'b01
+    output logic [1:0] axi_awburst, //传输类型 incr 2'b01
     output logic axi_wlast//最后一个数据
 );
     // ------------------------------------------------------------
@@ -43,7 +43,7 @@ module axi_tensor_wr#(
 
     // ─── Special‑mode detection (FP16 accumulate & not mixed) ───
     logic special_mode;
-    assign special_mode = (~mixed) && (addr_type.datatype == params::DTYPE_FP16);
+    assign special_mode = (~mixed) && (addr_type.datatype == params::FP16);
 
     // ─── Burst‑length & fixed‑AW channel fields ─────────────────
     logic [8:0] total_beats;
@@ -68,8 +68,14 @@ module axi_tensor_wr#(
     assign col_idx = pe_cnt[2:0];
 
     // ─── Data path ──────────────────────────────────────────────
-    logic [31:0] wr_data_r, wr_data_n;
-    assign wr_data   = wr_data_r;
+    // Drive current slice combinationally, so wr_data is
+    // valid in the *same* cycle as axi_wvalid.
+    logic [31:0] cur_slice;
+    always_comb begin
+        cur_slice = sel_data(wave_cnt, special_mode,
+                             regfiles[row_idx][col_idx]);
+    end
+    assign wr_data = cur_slice;
 
     // Function: choose 32‑bit slice from the 128‑bit regfile
     function automatic logic [31:0] sel_data
@@ -93,7 +99,6 @@ module axi_tensor_wr#(
         state_n     = state;
         axi_awvalid = 1'b0;
         axi_wvalid  = 1'b0;
-        wr_data_n   = wr_data_r;
 
         case (state)
             IDLE: begin
@@ -113,13 +118,14 @@ module axi_tensor_wr#(
             WRITEBACK_DATA: begin
                 axi_wvalid = 1'b1;
                 if (w_hs) begin
-                    wr_data_n = sel_data(wave_cnt, special_mode,
-                                         regfiles[row_idx][col_idx]);
-
                     if (beat_cnt == total_beats - 1) begin
                         state_n = IDLE;
                     end
                 end
+            end
+
+            default: begin
+                state_n = IDLE;
             end
         endcase
     end
@@ -131,8 +137,6 @@ module axi_tensor_wr#(
             beat_cnt   <= 0;
             wave_cnt   <= 0;
             pe_cnt     <= 0;
-            wr_data_r  <= 0;
-            axi_wlast  <= 1'b0;
         end else begin
             state <= state_n;
 
@@ -141,8 +145,6 @@ module axi_tensor_wr#(
                 beat_cnt   <= 0;
                 wave_cnt   <= 0;
                 pe_cnt     <= 0;
-                wr_data_r  <= sel_data(2'd0, special_mode, regfiles[0][0]);
-                axi_wlast  <= 1'b0;
             end
             // advance on each successful data beat
             else if (state == WRITEBACK_DATA && w_hs) begin
@@ -154,15 +156,12 @@ module axi_tensor_wr#(
                 end else begin
                     pe_cnt   <= pe_cnt + 1;
                 end
-
-                wr_data_r <= wr_data_n;
-                if(pe_cnt == 7'd62&&wave_cnt == 2'd3) begin
-                    axi_wlast <= 1'b1; //下一个数据是最后一个，所以这里写62
-                end else begin
-                    axi_wlast <= 1'b0;
-                end
             end
         end
     end
+
+    // wlast asserts with the final data beat
+    assign axi_wlast = (state == WRITEBACK_DATA) &&
+                       axi_wvalid && (beat_cnt == total_beats - 1);
 
 endmodule

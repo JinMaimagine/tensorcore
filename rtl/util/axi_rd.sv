@@ -15,7 +15,7 @@ module axi_tensor_rd #(
     output [ADDR_WIDTH-1:0]    m_axi_araddr,
     output [7:0]               m_axi_arlen,//transition 数量
     output [2:0]               m_axi_arsize,
-    output [1:0]               m_axi_arburst,
+    output [1:0]               m_axi_arburst, //传输类型 INCR 01
     output                     m_axi_arvalid,
     input                      m_axi_arready,
 
@@ -25,21 +25,12 @@ module axi_tensor_rd #(
     input                      m_axi_rlast,
     input                      m_axi_rvalid,
     output                     m_axi_rready,
-
-    // stream to compute core (one beat == DATA_WIDTH bits)
-    // output [DATA_WIDTH-1:0]    m_dat,
-    // output                     m_valid,
-    // input                      m_ready,
-
-    //跟tensorcore的交互
-    // input params::AXI_out_t axi_out,
-    // output params::AXI_in_t axi_in,
     
     //给tensorcore axi_in的返回
     output logic [255:0] axi_in_data,
     output logic axi_in_finish,
     output logic axi_in_valid,
-    input logic axi_in_arready,
+    output logic axi_in_arready,
     output logic [31:0] axi_in_burst_id,
 
     //tensorcore传过来的请求
@@ -47,8 +38,7 @@ module axi_tensor_rd #(
     input logic [5:0] axi_out_burst_num,
     input logic [2:0] axi_out_burst_size,
     input logic axi_out_request_valid,
-    input logic [2:0] axi_out_sel,
-    input logic axi_out_issend
+    input logic [2:0] axi_out_sel
 
 
 
