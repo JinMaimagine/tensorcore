@@ -91,16 +91,20 @@ static bool run_one_test(Vaxi_tensor_wr* dut,
 
     // 4. 期望输出序列
     const int waves     = special_mode ? 2   : 4;
-    const int exp_beats = special_mode ? 128 : 256;
+    const int exp_beats = special_mode ? 16 : 32;   // row‑major, 1 beat per row
     std::vector<uint32_t> expect;
-    expect.reserve(exp_beats);
+    expect.reserve(exp_beats * 8);
     for (int w = 0; w < waves; ++w) {
-        for (int pe = 0; pe < 64; ++pe) {
-            uint32_t rf[4]; gen_regfile(rf, pe);
-            expect.push_back(expected_word(rf, w, special_mode));
+        for (int r = 0; r < 8; ++r) {            // one row per beat
+            uint64_t row_words[8];
+            for (int c = 0; c < 8; ++c) {
+                uint32_t rf[4]; gen_regfile(rf, r * 8 + c);
+                row_words[c] = expected_word(rf, w, special_mode);
+            }
+            expect.insert(expect.end(), row_words, row_words + 8);
         }
     }
-    assert((int)expect.size() == exp_beats);
+    assert((int)expect.size() == exp_beats * 8);
 
     // 5. 采集并比对
     int beat_idx = 0;
@@ -108,13 +112,17 @@ static bool run_one_test(Vaxi_tensor_wr* dut,
     while (beat_idx < exp_beats) {
         tick(dut);
         if (dut->axi_wvalid && dut->axi_wready) {
-            uint32_t got = dut->wr_data;
-            uint32_t exp = expect[beat_idx];
-            if (got != exp) {
-                std::cerr << "Mismatch beat " << beat_idx
-                          << "  exp=0x" << std::hex << exp
-                          << "  got=0x" << got << std::dec << "\n";
-                pass = false;
+            // DUT wr_data is 256‑bit little‑endian word array wr_data[0..7]
+            for (int seg = 0; seg < 8; ++seg) {
+                uint32_t got = dut->wr_data[seg];
+                uint32_t exp = expect[beat_idx*8 + seg];
+                if (got != exp) {
+                    std::cerr << "Mismatch beat " << beat_idx
+                              << " seg " << seg
+                              << "  exp=0x" << std::hex << exp
+                              << "  got=0x" << got << std::dec << "\n";
+                    pass = false;
+                }
             }
             ++beat_idx;
         }

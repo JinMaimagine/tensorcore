@@ -2,8 +2,7 @@
 //当前版本输出到DRAM当中的存储格式与计算顺序有关，没有实现重整矩阵
 `include "para_pkg.sv"
 module axi_tensor_wr#(
-    parameter ADDR_WIDTH = 32,
-    parameter MAX_BURST  = 256
+    parameter ADDR_WIDTH = 32
 )
 (
     input  logic clk,
@@ -12,7 +11,7 @@ module axi_tensor_wr#(
     input  logic wr_enb,//WriteBack模块可以进入WRITEBACK_ADDR状态，拉高一个周期即可
     input  params::addrgen_t addr_type,
         //如果addr_type.datatype=FP16且mixed=0,那这一次采用特殊送出模式
-    output logic [31:0] wr_data, //每次送出的数据；
+    output logic [255:0] wr_data, //每次送出的数据；
                                  //如果mixed=1，
     output logic axi_awvalid,  //进入WRITEBACK_ADDR状态送地址时置1
     output logic axi_wvalid, //送出数据时同步将valid拉高
@@ -28,8 +27,8 @@ module axi_tensor_wr#(
 
     //axi辅助信号
     output logic [ADDR_WIDTH-1:0] axi_awaddr,//地址,默认置为0
-    output logic [7:0] axi_awlen,//beats个数 256（普通模式）或者128（特殊模式）
-    output logic [2:0] axi_awsize,//一个beat的大小 确定是32bits
+    output logic [7:0] axi_awlen,//beats个数 32（普通模式）或者16（特殊模式）
+    output logic [2:0] axi_awsize,//一个beat的大小 确定是256bits
     output logic [1:0] axi_awburst, //传输类型 incr 2'b01
     output logic axi_wlast//最后一个数据
 );
@@ -47,50 +46,61 @@ module axi_tensor_wr#(
 
     // ─── Burst‑length & fixed‑AW channel fields ─────────────────
     logic [8:0] total_beats;
-    assign total_beats  = special_mode ? 9'd128 : 9'd256;  // #beats
+    assign total_beats  = special_mode ? 9'd16 : 9'd32;  // beats
     assign axi_awaddr   = '0;          // always start at 0
-    assign axi_awsize   = 3'b010;      // 32‑bit beat
+    assign axi_awsize   = 3'b101;      // 256‑bit beat
     assign axi_awburst  = 2'b01;       // INCR
-    assign axi_awlen    = special_mode ? 8'd127 : 8'd255;  // AWLEN = beats‑1
+    assign axi_awlen    = special_mode ? 8'd15 : 8'd31;  // AWLEN = beats‑1
 
     // ─── Handshake helpers ──────────────────────────────────────
     wire aw_hs = axi_awvalid & axi_awready;
     wire w_hs  = axi_wvalid  & axi_wready;
 
     // ─── Counters ───────────────────────────────────────────────
-    logic [8:0]  beat_cnt;  // 0‑255
+    logic [8:0]  beat_cnt;  // 0‑32
     logic [1:0]  wave_cnt;  // 0‑3
-    logic [6:0]  pe_cnt;    // 0‑63
+    logic [2:0]  pe_row_cnt;    // 0-7
 
     // Row / column decode for PE index
-    logic [2:0] row_idx, col_idx;
-    assign row_idx = pe_cnt[5:3];
-    assign col_idx = pe_cnt[2:0];
+    // logic [2:0] row_idx, col_idx;
+    // assign row_idx = pe_cnt[5:3];
+    // assign col_idx = pe_cnt[2:0];
 
     // ─── Data path ──────────────────────────────────────────────
     // Drive current slice combinationally, so wr_data is
     // valid in the *same* cycle as axi_wvalid.
-    logic [31:0] cur_slice;
+    logic [255:0] cur_slice;
     always_comb begin
         cur_slice = sel_data(wave_cnt, special_mode,
-                             regfiles[row_idx][col_idx]);
+                             regfiles[pe_row_cnt]);
     end
     assign wr_data = cur_slice;
 
     // Function: choose 32‑bit slice from the 128‑bit regfile
-    function automatic logic [31:0] sel_data
+    function automatic logic [255:0] sel_data
         (input logic [1:0] wave,
          input logic       sp_mode,
-         input logic [127:0] rf);
+         input logic [7:0][127:0] rf);
         begin
-            if (sp_mode) begin
+            logic [255:0] chosen_256bits;//这一行的8个PE，每个PE拿出来32bits
+            chosen_256bits = '0;
+            for(int i=0; i<8; i++) begin
+                if (sp_mode) begin
                 case (wave)
-                    2'd0: sel_data = {rf[47:32],  rf[15:0]};
-                    default: sel_data = {rf[111:96], rf[79:64]};
+                    2'd0: chosen_256bits[i*32+:32] = {rf[i][47:32],  rf[i][15:0]};
+                    default: chosen_256bits[i*32+:32] = {rf[i][111:96], rf[i][79:64]};
                 endcase
-            end else begin
-                sel_data = rf[wave*32 +: 32];
+                end 
+                else begin
+                    case (wave)
+                        2'd0: chosen_256bits[i*32+:32] = rf[i][31:0];
+                        2'd1: chosen_256bits[i*32+:32] = rf[i][63:32];
+                        2'd2: chosen_256bits[i*32+:32] = rf[i][95:64];
+                        default: chosen_256bits[i*32+:32] = rf[i][127:96];
+                    endcase
             end
+            end
+            return chosen_256bits;
         end
     endfunction
 
@@ -136,7 +146,7 @@ module axi_tensor_wr#(
             state      <= IDLE;
             beat_cnt   <= 0;
             wave_cnt   <= 0;
-            pe_cnt     <= 0;
+            pe_row_cnt     <= 0;
         end else begin
             state <= state_n;
 
@@ -144,17 +154,17 @@ module axi_tensor_wr#(
             if (state == IDLE && wr_enb) begin
                 beat_cnt   <= 0;
                 wave_cnt   <= 0;
-                pe_cnt     <= 0;
+                pe_row_cnt     <= 0;
             end
             // advance on each successful data beat
             else if (state == WRITEBACK_DATA && w_hs) begin
                 beat_cnt <= beat_cnt + 1;
 
-                if (pe_cnt == 7'd63) begin
-                    pe_cnt   <= 0;
+                if (pe_row_cnt == 3'd7) begin
+                    pe_row_cnt   <= 0;
                     wave_cnt <= wave_cnt + 1;
                 end else begin
-                    pe_cnt   <= pe_cnt + 1;
+                    pe_row_cnt   <= pe_row_cnt + 1;
                 end
             end
         end
