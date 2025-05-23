@@ -52,7 +52,7 @@ parameter WIDTH=32
     output logic [ADDR_WIDTH-1:0] axi_awaddr,//地址,默认置为0
     output logic [7:0] axi_awlen,//beats个数 256（普通模式）或者128（特殊模式）
     output logic [2:0] axi_awsize,//一个beat的大小 确定是32bits
-    output logic [1:0] axi_awburst //传输类型 incr 2'b01
+    output logic [1:0] axi_awburst, //传输类型 incr 2'b01
     output logic axi_wlast//最后一个数据
 );
 
@@ -83,7 +83,7 @@ parameter WIDTH=32
         .MAX_BURST(256)
     ) axi_tensor_rd_inst (
         .aclk(clk),
-        .aresetn(rst),
+        .aresetn(~rst),
         // .axi_out_issend(axi_out_issend),
         .m_axi_araddr(m_axi_araddr),
         .m_axi_arlen(m_axi_arlen),

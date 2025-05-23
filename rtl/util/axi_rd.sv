@@ -1,9 +1,7 @@
 
 module axi_tensor_rd #(
     parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 256,       // must be power‑of‑2, 32 … 1024
-    parameter ID_WIDTH   = 4,
-    parameter MAX_BURST  = 256         // beats per burst (2…256)
+    parameter DATA_WIDTH = 256     // must be power‑of‑2, 32 … 1024
 )(
     // global
     input                      aclk,
@@ -38,7 +36,7 @@ module axi_tensor_rd #(
     input logic [5:0] axi_out_burst_num,
     input logic [2:0] axi_out_burst_size,
     input logic axi_out_request_valid,
-    input logic [2:0] axi_out_sel
+    input logic [2:0] axi_out_sel //冗余了
 
 
 
@@ -49,6 +47,7 @@ module axi_tensor_rd #(
     assign m_axi_arlen = {2'b0,axi_out_burst_num};
     assign m_axi_arsize = axi_out_burst_size;
     assign m_axi_arvalid = axi_out_request_valid;
+    assign m_axi_arburst = 2'b01; //传输类型 INCR
     
 
 
