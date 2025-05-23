@@ -4,12 +4,6 @@
 `include "addrgen.sv"
 `include "control.sv"
 `include "systolic.sv" 
-`include "axi_wr.sv"
-
-//核心
-//TODO:axi_rd还没实例化
-//TODO:axi_wr的enb信号还没计算
-
 //基本的调度框架
 //systolic遵循一个原则:要么一直流动,要么保持，PE本身遵循这个规律,边界也要遵循这个规律
 module tensorcore #(
@@ -21,94 +15,18 @@ parameter WIDTH=32
     input logic rst,
     input logic start,
     input logic mixed,
-    input params::compute_type_t compute_type;
-
-    //axi_rd接口定义
-    output [ADDR_WIDTH-1:0]    m_axi_araddr,
-    output [7:0]               m_axi_arlen,//transition 数量
-    output [2:0]               m_axi_arsize,
-    output [1:0]               m_axi_arburst, //传输类型 INCR 01
-    output                     m_axi_arvalid,
-    input                      m_axi_arready,
-    input  [DATA_WIDTH-1:0]    m_axi_rdata,
-    input                      m_axi_rlast,
-    input                      m_axi_rvalid,
-    output                     m_axi_rready,
-
-
-
-
-    //axi_wr接口定义
-    output logic [31:0] axi_wdata, //每次送出的数据；
-                                 //如果mixed=1，
-    output logic axi_awvalid,  //进入WRITEBACK_ADDR状态送地址时置1
-    output logic axi_wvalid, //送出数据时同步将valid拉高
-    input  logic axi_awready,//接收者说我准备好了,用于address握手，
-                            //WriteBack模块可以进入WRITEBACK_DATA状态
-    input  logic axi_wready,//接收者说我准备好了,用于data握手
-                           //每收到一个wready，代表送走了一个数据，可以将valid拉低并且换另一个数上了
-                         //不过当前情况下是数据全部算完才给wr_enb信号,所以进入WRITEBACK_DATA
-                         //状态之后，axi_wvalid信号可以常置为1，收到ready时切换输出data即可
-    output logic [ADDR_WIDTH-1:0] axi_awaddr,//地址,默认置为0
-    output logic [7:0] axi_awlen,//beats个数 256（普通模式）或者128（特殊模式）
-    output logic [2:0] axi_awsize,//一个beat的大小 确定是32bits
-    output logic [1:0] axi_awburst, //传输类型 incr 2'b01
-    output logic axi_wlast//最后一个数据
+    output axi_out_request_valid,
+    output logic [2:0] axi_out_sel,
+    output logic [31:0] axi_out_BASE,
+    output logic [5:0] axi_out_burst_num,
+    output logic [2:0] axi_out_burst_size,
+    input logic axi_in_arready,
+    input logic axi_in_finish,
+    input logic axi_in_valid,
+    input logic [255:0] axi_in_data,
+    input logic [31:0] axi_in_burst_id,
+    input params::compute_type_t compute_type
 );
-
-//---------------------------------------------
-//              axi_rd接口连接(中转接口)
-//---------------------------------------------
-    //给tensorcore axi_in的返回
-    logic [255:0] axi_in_data;
-    logic axi_in_finish;
-    logic axi_in_valid;
-    logic axi_in_arready;
-    logic [31:0] axi_in_burst_id;
-
-//tensorcore传过来的请求
-    logic [31:0] axi_out_BASE;
-    logic [5:0] axi_out_burst_num;
-    logic [2:0] axi_out_burst_size;
-    logic axi_out_request_valid;
-    logic [2:0] axi_out_sel;
-    // logic axi_out_issend
-
-
-
-    axi_tensor_rd #(
-        .ADDR_WIDTH(32),
-        .DATA_WIDTH(256),
-        .ID_WIDTH(4),
-        .MAX_BURST(256)
-    ) axi_tensor_rd_inst (
-        .aclk(clk),
-        .aresetn(~rst),
-        // .axi_out_issend(axi_out_issend),
-        .m_axi_araddr(m_axi_araddr),
-        .m_axi_arlen(m_axi_arlen),
-        .m_axi_arsize(m_axi_arsize),
-        .m_axi_arburst(m_axi_arburst),
-        .m_axi_arvalid(m_axi_arvalid),
-        .m_axi_arready(m_axi_arready),
-        .m_axi_rdata(m_axi_rdata),
-        .m_axi_rlast(m_axi_rlast),
-        .m_axi_rvalid(m_axi_rvalid),
-        .m_axi_rready(m_axi_rready),
-        //tensorcore
-        .axi_in_data(axi_in_data),
-        .axi_in_finish(axi_in_finish),
-        .axi_in_valid(axi_in_valid),
-        .axi_in_arready(axi_in_arready),
-        .axi_in_burst_id(axi_in_burst_id), //重要
-        .axi_out_BASE(axi_out_BASE),
-        .axi_out_burst_num(axi_out_burst_num),
-        .axi_out_burst_size(axi_out_burst_size),
-        .axi_out_request_valid(axi_out_request_valid),
-        .axi_out_sel(axi_out_sel)
-    );
-
-
 
 //TODO:always logic
 params::addrgen_t addrtype;
@@ -160,14 +78,6 @@ logic [31:0] counter;//TODO:可以缩小
 always_ff @(posedge clk) begin
     if(rst) begin
         next_state <= params::IDLE;
-        axi_out_request_valid <= 1'b0;
-        axi_out_sel <= 3'b000;
-        axi_out_BASE <= 32'b0;
-        axi_out_burst_num <= 6'b0;
-        axi_out_burst_size <= 3'b0;
-        systolic_counter <= 32'b0;
-        write_counter <= 32'b0;
-
     end
     else begin
     case(state)
@@ -633,27 +543,6 @@ SYSTOLIC systolic_array(
     .out_sum(outsum)
 ); 
 
-    logic [31:0] wr_data;
-
-axi_tensor_wr axi_tensor_write(
-    .clk(clk),
-    .rst(rst),
-    .mixed(mixed),
-    .wr_enb(wben),
-    .addr_type(addrtype),
-    .wr_data(wr_data),
-    .axi_awvalid(axi_awvalid),
-    .axi_wvalid(axi_wvalid),
-    .axi_awready(axi_awready),
-    .axi_wready(axi_wready),
-    .axi_awaddr(axi_awaddr),
-    .axi_awlen(axi_awlen),
-    .axi_awsize(axi_awsize),
-    .axi_awburst(axi_awburst),
-    .axi_wlast(axi_wlast),
-);
-
-assign axi_wdata=wr_data;
 
 
 

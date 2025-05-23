@@ -60,7 +60,7 @@ generate
                 .b_up(b_up[i][j]),
                 .b_down(b_down[i][j]),
                 .addr_type(addr_type),
-                .out_ready(out_ready[i][j])
+                .out_ready(out_ready[i][j]),
                 .regfile(regfiles[i][j])
             );
         end
