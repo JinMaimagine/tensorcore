@@ -8,6 +8,7 @@ VERILATORDIR = $(abspath $(CURDIR))
 $(OBJDIR)/V$(TOP).mk:
 	@mkdir -p $(OBJDIR)
 	verilator -Wall --trace \
+	-CFLAGS   "-std=c++17" \
 	--Wno-LATCH \
 	--Wno-UNDRIVEN \
 	--Wno-UNUSEDSIGNAL \
@@ -29,6 +30,8 @@ $(OBJDIR)/V$(TOP).mk:
 	$(TOPDIR)/$(TOP).sv main.cpp \
 	--top-module $(TOP)
 	ln -sf $(VERILATORDIR)/main.cpp $(OBJDIR)/main.cpp
+	ln -sf $(VERILATORDIR)/ref.cpp $(OBJDIR)/ref.cpp
+	ln -sf $(VERILATORDIR)/half.hpp $(OBJDIR)/half.hpp
 
 # 调用 verilator 生成的 Makefile 编译可执行文件
 

@@ -8,6 +8,10 @@
 #define MAX_SIM_TIME 200 //定义模拟的时钟边沿数（包括上下边沿）
 vluint64_t sim_time = 0;
 
+
+
+
+
 int main(int argc, char** argv, char** env) {
     // 实例化一个 Valu 类型的对象 dut
     Valu *dut = new Valu;

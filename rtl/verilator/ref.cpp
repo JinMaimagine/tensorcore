@@ -84,8 +84,12 @@ public:
             } else if constexpr (std::is_same_v<T, half>) {
                 uint16_t h; std::memcpy(&h, &e, 2);
                 out.insert(out.end(), reinterpret_cast<uint8_t*>(&h), reinterpret_cast<uint8_t*>(&h) + 2);
-            } else {
-                out.push_back(static_cast<uint8_t>(static_cast<int>(e)));
+            } else if constexpr (std::is_same_v<T,int>) {
+                uint32_t w; std::memcpy(&w, &e, 4);
+                out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
+            }
+            else {
+            out.push_back(static_cast<uint8_t>(static_cast<int>(e)));
             }
         }
     }
@@ -129,6 +133,41 @@ class FmaCase {
 public:
     std::vector<uint8_t> bufA, bufB, bufC, bufD;
 
+    template <typename T, size_t R, size_t C>
+void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
+    static_assert(R % 8 == 0 && C % 8 == 0, "Matrix dimensions must be multiple of 8");
+
+    std::cout << "\n>>> " << tag << " — " << R << "×" << C << " in 8×8 tiles (hex view)\n";
+
+    size_t tile_id = 0;
+    for (size_t r = 0; r < 8; ++r) {
+                for (size_t c = 0; c < 8; ++c) {
+                    std::cout << "PE "
+                      << " ["<<8*r+c<<"]\n";
+    for (size_t tr = 0; tr < R; tr += 8) {
+        for (size_t tc = 0; tc < C; tc += 8) {
+                    const T& val = D(tr + r, tc + c);
+                    if constexpr (std::is_same_v<T, float>) {
+                        uint32_t bits;
+                        std::memcpy(&bits, &val, sizeof(bits));
+                        std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
+                    } else if constexpr (std::is_same_v<T, half>) {
+                        uint16_t bits;
+                        std::memcpy(&bits, &val, sizeof(bits));
+                        std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
+                    } else {
+                         int32_t bits;
+                        std::memcpy(&bits, &val, sizeof(bits));
+                        std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
+                    }
+                }
+                std::cout << '\n';
+            }
+            std::cout << std::dec << '\n';
+        }
+    }
+}
+
     FmaCase(const std::string& label, std::mt19937& rng, size_t chunk) {
         Matrix<TA, M, K> A; A.random_fill(rng);
         Matrix<TB, K, N> B; B.random_fill(rng);
@@ -163,6 +202,8 @@ public:
         std::cout << "B buffer (" << bufB.size() << " bytes):\n"; dump_buffer(bufB, chunk);
         std::cout << "C buffer (" << bufC.size() << " bytes):\n"; dump_buffer(bufC, chunk);
         std::cout << "D buffer (" << bufD.size() << " bytes):\n"; dump_buffer(bufD, chunk);
+
+        print_matrix_tiles_hex(D,"print D in tensorcore format");
     }
 };
 

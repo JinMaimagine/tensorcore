@@ -1,8 +1,10 @@
 `include "ENABLE.sv"
 `include "para_pkg.sv"
 `include "MAC_top.sv"
+
+
 module PE
-#(parameter N=4)
+#(parameter ID=0)
 (
 	// interface to system
     input logic clk,                         // cLK = 200MHz
@@ -29,10 +31,63 @@ module PE
     input logic out_ready,
     output logic [32*N-1:0] regfile//就存4个数据,每个32bit
 	);
+    localparam N=4;
     //需要保证en的时候,c一定是有效的
     logic enFP;//FP进行了pipeline,所以enFP要空一个周期
     logic en;
     logic cmen;
+    logic finish;
+    always_ff@(posedge clk)
+    begin
+        if(rst)
+        begin
+            finish<=0;
+        end
+        else
+        begin
+            case(addr_type.datatype)
+                params::FP32:begin
+                    finish<=enFP;
+                end
+                params::FP16:begin
+                    finish<=enFP;
+                end
+                params::INT8:begin
+                    finish<=en;
+                end
+                params::INT4:begin
+                    finish<=cmen;
+                end
+            endcase
+        end        
+    end
+logic display;
+    always_comb
+    begin
+            case(addr_type.datatype)
+                params::FP32:begin
+                    display=finish&&!enFP;
+                end
+                params::FP16:begin
+                    display=finish&&!enFP;
+                end
+                params::INT8:begin
+                    display=finish&&!en;
+                end
+                params::INT4:begin
+                    display=finish&&!cmen;
+                end
+            endcase
+    end
+
+always_ff@(posedge clk)
+    begin
+        if(display)
+        begin
+               $display("PE%0d:%h",ID,{regfile[31:0],regfile[63:32],regfile[95:64],regfile[127:96]});
+        end
+    end
+
     logic NV_o;
     logic OF_o;
     logic UF_o;
@@ -80,9 +135,9 @@ module PE
         begin
             enFP <= 0;
         end
-        else if(en)
+        else
         begin
-            enFP <= 1;
+        enFP<=en;
         end
     end
     DATAENABLE _ENABLE(
@@ -123,6 +178,7 @@ module PE
         .UF_o(UF_o),
         .NX_o(NX_o)
     );
+    logic [31:0] out_reg;
     always_ff@(posedge clk)
     begin
         if(rst)
@@ -158,14 +214,14 @@ module PE
         begin
             regfile[{regfile_pointer,5'b0}+:32] <= c;
         end
-        else if(enFP)
+        if(enFP)
         begin
             if(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)
             begin
                 regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
             end
         end
-        else if(en)
+        if(en)
         begin
             if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
             begin

@@ -79,23 +79,23 @@ assign finish=state==params::FINISH;
 always_comb begin
     case(compute_type.data_type)
         params::FP32: begin
-            systolic.systolic_time = 32'd64;
-            systolic.waitwrite_time = 32'd10;
+            systolic.systolic_time = 32'd63;//32'd64-1
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         params::FP16: begin
-            systolic.systolic_time = 32'd64;
-            systolic.waitwrite_time = 32'd10;
+            systolic.systolic_time = 32'd63;
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         params::INT8: begin
-            systolic.systolic_time = 32'd16;
-            systolic.waitwrite_time = 32'd10;
+            systolic.systolic_time = 32'd15;//32'd16-1
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         default: begin //INT4
-            systolic.systolic_time = 32'd8;
-            systolic.waitwrite_time = 32'd10;
+            systolic.systolic_time = 32'd7;//32'd8-1
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
     endcase
@@ -217,9 +217,6 @@ always_ff @(posedge clk) begin
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
             end
-            else begin
-                axi_out_request_valid<=1'b1;
-            end
             if(axi_in_finish) begin//TODO:注意外部finish及时清零
                 next_state <= params::LOAD_A;
                 axi_out_sel<=3'b100;//A
@@ -237,8 +234,8 @@ always_ff @(posedge clk) begin
                                 axi_out_burst_size <= $clog2(256/8);
                             end
                             params::INT8: begin
-                                axi_out_burst_num <= 6'd15; 
-                                axi_out_burst_size <= $clog2(256/8); 
+                                axi_out_burst_num <= 6'd63; 
+                                axi_out_burst_size <= $clog2(64/8); 
                             end
                             default: begin //INT4
                                 axi_out_burst_num <= 6'd7; 
@@ -293,9 +290,6 @@ always_ff @(posedge clk) begin
         params::LOAD_A: begin//这里一次性将A填满 8*16*32bit
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
-            end
-            else begin
-                axi_out_request_valid<=1'b1;
             end
             if (axi_in_finish) begin
                 next_state <= params::LOAD_B;
@@ -371,9 +365,6 @@ always_ff @(posedge clk) begin
             if(axi_in_arready) begin
                 axi_out_request_valid<=1'b0; //确认发送数据方已经接收到地址,burst等信息
             end
-            else begin
-                axi_out_request_valid<=1'b1;
-            end
 
             if (axi_in_finish) begin
                 next_state <= params::SYSTOLIC;
@@ -391,14 +382,14 @@ always_ff @(posedge clk) begin
                     end
                     else
                     begin
-                        next_state<=params::WRITE_BACK;
-                        write_counter<=systolic.writeback_time;
+                        next_state<=params::WAIT_WRITE;
+                        write_counter<=systolic.waitwrite_time;
                     end
                 end
             end
         end
         params::ACCUMULATE: begin
-            next_state<=params::WRITE_BACK;
+            next_state<=params::WAIT_WRITE;
             write_counter<=systolic.waitwrite_time;
         end
         params::WAIT_WRITE: begin
@@ -512,8 +503,8 @@ logic [7:0][31:0] control_b_data_in;
 logic [7:0][31:0] control_b_data_out;
 logic [7:0] control_b_en_out;
 logic [7:0] control_b_cmen_out;
-logic [7:0][31:0] rdaddr_a_out;
-logic [7:0][31:0] rdaddr_b_out;
+logic [7:0][5:0] rdaddr_a_out;
+logic [7:0][5:0] rdaddr_b_out;
 logic [7:0] re_a;
 logic [7:0] re_b;
 CONTROL_A control_a(

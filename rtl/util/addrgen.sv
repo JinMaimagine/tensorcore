@@ -19,21 +19,24 @@ module ADDRGEN_UNIT(
     output logic [31:0] rdaddr_B//此处rdaddr考虑了浮点,最后对应到sram的时候从第1位开始取出
 );
 logic [31:0] counteraddr;
+
+always_comb begin
+    cmen_out_A=cmin;
+    cmen_out_B=cmin;
+    en_out_A=en_in;
+    en_out_B=en_in;
+end
+
+
 always_ff @(posedge clk) begin
     if(rst)
     begin
     rdaddr_A<=0;
     rdaddr_B<=0;
-    counteraddr<=0;
-    en_out_A<=0;
-    en_out_B<=0;
-    cmen_out_A<=0;
-    cmen_out_B<=0;
+    counteraddr<=1;//初始值,在后面debug的时候发现为了协调所必须的值
     end
     if(en_in)
     begin
-        en_out_A<=1;
-        en_out_B<=1;
         counteraddr<=counteraddr+1;
         begin
             case(addrs.datatype)
@@ -48,7 +51,7 @@ always_ff @(posedge clk) begin
                         2'b01:
                         begin
                             rdaddr_A<=counteraddr[1]*64+counteraddr[2]*32+counteraddr[5:3]*4;
-                            rdaddr_B<=counteraddr[0]*4+counteraddr[1]*64+counteraddr[5:3]*8;
+                            rdaddr_B<=counteraddr[0]*4+counteraddr[2]*64+counteraddr[5:3]*8;
                         end
                         2'b10:
                         begin
@@ -69,7 +72,7 @@ always_ff @(posedge clk) begin
                         2'b01:
                         begin
                             rdaddr_A<=counteraddr[1]*32+counteraddr[2]*2+counteraddr[5:3]*4;
-                            rdaddr_B<=counteraddr[0]*2+counteraddr[1]*32+counteraddr[5:3]*4;
+                            rdaddr_B<=counteraddr[0]*2+counteraddr[2]*32+counteraddr[5:3]*4;
                         end
                         2'b10:
                         begin
@@ -84,7 +87,7 @@ always_ff @(posedge clk) begin
                     case(addrs.rc)
                         2'b00:
                         begin
-                            rdaddr_A<=counteraddr[0]*32+counteraddr[1]*4;
+                            rdaddr_A<=counteraddr[0]*32+counteraddr[3:1]*4;
                             rdaddr_B<=rdaddr_B+2;
                         end
                         2'b01:
@@ -95,7 +98,7 @@ always_ff @(posedge clk) begin
                         2'b10:
                         begin
                             rdaddr_A<=rdaddr_A+2;
-                            rdaddr_B<=counteraddr[0]*32+counteraddr[1]*4;//8*4
+                            rdaddr_B<=counteraddr[0]*32+counteraddr[3:1]*4;//8*4
                         end
                         default: assert(0);
                     endcase
@@ -108,10 +111,5 @@ always_ff @(posedge clk) begin
             endcase
         end
 end
-else if(cmin)
-        begin
-            cmen_out_A<=1;
-            cmen_out_B<=1;
-        end
 end
 endmodule

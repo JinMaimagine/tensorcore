@@ -53,7 +53,7 @@ parameter ENTRYS   = 64
     input logic clk,
     input logic [$clog2(ENTRYS)-1:0] rdaddr,
     output logic [7:0][RDWIDTH-1:0] data_out,
-    input logic [7:0][WRWIDTH-1:0] data_in,
+    input logic [7:0][7:0][3:0] data_in,
     //每个含有8位
     input logic [7:0]we,
     input logic re
@@ -69,17 +69,20 @@ generate
             .clk(clk),
             .rdaddr(rdaddr),
             .data_out(data_out[i]),
-            .data_in(data_in[i]),
+            .data_in({data_in[7][i],data_in[6][i],data_in[5][i],data_in[4][i],data_in[3][i],data_in[2][i],data_in[1][i],data_in[0][i]}),
+            //.data_in(data_in[7:0][i]),
             .we(we[i]),
             .re(re)
         );
     end
 endgenerate
 endmodule
+//奇怪的问题，遇到了很多次
+//question:data_in[7:0][i]和data_in[i]起到的效果完全相同???????
 module SRAM_A #(//可以用来实例化SRAM_A
     parameter WRWIDTH = 32,
     parameter RDWIDTH = 4,
-    parameter ENTRYS = 16
+    parameter ENTRYS = 64
 )(
     input logic rst,
     input logic clk,
@@ -110,7 +113,7 @@ endmodule
 //封装成SRAM_B:对于一列的PE,输入输出都是4bit
 module SRAM_B_BANK #(
     parameter int unsigned WIDTH = 4,
-    parameter int unsigned ENTRYS = 16
+    parameter int unsigned ENTRYS = 64
 )(
     input logic clk,
     input logic rst,
@@ -145,7 +148,7 @@ end
 endmodule
 module SRAM_B_Unit#(
 parameter int unsigned WIDTH = 4,
-parameter int unsigned ENTRYS = 16
+parameter int unsigned ENTRYS = 64
 )(
     input logic rst,
     input logic clk,
@@ -174,11 +177,11 @@ endgenerate
 endmodule
 module SRAM_B #(
     parameter int unsigned WIDTH = 4,
-    parameter int unsigned ENTRYS = 16
+    parameter int unsigned ENTRYS = 64
 )(
     input logic rst,
     input logic clk,
-    input logic [$clog2(ENTRYS)-1:0] rdaddr,
+    input logic [7:0][$clog2(ENTRYS)-1:0] rdaddr,
     output logic [7:0][7:0][WIDTH-1:0] data_out,
     input logic [7:0][7:0][WIDTH-1:0] data_in,
     input logic [7:0][7:0]we,
@@ -192,7 +195,7 @@ generate
         ) sram_row (
             .rst(rst),
             .clk(clk),
-            .rdaddr(rdaddr),
+            .rdaddr(rdaddr[i]),
             .data_out(data_out[i]),
             .data_in(data_in[i]),
             .we(we[i]),
