@@ -1,0 +1,65 @@
+\documentclass[zihao=-4, UTF8]{ctexart}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{graphicx,subcaption}
+\usepackage{float}
+\usepackage{amsmath,amssymb}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue]{hyperref}
+\usepackage{enumitem}
+
+% 自定义插图命令
+\newcommand{\myfig}[4][]{
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=#2\textwidth]{figures/#3}
+    \caption{#4}
+    \label{fig:#3}
+  \end{figure}
+}
+
+\title{架构说明与分工明细}
+\author{马晋}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+
+% 各模块
+\section{分工}
+\subsection{马晋}
+\begin{itemize}
+  \item 完成了基本的MAC模块(参考了多种版本FP的比较:排除了FPnew，因为FPnew冗余过多及实现简单,pipeline方式低效)
+  \item MAC模块FP32的pipeline+MAC模块中的加法部分(同时支持4bit和8bit)+FP16toFP32.sv
+  \item transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv
+  \item 对整体的tensorcore进行了测试以及debug,包括找到部分MAC的错误
+  \item 全局统筹项目
+\end{itemize}
+\subsection{李亚飞}
+\begin{itemize}
+    \item 完成了tensorcore中burst\_num和burst\_size以及systolic\_time和waitwrite\_time的计算并加入
+    \item 完成了各种axi的逻辑,以及最后在PE中加入了写回到AXI的逻辑，并组装成整体的模块
+    \item 完成了FP16toFP32模块+FP32toFP16.sv从而组合出MAC\_FP
+    \item 组装了MAC\_FP和MAC\_adder从而完成顶层MAC,同时支持多精度FP,INT
+    \item 对整个MAC模块进行了测试以及debug
+    \item 协调统筹项目
+\end{itemize}
+\subsection{王俊涵}
+\begin{itemize}
+    \item 完成了mult\_INT4(自写testbench),mult\_INT8(自写testbench),CLA(自写testbench),MAC(testbench由马晋提供)的验证
+    \item 完成了MAC的综合+最终top的综合
+\end{itemize}
+\subsection{补充}
+\begin{itemize}
+    \item 马晋和李亚飞参与了初步的架构构建,在这个过程中马晋提出了采用分块乘法并在最后阶段做加法的想法,两人确定了其中部分参数
+    \item 马晋自己完成了最终的架构构建:考虑了数据排布的影响,否决了前面提出的矩阵乘法的顺序
+    \item 在最终的架构构建阶段,考虑将systolic与PE的复杂性解耦合,用addrgen专门生成数据取地址,大大提高了效率
+    \item 马晋可能会考虑继续对于架构进行优化,目前在INT4与INT8的情况下,算力>>带宽,但是很容易将架构进行扩展,利用多个SRAM使得算力得到充分运用
+\end{itemize}
+\subsection{贡献度:仅供参考}
+\begin{itemize}
+    \item 马晋: 70\%
+    \item 李亚飞: 25\%
+    \item 王俊涵: 5\%
+\end{itemize}
+\end{document}

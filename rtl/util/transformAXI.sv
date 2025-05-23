@@ -197,7 +197,7 @@ always_comb begin
                         2'b00: begin // N8
                             for (int i = 0; i < 8; i++) begin
                                 we_B_temp[i] = 8'h01<<burst_num[3];
-                                data_out_B_temp[i][0] = data_in[4*i +:4];
+                                data_out_B_temp[i][burst_num[3]] = data_in[4*i +:4];
                             end
                         end
                         2'b01: begin

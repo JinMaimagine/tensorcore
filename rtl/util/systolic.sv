@@ -33,7 +33,7 @@ logic [7:0][7:0][31:0] b_down;
 generate 
     for (genvar i = 0; i < 8; i++) begin
         for (genvar j = 0; j < 8; j++) begin
-            PE #(.N(4)) pe (
+            PE #(.ID(8*i+j)) pe (
                 .clk(clk),                       
                 .rst(rst),                                     
                 .enleft(en_left[i][j]),              

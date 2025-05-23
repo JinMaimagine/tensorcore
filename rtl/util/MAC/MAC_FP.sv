@@ -47,7 +47,8 @@ module MAC_FP#(
 			default: FP16toFP32_convert_enb = 0; // 其他模式
 		endcase
 	end
-    
+    logic FP16toFP32_convert_enb_c;
+	assign FP16toFP32_convert_enb_c = mode==2'b00;
     // FP16到FP32的转换模块实例化
     FP16toFP32 #(
 		.PARM_XLEN(32)
@@ -74,7 +75,7 @@ module MAC_FP#(
 	)
 	u_fp16_to_fp32_3
 	(
-		.mode(FP16toFP32_convert_enb),
+		.mode(FP16toFP32_convert_enb_c),
         .fp16(IN3[31:0]), // 只取IN3的低32位
         .fp32(fp32_in3)
     );

@@ -4,7 +4,7 @@
 
 
 module PE
-#(parameter N=4)
+#(parameter ID=0)
 (
 	// interface to system
     input logic clk,                         // cLK = 200MHz
@@ -30,10 +30,63 @@ module PE
     input params::addrgen_t addr_type,
     input logic out_ready
 	);
+    localparam N=4;
     //需要保证en的时候,c一定是有效的
     logic enFP;//FP进行了pipeline,所以enFP要空一个周期
     logic en;
     logic cmen;
+    logic finish;
+    always_ff@(posedge clk)
+    begin
+        if(rst)
+        begin
+            finish<=0;
+        end
+        else
+        begin
+            case(addr_type.datatype)
+                params::FP32:begin
+                    finish<=enFP;
+                end
+                params::FP16:begin
+                    finish<=enFP;
+                end
+                params::INT8:begin
+                    finish<=en;
+                end
+                params::INT4:begin
+                    finish<=cmen;
+                end
+            endcase
+        end        
+    end
+logic display;
+    always_comb
+    begin
+            case(addr_type.datatype)
+                params::FP32:begin
+                    display=finish&&!enFP;
+                end
+                params::FP16:begin
+                    display=finish&&!enFP;
+                end
+                params::INT8:begin
+                    display=finish&&!en;
+                end
+                params::INT4:begin
+                    display=finish&&!cmen;
+                end
+            endcase
+    end
+
+always_ff@(posedge clk)
+    begin
+        if(display)
+        begin
+               $display("PE%0d:%h",ID,{regfile[31:0],regfile[63:32],regfile[95:64],regfile[127:96]});
+        end
+    end
+
     logic NV_o;
     logic OF_o;
     logic UF_o;
@@ -43,7 +96,7 @@ module PE
     logic [2:0] mode;
     logic [127:0] IN3;
     logic [127:0] OUT;
-    logic [32*N-1:0] regfile;//就存4个数据,每个32bit
+    logic [32*N-1:0] regfile/* verilator public */ ;     //就存4个数据,每个32bit
     logic[1:0] regfile_pointer;//至于设置为多大有para_pkg决定
     assign a = a_left;
     assign b = b_up;
@@ -124,6 +177,7 @@ module PE
         .UF_o(UF_o),
         .NX_o(NX_o)
     );
+    logic [31:0] out_reg;
     always_ff@(posedge clk)
     begin
         if(rst)

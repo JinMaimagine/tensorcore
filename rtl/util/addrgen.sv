@@ -51,7 +51,7 @@ always_ff @(posedge clk) begin
                         2'b01:
                         begin
                             rdaddr_A<=counteraddr[1]*64+counteraddr[2]*32+counteraddr[5:3]*4;
-                            rdaddr_B<=counteraddr[0]*4+counteraddr[1]*64+counteraddr[5:3]*8;
+                            rdaddr_B<=counteraddr[0]*4+counteraddr[2]*64+counteraddr[5:3]*8;
                         end
                         2'b10:
                         begin
@@ -72,7 +72,7 @@ always_ff @(posedge clk) begin
                         2'b01:
                         begin
                             rdaddr_A<=counteraddr[1]*32+counteraddr[2]*2+counteraddr[5:3]*4;
-                            rdaddr_B<=counteraddr[0]*2+counteraddr[1]*32+counteraddr[5:3]*4;
+                            rdaddr_B<=counteraddr[0]*2+counteraddr[2]*32+counteraddr[5:3]*4;
                         end
                         2'b10:
                         begin

@@ -80,21 +80,52 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     top->axi_in_finish = 0;
     top->axi_in_valid = 0;
     top->axi_in_burst_id = 0;
-    //top->compute_type=0;
-    //top->compute_type = 1;//{compute_shape,compute_type}
+
+
+
+    //top->compute_type=0;//float,32,16,8
+    //top->compute_type=4;
+    //top->compute_type=8;//float,32,16,8
+
+    //top->compute_type = 1;//fp16 32,16,8   //{compute_shape,compute_type}
+    //top->compute_type=5;//fp16,16,16,16
+    //top->compute_type=9;//fp16,8,16,32
+
+    //mixed:
+    //top->mixed = 1;
+
     //top->compute_type = 2;//int8,32,16,8 //{compute_shape,data_type}
     //top->compute_type = 6;//int8,16,16,16
     //top->compute_type = 10;//int8,8,16,32
+
+    //top->compute_type = 3;//int4,32,16,8 //{compute_shape,data_type}
+    //top->compute_type = 7;//int4,16,16,16
+    top->compute_type = 11;//int4,8,16,32
     top->init();
     //此时对于data dont care
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
     //auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
-    //auto fmacase=FmaCase<half,half,half,half,32,16,8>("M32K16×K16N8+M32N8 ", rng,chunk);
+    //auto fmacase=FmaCase<float,float,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,chunk); 
+    //auto fmacase=FmaCase<float,float,float,float,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+
+    //auto fmacase=FmaCase<half,half,half,half,32,16,8>("M32K16×K16N8+M32N8 ", rng,chunk);    
+    //auto fmacase=FmaCase<half,half,half,half,16,16,16>("M32K16×K16N8+M32N8 ", rng,chunk);
+    //auto fmacase=FmaCase<half,half,half,half,8,16,32>("M32K16×K16N8+M32N8 ", rng,chunk);
+       
+    //mixed:
+    //auto fmacase=FmaCase<half,half,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);    
+    //auto fmacase=FmaCase<half,half,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    //auto fmacase=FmaCase<half,half,float,float,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+
     //auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     //auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
-    auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+    //auto fmacase=FmaCase<int8_t,int8_t,int8_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+
+    //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
@@ -108,8 +139,8 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     int bytes_per_beat;
     // Now initialize the axi_in values for transfer (to simulate input data from Verilator)
      std::vector<uint8_t>buf;
+     std::cout<<"will display regfile in PE"<<std::endl;
     while (!Verilated::gotFinish() && cycle_count < 500) {
-         std::cout<<"a new cycle "<<cycle_count<<std::endl;
         top->axi_in_finish=0;//每次清零
         top->axi_in_valid = 0;//正常每次清零
         // Simulation of the "start" signal (can be set externally in a real test)
@@ -151,6 +182,21 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
                 for (int w = 0; w < 8; ++w) {
                     top->axi_in_data[w] = 0;//后面为了验证稳定性,可能就会赋随机值
                 }
+                if(top->compute_type==3||top->compute_type==7||top->compute_type==11)
+                {
+                    //todo:
+                    bytes_per_beat = 1u << top->axi_out_burst_size;
+                    int base = 2 * burst_id * bytes_per_beat;
+                    for (int i = 0; i < 2*bytes_per_beat; ++i) {
+                    uint8_t v = buf[base + i];
+                    v&= 0x0F; // 避免对后面的|发生影响
+                    int word_idx   = i / 8;         // 每 8 个uint4一个 32bit word
+                    int byte_shift = (i % 8) * 4;   // byte 在 word 内的偏移
+                    top->axi_in_data[word_idx] |= uint32_t(v) << byte_shift;
+                }
+                }
+                else
+                {
                 // 从 buf 的 offset = burst_id*burst_size 开始，取 burst_size 字节
                 bytes_per_beat = 1u << top->axi_out_burst_size;
                 int base = burst_id * bytes_per_beat;
@@ -160,6 +206,7 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
                     int byte_shift = (i % 4) * 8;   // byte 在 word 内的偏移
                     top->axi_in_data[word_idx] |= uint32_t(v) << byte_shift;
                 }
+            }
                 if (top->axi_in_burst_id < top->axi_out_burst_num) {
                     burst_id++;
                 } else {
@@ -184,7 +231,7 @@ int main(int argc, char** argv) {
     // Run the test simulation
     run_tensorcore_test(top,32); // Adjust chunk_size (default is 32)
     //目前还在可视化阶段,我应该弄一个函数,将D矩阵切成8*8的大块(先按行,然后再按照列),然后维度在3维,先按照行切在按照列切,这样能与原来的部分很好的相融合
-
+    //上面的已完成
     delete top;
     return 0;
 }
