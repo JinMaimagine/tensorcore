@@ -50,22 +50,22 @@ always_comb begin
     case(compute_type.data_type)
         params::FP32: begin
             systolic.systolic_time = 32'd63;//32'd64-1
-            systolic.waitwrite_time = 32'd10;
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         params::FP16: begin
             systolic.systolic_time = 32'd63;
-            systolic.waitwrite_time = 32'd10;
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         params::INT8: begin
             systolic.systolic_time = 32'd15;//32'd16-1
-            systolic.waitwrite_time = 32'd10;
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
         default: begin //INT4
             systolic.systolic_time = 32'd7;//32'd8-1
-            systolic.waitwrite_time = 32'd10;
+            systolic.waitwrite_time = 32'd20;
             // systolic.writeback_time = 32'd10;
         end
     endcase
@@ -344,14 +344,14 @@ always_ff @(posedge clk) begin
                     end
                     else
                     begin
-                        next_state<=params::WRITE_BACK;
-                        write_counter<=systolic.writeback_time;
+                        next_state<=params::WAIT_WRITE;
+                        write_counter<=systolic.waitwrite_time;
                     end
                 end
             end
         end
         params::ACCUMULATE: begin
-            next_state<=params::WRITE_BACK;
+            next_state<=params::WAIT_WRITE;
             write_counter<=systolic.waitwrite_time;
         end
         params::WAIT_WRITE: begin

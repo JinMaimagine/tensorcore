@@ -83,7 +83,7 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
 
 
 
-    //top->compute_type=0;//float,32,16,8
+    top->compute_type=0;//float,32,16,8
     //top->compute_type=4;
     //top->compute_type=8;//float,32,16,8
 
@@ -100,13 +100,13 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
 
     //top->compute_type = 3;//int4,32,16,8 //{compute_shape,data_type}
     //top->compute_type = 7;//int4,16,16,16
-    top->compute_type = 11;//int4,8,16,32
+    //top->compute_type = 11;//int4,8,16,32
     top->init();
     //此时对于data dont care
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
-    //auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     //auto fmacase=FmaCase<float,float,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,chunk); 
     //auto fmacase=FmaCase<float,float,float,float,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
 
@@ -125,7 +125,7 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
 
     //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
-    auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+    //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;
@@ -140,6 +140,7 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     // Now initialize the axi_in values for transfer (to simulate input data from Verilator)
      std::vector<uint8_t>buf;
      std::cout<<"will display regfile in PE"<<std::endl;
+     int delaytime=0;
     while (!Verilated::gotFinish() && cycle_count < 500) {
         top->axi_in_finish=0;//每次清零
         top->axi_in_valid = 0;//正常每次清零
@@ -176,7 +177,16 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
         //burst_id*burst_size开始,将buf往后读取burst_size个byte,传入axi_in_data开始的burst_size个byte,
         //axi_in_data是int [8]的数组
         if (in_transfer_state) {
-            top->axi_in_valid=1;
+            top->axi_in_valid=delaytime==0;
+            if(delaytime>0)
+            {
+                delaytime--;
+            }
+            else
+            {
+                std::uniform_int_distribution<int> dist(1, 3);
+                delaytime=dist(rng);
+            }
             if (top->axi_in_valid) {
                 top->axi_in_burst_id = burst_id;
                 for (int w = 0; w < 8; ++w) {
