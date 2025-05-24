@@ -25,7 +25,7 @@ module axi_tensor_rd #(
     output                     m_axi_rready,
     
     //给tensorcore axi_in的返回
-    output logic [255:0] axi_in_data,
+    output logic [DATA_WIDTH-1:0] axi_in_data,
     output logic axi_in_finish,
     output logic axi_in_valid,
     output logic axi_in_arready,

@@ -6,3 +6,6 @@ clear.sh
 mac_modified_FP32toFP16.patch
 rtl/util/MAC/build
 obj_dir
+rtl/util/verilator_include.sh
+rtl/util/verilator_tb_axi_wr.sh
+rtl/util/lint.log

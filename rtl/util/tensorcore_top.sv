@@ -12,7 +12,8 @@ module tensorcore_top #(
 parameter L=8,
 parameter ENTRYS=1024,
 parameter WIDTH=32,
-parameter ADDR_WIDTH=32
+parameter ADDR_WIDTH=32,
+parameter DATA_WIDTH=256
 )(
     input logic clk,
     input logic rst,
@@ -36,7 +37,7 @@ parameter ADDR_WIDTH=32
 
 
     //axi_wr接口定义
-    output logic [255:0] axi_wdata, //每次送出的数据；
+    output logic [DATA_WIDTH-1:0] axi_wdata, //每次送出的数据；
                                  //如果mixed=1，
     output logic axi_awvalid,  //进入WRITEBACK_ADDR状态送地址时置1
     output logic axi_wvalid, //送出数据时同步将valid拉高
@@ -57,7 +58,7 @@ parameter ADDR_WIDTH=32
 //              axi_rd接口连接(中转接口)
 //---------------------------------------------
     //给tensorcore axi_in的返回
-    logic [255:0] axi_in_data;
+    logic [DATA_WIDTH-1:0] axi_in_data;
     logic axi_in_finish;
     logic axi_in_valid;
     logic axi_in_arready;
@@ -75,10 +76,8 @@ parameter ADDR_WIDTH=32
 
     axi_tensor_rd #(
         .ADDR_WIDTH(32),
-        .DATA_WIDTH(256),
-        .ID_WIDTH(4),
-        .MAX_BURST(256)
-    ) axi_tensor_rd_inst (
+        .DATA_WIDTH(256)
+        ) axi_tensor_rd_inst (
         .aclk(clk),
         .aresetn(~rst),
         // .axi_out_issend(axi_out_issend),
@@ -108,6 +107,8 @@ parameter ADDR_WIDTH=32
 //---------------------------------------------
 //              tensorcore实例化
 //---------------------------------------------
+
+logic [7:0][7:0][127:0] regfiles;
 tensorcore #(
 	.L(L),
 	.ENTRYS(ENTRYS),
@@ -127,12 +128,17 @@ tensorcore #(
 	.axi_in_finish(axi_in_finish),
 	.axi_in_valid(axi_in_valid),
 	.axi_in_burst_id(axi_in_burst_id),
-	.compute_type(compute_type)
+	.compute_type(compute_type),
+    .regfile(regfiles),
+    .wben(wben),
+    .addrtype(addrtype)
 );
 
 
 
     logic [31:0] wr_data;
+    logic wben;
+    params::addrgen_t addrtype;
 
 axi_tensor_wr axi_tensor_write(
     .clk(clk),
@@ -150,6 +156,7 @@ axi_tensor_wr axi_tensor_write(
     .axi_awsize(axi_awsize),
     .axi_awburst(axi_awburst),
     .axi_wlast(axi_wlast),
+    .regfiles(regfiles)
 );
 
 assign axi_wdata=wr_data;

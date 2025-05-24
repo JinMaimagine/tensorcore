@@ -25,11 +25,14 @@ parameter WIDTH=32
     input logic axi_in_valid,
     input logic [255:0] axi_in_data,
     input logic [31:0] axi_in_burst_id,
-    input params::compute_type_t compute_type
+    input params::compute_type_t compute_type,
+    output logic [7:0][7:0][127:0] regfile,
+    output logic wben,
+    output params::addrgen_t addrtype
 );
 
 //TODO:always logic
-params::addrgen_t addrtype;
+
 assign addrtype.datatype=compute_type.data_type;
 assign addrtype.rc=compute_type.compute_shape==params::M32K16N8?2'b00:(compute_type.compute_shape==params::M16K16N16?2'b01:2'b10);//TODO:error这里可能有问题
 params::SYSTOLIC_pkg_t systolic;
@@ -521,7 +524,7 @@ SRAM_B sram_b (
     .re(re_b)
 );
 
-logic wben;
+
 assign wben=state==params::WRITE_BACK;
 logic [7:0][7:0][31:0] outsum;
 logic [7:0][7:0] out_ready;
@@ -540,7 +543,8 @@ SYSTOLIC systolic_array(
     .addr_type(addrtype),
     .mixed(mixed),
     .out_ready(out_ready),
-    .out_sum(outsum)
+    .out_sum(outsum),
+    .regfile(regfile)
 ); 
 
 
