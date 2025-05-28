@@ -1,6 +1,7 @@
 `include "tensorcore.sv"
 `include "axi_rd.sv"
 `include "axi_wr.sv"
+`include "axi_lite.sv"
 
 //核心
 //TODO:axi_rd还没实例化
@@ -17,9 +18,18 @@ parameter DATA_WIDTH=256
 )(
     input logic clk,
     input logic rst,
-    input logic start,
-    input logic mixed,
-    input params::compute_type_t compute_type,
+
+    //axi_lite接口定义
+    output logic                    lite_arvalid,
+    input  logic                    lite_arready,
+    output logic [ADDR_WIDTH-1:0]   lite_araddr,
+    output logic [2:0]              lite_arprot,//3'b000 普通安全访问
+    input  logic                    lite_rvalid,
+    output logic                    lite_rready,
+    input  logic [DATA_WIDTH-1:0]   lite_rdata,
+    input  logic [1:0]              lite_rresp, // 2'b00 OKAY, 2'b01 EXOKAY, 
+										//2'b10 SLVERR, 2'b11 DECERR
+
 
     //axi_rd接口定义
     output [ADDR_WIDTH-1:0]    m_axi_araddr,
@@ -53,6 +63,34 @@ parameter DATA_WIDTH=256
     output logic [1:0] axi_awburst, //传输类型 incr 2'b01
     output logic axi_wlast//最后一个数据
 );
+
+//---------------------------------------------
+//              axi_lite接口
+//---------------------------------------------
+    logic start,
+    logic mixed,
+    params::compute_type_t compute_type,
+    axi_lite #(
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH)
+    ) axi_lite_inst (
+        .aclk(clk),
+        .aresetn(~rst),
+        .arvalid(lite_arvalid),
+        .arready(lite_arready),
+        .araddr(lite_araddr),
+        .arprot(lite_arprot),
+        .rvalid(lite_rvalid),
+        .rready(lite_rready),
+        .rdata(lite_rdata),
+        .rresp(lite_rresp),
+        //控制信号
+        .start(start),
+        .mixed(mixed),
+        .compute_type(compute_type)
+    );
+
+
 
 //---------------------------------------------
 //              axi_rd接口连接(中转接口)
