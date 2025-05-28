@@ -26,7 +26,7 @@ parameter DATA_WIDTH=256
     output logic [2:0]              lite_arprot,//3'b000 普通安全访问
     input  logic                    lite_rvalid,
     output logic                    lite_rready,
-    input  logic [DATA_WIDTH-1:0]   lite_rdata,
+    input  logic [DATA_WIDTH-1:0]   lite_rdata, //lite协议规定32位
     input  logic [1:0]              lite_rresp, // 2'b00 OKAY, 2'b01 EXOKAY, 
 										//2'b10 SLVERR, 2'b11 DECERR
 

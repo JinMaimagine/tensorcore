@@ -20,7 +20,7 @@ module axi_lite import params::*; #(
     output logic                    rready,
     input  logic [DATA_WIDTH-1:0]   rdata,
     input  logic [1:0]              rresp, // 2'b00 OKAY, 2'b01 EXOKAY, 
-										//2'b10 SLVERR, 2'b11 DECERR
+										   //2'b10 SLVERR, 2'b11 DECERR
     output logic                    start,
     output logic                    mixed,
     output compute_type_t           compute_type
@@ -70,7 +70,7 @@ module axi_lite import params::*; #(
         end
     end
 
-    // Control signals assignment
+    // 只用低6位
     assign start = control_reg[0];
     assign mixed = control_reg[1];
     assign compute_type = compute_type_t'(control_reg[5:2]);
