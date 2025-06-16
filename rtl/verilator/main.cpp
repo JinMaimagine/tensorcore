@@ -83,13 +83,13 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
 
 
 
-    top->compute_type=0;//float,32,16,8
+    //top->compute_type=0;//float,32,16,8
     //top->compute_type=4;
-    //top->compute_type=8;//float,32,16,8
+    //top->compute_type=8;//float,8,16,32
 
     //top->compute_type = 1;//fp16 32,16,8   //{compute_shape,compute_type}
     //top->compute_type=5;//fp16,16,16,16
-    //top->compute_type=9;//fp16,8,16,32
+    top->compute_type=9;//fp16,8,16,32
 
     //mixed:
     //top->mixed = 1;
@@ -106,13 +106,13 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
 
     //这里指定测试的类型
     std::mt19937 rng(std::random_device{}());
-    auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<float,float,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     //auto fmacase=FmaCase<float,float,float,float,16,16,16>("M16K16×K16N16+M16N16", rng,chunk); 
     //auto fmacase=FmaCase<float,float,float,float,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
 
     //auto fmacase=FmaCase<half,half,half,half,32,16,8>("M32K16×K16N8+M32N8 ", rng,chunk);    
     //auto fmacase=FmaCase<half,half,half,half,16,16,16>("M32K16×K16N8+M32N8 ", rng,chunk);
-    //auto fmacase=FmaCase<half,half,half,half,8,16,32>("M32K16×K16N8+M32N8 ", rng,chunk);
+    auto fmacase=FmaCase<half,half,half,half,8,16,32>("M32K16×K16N8+M32N8 ", rng,chunk);
        
     //mixed:
     //auto fmacase=FmaCase<half,half,float,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);    

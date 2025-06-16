@@ -14,7 +14,7 @@ input logic[7:0][7:0][31:0] c,
 input logic wben,
 input params::addrgen_t addr_type,
 input logic mixed,
-output logic [7:0][7:0] out_ready,
+input logic [7:0][7:0] out_ready,
 output logic [7:0][7:0][31:0] out_sum
 );
 logic [7:0][7:0] en_left;

@@ -35,6 +35,12 @@
 \begin{itemize}
   \item 采用了分块乘法的方式,在最后阶段进行加法,提高并行性
   \item 每个PE可以支持1个FP16/FP32，浮点乘法采用pipeline形式,4个INT4,INT8的乘法,INT4,INT8复用了加法器,FP16/FP32复用了MAC
+  \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\textwidth]{FP.png}
+      \caption{3种形状的运算}
+      \label{fig:FP16/FP32}
+    \end{figure}
   \item 新增addrgen与control模块,将复杂的逻辑与PE解耦合,使得PE仅需提供简单的功能
   \item 将所有的enable使能信号也完全变成systolic形式,从而不必关注PE内部各种判断与stall,PE完全接受外部使能信号
 \end{itemize}
@@ -104,18 +110,17 @@ ENABLE.sv:\\
 \begin{itemize}
   \item 完成了基本的MAC模块(参考了多种版本FP的比较:排除了FPnew，因为FPnew冗余过多及实现简单,pipeline方式低效)
   \item MAC模块FP32的pipeline+MAC模块中的加法部分(同时支持4bit和8bit)+FP16toFP32.sv
-  \item transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv
+  \item transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv,从数据传入到数据写回
   \item 对整体的tensorcore进行了测试以及debug,包括找到部分MAC的错误
   \item 全局统筹项目
 \end{itemize}
 \subsection{李亚飞}
 \begin{itemize}
     \item 完成了tensorcore中burst\_num和burst\_size以及systolic\_time和waitwrite\_time的计算并加入
-    \item 完成了各种axi的逻辑,以及最后在PE中加入了写回到AXI的逻辑，并组装成整体的模块
+    \item 完成了各种axi的逻辑
     \item 完成了FP16toFP32模块+FP32toFP16.sv从而组合出MAC\_FP
     \item 组装了MAC\_FP和MAC\_adder从而完成顶层MAC,同时支持多精度FP,INT
     \item 对整个MAC模块进行了测试以及debug
-    \item 协调统筹项目
 \end{itemize}
 \subsection{王俊涵}
 \begin{itemize}

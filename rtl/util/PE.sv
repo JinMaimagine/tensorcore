@@ -8,7 +8,7 @@ module PE
 (
 	// interface to system
     input logic clk,                         // cLK = 200MHz
-    input logic rst,                       // RESET, Negedge is active                     
+    input logic rst,                       // RESET                     
     input logic enleft,                      // enable signal for the accelerator, high for active
     output logic enright,
     input logic enup,                        //因为systolic:PE依靠PE实现隔位延迟1
@@ -233,10 +233,16 @@ always_ff@(posedge clk)
             assert(addr_type.datatype==params::INT4) else $error("CMENABLE only support INT4");
             regfile<=OUT;
         end
-        else if(wben)
+    end
+    always_ff@(posedge clk)
+    begin
+        if(wben)
         begin
             if(out_ready)
             begin
+                if(addr_type.datatype==params::FP16&&!mixed)
+                out_sum<={regfile[{regfile_pointer[0],6'b100000}+:16],regfile[{regfile_pointer[0],6'b0}+:16]};
+                else
                 out_sum<=regfile[{regfile_pointer,5'b0}+:32];
             end
         end

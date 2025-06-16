@@ -1,6 +1,7 @@
 `include "sram.sv"
 `include "para_pkg.sv"
 `include "transformAXI.sv"
+`include "transformOUT.sv"
 `include "addrgen.sv"
 `include "control.sv"
 `include "systolic.sv" 
@@ -25,7 +26,11 @@ parameter WIDTH=32
     input logic axi_in_valid,
     input logic [255:0] axi_in_data,
     input logic [31:0] axi_in_burst_id,
-    input params::compute_type_t compute_type
+    input params::compute_type_t compute_type,
+    //所有out的逻辑都在这里
+    output [31:0] output_burst_num,
+    output logic[255:0] data_out,
+    output logic output_enable
 );
 
 //TODO:always logic
@@ -357,12 +362,16 @@ always_ff @(posedge clk) begin
         params::WAIT_WRITE: begin
             write_counter<=write_counter-1;
             if(write_counter==0) begin
+                writeback_counter<=output_burst_num;
                 next_state<=params::WRITE_BACK;
             end
         end
         //负责写回
         params::WRITE_BACK: begin
+            //经过一定的time转换到FINISH:这个time最好手算出来  
             //TODO:处理写回,暂时不需要
+            writeback_counter<=writeback_counter-1;
+            if(writeback_counter==0)
             next_state<=params::FINISH;
         end
         params::FINISH: begin
@@ -523,6 +532,8 @@ SRAM_B sram_b (
 
 logic wben;
 assign wben=state==params::WRITE_BACK;
+
+assign output_enable=wben&&writeback_counter==output_burst_num-1;
 logic [7:0][7:0][31:0] outsum;
 logic [7:0][7:0] out_ready;
 SYSTOLIC systolic_array(
@@ -543,6 +554,16 @@ SYSTOLIC systolic_array(
     .out_sum(outsum)
 ); 
 
+assign output_burst_num=(compute_type.data_type==params::FP16&&!mixed)?6'd15:6'd31;
+transformOUT transform_out(
+    .clk(clk),
+    .rst(rst),
+    .ready(out_ready),
+    .burst_num(output_burst_num),//一个burst多少个transcation
+    .wben(wben),//AXI传输
+    .data_in(outsum),
+    .data_out(data_out)
+);
 
 
 

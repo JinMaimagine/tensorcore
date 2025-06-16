@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2024.9.26)  23 MAY 2025 14:07
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2024.9.26)  14 JUN 2025 13:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -615,50 +615,53 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 File: 架构.png Graphic file (type bmp)
 <架构.png>
-File: 计算.png Graphic file (type bmp)
-<计算.png>
+File: FP.png Graphic file (type bmp)
+<FP.png>
 LaTeX Font Info:    Font shape `TU/FandolSong-Regular(0)/m/sl' in size <12.045> not available
-(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on input line 49.
+(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on input line 44.
  [2
 
-] [3]
-Overfull \hbox (20.14386pt too wide) in paragraph at lines 94--100
+]
+File: 计算.png Graphic file (type bmp)
+<计算.png>
+ [3] [4]
+Overfull \hbox (20.14386pt too wide) in paragraph at lines 100--106
 []\TU/FandolSong-Regular(0)/m/n/12.045 目 前 马 晋 已 经 完 成 了 \TU/lmr/m/n/12.045 tensorcore \TU/FandolSong-Regular(0)/m/n/12.045 本 身 的 部 分\TU/lmr/m/n/12.045 , \TU/FandolSong-Regular(0)/m/n/12.045 想 要 验 证，|  只 需 \TU/lmr/m/n/12.045 cd tensorcore/rtl/verilator\TU/FandolSong-Regular(0)/m/n/12.045 ，|
  []
 
-[4]
-Overfull \hbox (62.38434pt too wide) in paragraph at lines 106--107
+
+Overfull \hbox (62.38434pt too wide) in paragraph at lines 112--113
 []\TU/lmr/m/n/12.045 MAC \TU/FandolSong-Regular(0)/m/n/12.045 模 块 \TU/lmr/m/n/12.045 FP32 \TU/FandolSong-Regular(0)/m/n/12.045 的 \TU/lmr/m/n/12.045 pipeline+MAC \TU/FandolSong-Regular(0)/m/n/12.045 模 块 中 的 加 法 部 分 \TU/lmr/m/n/12.045 (\TU/FandolSong-Regular(0)/m/n/12.045 同 时 支 持 \TU/lmr/m/n/12.045 4bit \TU/FandolSong-Regular(0)/m/n/12.045 和 \TU/lmr/m/n/12.045 8bit)+FP16toFP32.sv 
  []
 
 
-Overfull \hbox (4.62982pt too wide) in paragraph at lines 107--108
-[]\TU/lmr/m/n/12.045 transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv 
+Overfull \hbox (7.90607pt too wide) in paragraph at lines 113--114
+[]\TU/lmr/m/n/12.045 transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv,
  []
 
 
-Overfull \hbox (8.92993pt too wide) in paragraph at lines 113--114
+Overfull \hbox (8.92993pt too wide) in paragraph at lines 119--120
 []\TU/FandolSong-Regular(0)/m/n/12.045 完 成 了 \TU/lmr/m/n/12.045 tensorcore \TU/FandolSong-Regular(0)/m/n/12.045 中 \TU/lmr/m/n/12.045 burst_num \TU/FandolSong-Regular(0)/m/n/12.045 和 \TU/lmr/m/n/12.045 burst_size \TU/FandolSong-Regular(0)/m/n/12.045 以 及 \TU/lmr/m/n/12.045 systolic_time \TU/FandolSong-Regular(0)/m/n/12.045 和 \TU/lmr/m/n/12.045 waitwrite_time
  []
 
 [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 138.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 143.
  [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 138.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 143.
  (./说明.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 138.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 138.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 143.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 143.
 Package rerunfilecheck Info: File `说明.out' has not changed.
 (rerunfilecheck)             Checksum: 7A5B3B7B47CA01B8AC8EDFD2423E451E;1076.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 138.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 143.
  ) 
 Here is how much of TeX's memory you used:
- 17673 strings out of 479819
- 362850 string characters out of 5895831
- 651282 words of memory out of 5000000
- 34538 multiletter control sequences out of 15000+600000
+ 17680 strings out of 479819
+ 362913 string characters out of 5895831
+ 649320 words of memory out of 5000000
+ 34544 multiletter control sequences out of 15000+600000
  540739 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 56i,6n,72p,381b,440s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,6n,72p,381b,462s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on 说明.pdf (6 pages).
