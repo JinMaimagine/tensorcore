@@ -27,12 +27,13 @@ parameter WIDTH=32
     input logic [255:0] axi_in_data,
     input logic [31:0] axi_in_burst_id,
     input params::compute_type_t compute_type,
-    //所有out的逻辑都在这里
-    output [31:0] output_burst_num,
+    //所有out的逻辑都在这里 
     output logic[255:0] data_out,
-    output logic output_enable
+    output logic wben,
+    input logic aw_hs,
+    input logic w_hs
 );
-
+logic [31:0] output_burst_num;
 //TODO:always logic
 params::addrgen_t addrtype;
 assign addrtype.datatype=compute_type.data_type;
@@ -76,7 +77,7 @@ always_comb begin
     endcase
 end
 
-
+logic output_enable;
 
 //但是并不是systolic就可以流动,还要看是不是stop状态
 logic [31:0] counter;//TODO:可以缩小
@@ -362,17 +363,31 @@ always_ff @(posedge clk) begin
         params::WAIT_WRITE: begin
             write_counter<=write_counter-1;
             if(write_counter==0) begin
-                writeback_counter<=output_burst_num;
                 next_state<=params::WRITE_BACK;
+                output_enable<=0;
+                output_pointer<=1;
             end
         end
         //负责写回
         params::WRITE_BACK: begin
             //经过一定的time转换到FINISH:这个time最好手算出来  
             //TODO:处理写回,暂时不需要
-            writeback_counter<=writeback_counter-1;
-            if(writeback_counter==0)
-            next_state<=params::FINISH;
+            if(wben&&aw_hs&&!output_enable) begin
+                output_enable<=1;
+                writeback_counter<=output_burst_num;
+                if(w_hs)
+                begin
+                writeback_counter<=output_burst_num-1;
+                output_pointer<=2;
+                end
+            end
+            else if(wben&&w_hs&&output_enable) begin
+                writeback_counter<=writeback_counter-1;
+                output_pointer<=output_pointer+1;
+                if(writeback_counter==0) begin
+                     next_state<=params::FINISH;
+                end
+            end
         end
         params::FINISH: begin
             next_state <= params::FINISH;
@@ -381,8 +396,22 @@ always_ff @(posedge clk) begin
     end
 end
 
-
-
+/*logic extend_enable;//为了协调axi的信号
+always_latch
+begin
+    if(!wben)
+    begin
+        extend_enable=1'b0;
+    end
+    else
+    begin
+        if(aw_hs)
+        begin
+            extend_enable=1'b1;
+        end
+    end
+end
+*/
 
 
 logic [255:0]                data_in;
@@ -530,10 +559,10 @@ SRAM_B sram_b (
     .re(re_b)
 );
 
-logic wben;
+//logic wben;
 assign wben=state==params::WRITE_BACK;
 
-assign output_enable=wben&&writeback_counter==output_burst_num-1;
+//assign output_enable=wben&&writeback_counter==output_burst_num-1;
 logic [7:0][7:0][31:0] outsum;
 logic [7:0][7:0] out_ready;
 SYSTOLIC systolic_array(
@@ -555,6 +584,7 @@ SYSTOLIC systolic_array(
 ); 
 
 assign output_burst_num=(compute_type.data_type==params::FP16&&!mixed)?6'd15:6'd31;
+logic [2:0] output_pointer;
 transformOUT transform_out(
     .clk(clk),
     .rst(rst),
@@ -562,7 +592,8 @@ transformOUT transform_out(
     .burst_num(output_burst_num),//一个burst多少个transcation
     .wben(wben),//AXI传输
     .data_in(outsum),
-    .data_out(data_out)
+    .data_out(data_out),
+    .pointer(output_pointer)
 );
 
 

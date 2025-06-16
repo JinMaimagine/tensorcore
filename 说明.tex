@@ -112,6 +112,7 @@ ENABLE.sv:\\
   \item MAC模块FP32的pipeline+MAC模块中的加法部分(同时支持4bit和8bit)+FP16toFP32.sv
   \item transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv,从数据传入到数据写回
   \item 对整体的tensorcore进行了测试以及debug,包括找到部分MAC的错误
+  \item 完成了tensorcore中burst\_num和burst\_size以及systolic\_time和waitwrite\_time的计算并加入
   \item 全局统筹项目
 \end{itemize}
 \subsection{李亚飞}
@@ -136,8 +137,8 @@ ENABLE.sv:\\
 \end{itemize}
 \subsection{贡献度:仅供参考}
 \begin{itemize}
-    \item 马晋: 70\%
-    \item 李亚飞: 25\%
+    \item 马晋: 72\%
+    \item 李亚飞: 23\%
     \item 王俊涵: 5\%
 \end{itemize}
 \end{document}

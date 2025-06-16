@@ -1,9 +1,7 @@
 
 module axi_tensor_rd #(
     parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 256,       // must be power‑of‑2, 32 … 1024
-    parameter ID_WIDTH   = 4,
-    parameter MAX_BURST  = 256         // beats per burst (2…256)
+    parameter DATA_WIDTH = 256     // must be power‑of‑2, 32 … 1024
 )(
     // global
     input                      aclk,
@@ -11,35 +9,26 @@ module axi_tensor_rd #(
 
     // AXI4‑Full MASTER  (read‑only subset)
     // – AW/W/B channels are tied‑off inside.
-    output [ID_WIDTH-1:0]      m_axi_arid,
+    // output [ID_WIDTH-1:0]      m_axi_arid,
     output [ADDR_WIDTH-1:0]    m_axi_araddr,
     output [7:0]               m_axi_arlen,//transition 数量
     output [2:0]               m_axi_arsize,
-    output [1:0]               m_axi_arburst,
+    output [1:0]               m_axi_arburst, //传输类型 INCR 01
     output                     m_axi_arvalid,
     input                      m_axi_arready,
 
-    input  [ID_WIDTH-1:0]      m_axi_rid,
+    // input  [ID_WIDTH-1:0]      m_axi_rid,
     input  [DATA_WIDTH-1:0]    m_axi_rdata,
-    input  [1:0]               m_axi_rresp,
+    // input  [1:0]               m_axi_rresp,
     input                      m_axi_rlast,
     input                      m_axi_rvalid,
     output                     m_axi_rready,
-
-    // stream to compute core (one beat == DATA_WIDTH bits)
-    // output [DATA_WIDTH-1:0]    m_dat,
-    // output                     m_valid,
-    // input                      m_ready,
-
-    //跟tensorcore的交互
-    // input params::AXI_out_t axi_out,
-    // output params::AXI_in_t axi_in,
     
     //给tensorcore axi_in的返回
-    output logic [255:0] axi_in_data,
+    output logic [DATA_WIDTH-1:0] axi_in_data,
     output logic axi_in_finish,
     output logic axi_in_valid,
-    input logic axi_in_arready,
+    output logic axi_in_arready,
     output logic [31:0] axi_in_burst_id,
 
     //tensorcore传过来的请求
@@ -47,8 +36,7 @@ module axi_tensor_rd #(
     input logic [5:0] axi_out_burst_num,
     input logic [2:0] axi_out_burst_size,
     input logic axi_out_request_valid,
-    input logic [2:0] axi_out_sel,
-    input logic axi_out_issend
+    input logic [2:0] axi_out_sel //冗余了
 
 
 
@@ -59,6 +47,7 @@ module axi_tensor_rd #(
     assign m_axi_arlen = {2'b0,axi_out_burst_num};
     assign m_axi_arsize = axi_out_burst_size;
     assign m_axi_arvalid = axi_out_request_valid;
+    assign m_axi_arburst = 2'b01; //传输类型 INCR
     
 
 

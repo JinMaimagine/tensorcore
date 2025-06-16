@@ -80,7 +80,8 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     top->axi_in_finish = 0;
     top->axi_in_valid = 0;
     top->axi_in_burst_id = 0;
-
+    top->aw_hs=1;
+    top->w_hs=1;
 
 
     //top->compute_type=0;//float,32,16,8
