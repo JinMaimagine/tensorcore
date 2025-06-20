@@ -91,29 +91,71 @@ ENABLE.sv:\\
 \subsection{项目不足}
 \begin{itemize}
     \item 目前我认为瓶颈主要在于取数带宽上,对于我的systolic与调度能提供高性能计算,在有多个SRAM取数从而隐藏传输延迟的情况下效果更佳
-    \item 由于我限制了systolic中的每个PE每次传入C只能写入32bit,又由于AXI取数方式的约束,导致此时大大浪费了AXI的带宽，后面我会对一些情况稍作改进,但整体的大致逻辑不会改变
-    \item 目前部分信号宽度太大,我后面会优化变小
+    \item 由于我限制了systolic中的每个PE每次传入C只能写入32bit,又由于AXI取数方式的约束,导致此时大大浪费了AXI的带宽(但是确实在一些情况下无法做到)
+    \item 目前部分信号宽度太大,但是感觉综合工具应该能自动优化(纯粹是一开始没确定位宽)
     \item SRAM是存储资源最丰富的地方,目前来看可能很难综合成SRAM,而是会变成寄存器堆
 \end{itemize}
 
-\section{验证方式}
+\section{如何验证架构}
 目前马晋已经完成了tensorcore本身的部分,想要验证，只需cd tensorcore/rtl/verilator，make run即可,
 马晋配置了verilator环境,在tensorcore/.vscode/settings.json中
 助教老师遇到任何关于tensorcore验证的问题都可以直接联系imagine(ma15807252614)
 验证所写的文件在tensorcore/rtl/verilator/main.cpp中,助教老师可以用main.cpp的方式验证对于不同datatype和matrix shape的测试,只需要移除部分注释即可,
+通过make run > out.txt,在out.txt中能看见输入矩阵,以及按照C++计算得到的输出结果以及按照tensorcore给出的输出结果。
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\textwidth]{image.png}
+      \caption{输出结果}
+      \label{fig:输出结果}
+    \end{figure}
+如图所示,will display前面的是用软件计算的结果，will display的是tensorcore输出的结果。
 注意其中的mixed表示是否用混合精度训练,混合精度下的compute\_type与正常FP16相同,就是mixed信号置为1，
 注意同时更改fmacase中的类型,混合精度为<half,half,float,float>,上面这四个分别对应于A,B,C,D的类型,如果是FP16,则为<half,half,half,half>,如果是INT4,则为<int4\_t,int4\_t,int4\_t,int>
 
+
+\section{综合结果}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\textwidth]{布线.png}
+      \caption{布线}
+      \label{fig:布线}
+    \end{figure}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\textwidth]{综合100M.png}
+      \caption{综合100M}
+      \label{fig:综合100M}
+    \end{figure}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=0.4\textwidth]{综合99M.png}
+      \caption{综合99M}
+      \label{fig:综合99M}
+    \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{资源.png}
+  \caption{资源}
+  \label{fig:资源}
+\end{figure}
+如图所示,经过测试,瓶颈在于PE只能达到100M(关键路径上),但是有一件感觉在综合中感觉逆天的事情是:
+我尝试综合了PE中的MAC\_top.sv(为了结果准确，在现有的MAC\_top.sv输出加了一级寄存器),发现能达到远不止100M的频率,
+但是PE.sv不知为何无法达到相应的频率,PE.sv中有很长的if-else，但我觉得这个路径相对于MAC\_top.sv中的乘加部分造成的延时应该微不足道。
+总而言之,逆天PE触发的逆天机制是约束频率的罪魁祸首。
+
+
+
 % 各模块
 \section{分工}
+分工主要是为了方便助教能了解每位同学负责什么,因此在查阅相应的部分没有完成或完善有问题的时候,可以去联系相应的同学
 \subsection{马晋}
 \begin{itemize}
-  \item 完成了基本的MAC模块(参考了多种版本FP的比较:排除了FPnew，因为FPnew冗余过多及实现简单,pipeline方式低效)
+  \item 完成了基本的MAC模块,并进行了二级流水(参考了多种版本FP的比较:排除了FPnew，因为FPnew冗余过多及实现简单,pipeline方式低效)
   \item MAC模块FP32的pipeline+MAC模块中的加法部分(同时支持4bit和8bit)+FP16toFP32.sv
   \item transformtoAXI.sv+addrgen.sv+systolic.sv+control.sv+ENABLE.sv+tensorcore.sv,从数据传入到数据写回
   \item 对整体的tensorcore进行了测试以及debug,包括找到部分MAC的错误
   \item 完成了tensorcore中burst\_num和burst\_size以及systolic\_time和waitwrite\_time的计算并加入
-  \item 全局统筹项目
+  \item 全局统筹项目(前期讨论,后期解答王俊涵综合的问题)
 \end{itemize}
 \subsection{李亚飞}
 \begin{itemize}
@@ -135,7 +177,7 @@ ENABLE.sv:\\
     \item 在最终的架构构建阶段,考虑将systolic与PE的复杂性解耦合,用addrgen专门生成数据取地址,大大提高了效率
     \item 马晋可能会考虑继续对于架构进行优化,目前在INT4与INT8的情况下,算力>>带宽,但是很容易将架构进行扩展,利用多个SRAM使得算力得到充分运用
 \end{itemize}
-\subsection{贡献度:仅供参考}
+\subsection{贡献度:仅供参考,并不准确}
 \begin{itemize}
     \item 马晋: 72\%
     \item 李亚飞: 23\%
