@@ -33,8 +33,9 @@
 
 \subsection{创新点}
 \begin{itemize}
-  \item 采用了分块乘法的方式,在最后阶段进行加法,提高并行性
-  \item 每个PE可以支持1个FP16/FP32，浮点乘法采用pipeline形式,4个INT4,INT8的乘法,INT4,INT8复用了加法器,FP16/FP32复用了MAC
+  \item 每个PE可以支持1个FP16/FP32的乘累加，以及4个INT8或8个INT4的乘加(完全复用了32bit的带宽)
+  \item 浮点乘法采用pipeline形式,INT4,INT8复用了加法器,FP16/FP32复用了MAC
+  \item 采用了分块乘法的方式,在最后阶段进行加法,提高并行性，也就是实现了group乘
   \begin{figure}[H]
       \centering
       \includegraphics[width=0.4\textwidth]{FP.png}
