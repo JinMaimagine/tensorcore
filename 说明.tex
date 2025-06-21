@@ -139,6 +139,12 @@ ENABLE.sv:\\
   \caption{资源}
   \label{fig:资源}
 \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{功耗.png}
+  \caption{功耗}
+  \label{fig:功耗}
+\end{figure}
 如图所示,经过测试,瓶颈在于PE只能达到100M(关键路径上),但是有一件感觉在综合中感觉逆天的事情是:
 我尝试综合了PE中的MAC\_top.sv(为了结果准确，在现有的MAC\_top.sv输出加了一级寄存器),发现能达到远不止100M的频率,
 但是PE.sv不知为何无法达到相应的频率,PE.sv中有很长的if-else，但我觉得这个路径相对于MAC\_top.sv中的乘加部分造成的延时应该微不足道。
@@ -178,7 +184,7 @@ ENABLE.sv:\\
     \item 在最终的架构构建阶段,考虑将systolic与PE的复杂性解耦合,用addrgen专门生成数据取地址,大大提高了效率
     \item 马晋可能会考虑继续对于架构进行优化,目前在INT4与INT8的情况下,算力>>带宽,但是很容易将架构进行扩展,利用多个SRAM使得算力得到充分运用
 \end{itemize}
-\subsection{贡献度:仅供参考,并不准确}
+\subsection{贡献度:仅供参考,并不准确，详情可看github仓库}
 \begin{itemize}
     \item 马晋: 72\%
     \item 李亚飞: 23\%

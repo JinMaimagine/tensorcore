@@ -9,6 +9,6 @@
 \contentsline {section}{\numberline {4}分工}{7}{section.4}%
 \contentsline {subsection}{\numberline {4.1}马晋}{7}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}李亚飞}{7}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}王俊涵}{7}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.3}王俊涵}{8}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}补充}{8}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}贡献度:仅供参考,并不准确}{8}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.5}贡献度:仅供参考,并不准确，详情可看github仓库}{8}{subsection.4.5}%
