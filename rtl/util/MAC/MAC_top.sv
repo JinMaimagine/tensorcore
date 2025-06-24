@@ -27,6 +27,9 @@ module MAC_top#(
     input logic[31:0] IN2,
     input logic[127:0] IN3,
     input logic [2:0] mode,
+    //new add
+    input logic modebf16,
+    input logic modeint16,
     output logic[127:0] OUT,
 
     //目前只有浮点运算可能出现overflow
@@ -66,6 +69,7 @@ module MAC_top#(
         .IN1(IN1),
         .IN2(IN2),
         .IN3(IN3),
+        .modebf16(modebf16),
         .mode(MAC_FP__mode),
         .OUT(MAC_FP__out),
         .Rounding_mode_i(Rounding_mode_i),
@@ -101,6 +105,7 @@ module MAC_top#(
         .IN1(IN1),
         .IN2(IN2),
         .IN3(IN3),
+        .modeint16(modeint16),
         .mode(MAC_INT__mode),
         .OUT(MAC_INT__out)
     );

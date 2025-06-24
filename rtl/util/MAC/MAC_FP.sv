@@ -4,6 +4,8 @@
 `include "FP16toFP32.sv"
 `include "FP32toFP16.sv"
 `include "MAC32_pipeline2_top.v"
+`include "BF16toFP32.sv"
+`include "FP32toBF16.sv"
 module MAC_FP#(
 	parameter PARM_RM = 3 // Rounding mode位宽
 )
@@ -14,6 +16,8 @@ module MAC_FP#(
 	input logic[31:0] IN2, // 32-bit floating point input
 	input logic[127:0] IN3, // 128-bit accumulator
 	input logic [1:0]mode, // Mode selection
+	//new add
+	input logic modebf16,
 	output logic[127:0] OUT, // 128-bit output
 
 	input [PARM_RM - 1 : 0] Rounding_mode_i,//only in
@@ -27,6 +31,8 @@ module MAC_FP#(
 
     // 内部信号定义
     logic [31:0] fp32_in1, fp32_in2, fp32_in3;  // MAC32单元的输入
+	logic [31:0] fp32_in1fp, fp32_in2fp, fp32_in3fp; // FP16到FP32转换后的输入
+	logic [31:0] fp32_in1bf, fp32_in2bf, fp32_in3bf; // BF16到FP32转换后的输入
     // logic [31:0] fp32_out;                       // MAC32单元的输出
     
     // // FP16到FP32转换的中间信号
@@ -57,7 +63,7 @@ module MAC_FP#(
 	(
 		.mode(FP16toFP32_convert_enb),
         .fp16(IN1),
-        .fp32(fp32_in1)
+        .fp32(fp32_in1fp)
     );
 
 	FP16toFP32 #(
@@ -67,7 +73,7 @@ module MAC_FP#(
 	(
 		.mode(FP16toFP32_convert_enb),
         .fp16(IN2),
-        .fp32(fp32_in2)
+        .fp32(fp32_in2fp)
     );
 
 	FP16toFP32 #(
@@ -77,10 +83,10 @@ module MAC_FP#(
 	(
 		.mode(FP16toFP32_convert_enb_c),
         .fp16(IN3[31:0]), // 只取IN3的低32位
-        .fp32(fp32_in3)
+        .fp32(fp32_in3fp)
     );
 
-
+	
 
 	//MAC32_pipeline2_top实例化参数
 	logic NV_o_to_FP32toFP16;

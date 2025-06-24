@@ -9,6 +9,8 @@ input logic [31:0] IN1,
 input logic [31:0] IN2,
 input logic [127:0] IN3,
 input mode,
+//newadd
+input modeint16,
 output logic [127:0] OUT//4*32,8*16，送入的数据是排布好的
 );
 logic [127:0] mult8_out;
