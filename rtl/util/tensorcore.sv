@@ -31,7 +31,9 @@ parameter WIDTH=32
     output logic[255:0] data_out,
     output logic wben,
     input logic aw_hs,
-    input logic w_hs
+    input logic w_hs,
+    input logic modebf16,
+    input logic modeint16
 );
 logic [31:0] output_burst_num;
 //TODO:always logic
@@ -580,7 +582,9 @@ SYSTOLIC systolic_array(
     .addr_type(addrtype),
     .mixed(mixed),
     .out_ready(out_ready),
-    .out_sum(outsum)
+    .out_sum(outsum),
+    .modebf16(modebf16),
+    .modeint16(modeint16)
 ); 
 
 assign output_burst_num=(compute_type.data_type==params::FP16&&!mixed)?6'd15:6'd31;

@@ -69,6 +69,8 @@ parameter DATA_WIDTH=256
 //---------------------------------------------
     logic start;
     logic mixed;
+    logic modebf16;
+    logic modeint16;
     params::compute_type_t compute_type;
     axi_lite #(
         .ADDR_WIDTH(ADDR_WIDTH),
@@ -87,7 +89,9 @@ parameter DATA_WIDTH=256
         //控制信号
         .start(start),
         .mixed(mixed),
-        .compute_type(compute_type)
+        .compute_type(compute_type),
+        .int16(modebf16),
+        .bf16(modeint16)
     );
 
 
@@ -172,7 +176,9 @@ tensorcore #(
     .data_out(wr_data),
     .wben(wben),
     .aw_hs(aw_hs),
-    .w_hs(w_hs)
+    .w_hs(w_hs),
+    .modebf16(modebf16),
+    .modeint16(modeint16)
 );
 
 

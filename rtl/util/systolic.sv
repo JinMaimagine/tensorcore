@@ -15,7 +15,9 @@ input logic wben,
 input params::addrgen_t addr_type,
 input logic mixed,
 input logic [7:0][7:0] out_ready,
-output logic [7:0][7:0][31:0] out_sum
+output logic [7:0][7:0][31:0] out_sum,
+input logic modebf16,
+input logic modeint16
 );
 logic [7:0][7:0] en_left;
 logic [7:0][7:0] en_up;
@@ -54,7 +56,9 @@ generate
                 .b_up(b_up[i][j]),
                 .b_down(b_down[i][j]),
                 .addr_type(addr_type),
-                .out_ready(out_ready[i][j])
+                .out_ready(out_ready[i][j]),
+                .modebf16(modebf16),
+                .modeint16(modeint16)
             );
         end
     end

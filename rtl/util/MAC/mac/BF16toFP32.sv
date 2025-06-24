@@ -2,11 +2,11 @@
 //  BF16 → FP32   （1|8|7 → 1|8|23）
 // ----------------------------------------------------------
 module BF16toFP32 #(
-    parameter XLEN = 32
+    parameter PARM_XLEN = 32
 )(
     input  logic               mode,     // 1=convert 0=pass-thru(零扩展)
-    input  logic [15:0]        bf16,
-    output logic [XLEN-1:0]    fp32
+    input  logic [PARM_XLEN-1:0]    bf16,
+    output logic [PARM_XLEN-1:0]    fp32
 );
     logic        sign;
     logic [ 7:0] exp_b;

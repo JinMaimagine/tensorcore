@@ -6,6 +6,7 @@
 `include "MAC32_pipeline2_top.v"
 `include "BF16toFP32.sv"
 `include "FP32toBF16.sv"
+//TODO:check一遍,尤其是mode
 module MAC_FP#(
 	parameter PARM_RM = 3 // Rounding mode位宽
 )
@@ -18,6 +19,7 @@ module MAC_FP#(
 	input logic [1:0]mode, // Mode selection
 	//new add
 	input logic modebf16,
+	input logic mixed,
 	output logic[127:0] OUT, // 128-bit output
 
 	input [PARM_RM - 1 : 0] Rounding_mode_i,//only in
@@ -86,13 +88,59 @@ module MAC_FP#(
         .fp32(fp32_in3fp)
     );
 
-	
+	BF16toFP32 #(
+		.PARM_XLEN(32)
+	)
+	u_bf16_to_fp32_1
+	(
+		.mode(modebf16),
+        .bf16(IN1),
+        .fp32(fp32_in1bf)
+    );
+
+	BF16toFP32 #(
+		.PARM_XLEN(32)
+	)
+	u_bf16_to_fp32_2
+	(
+		.mode(modebf16),
+        .bf16(IN2),
+        .fp32(fp32_in2bf)
+    );
+
+	BF16toFP32 #(
+		.PARM_XLEN(32)
+	)
+	u_bf16_to_fp32_3
+	(
+		.mode(modebf16),
+        .bf16(IN3[31:0]), // 只取IN3的低32位
+        .fp32(fp32_in3bf)
+    );
+
+	always_comb begin
+		if(modebf16)
+		begin
+			fp32_in1 = fp32_in1bf;
+			fp32_in2 = fp32_in2bf;
+			fp32_in3 = fp32_in3bf;
+		end
+		else
+		begin
+			fp32_in1 = fp32_in1fp;
+			fp32_in2 = fp32_in2fp;
+			fp32_in3 = fp32_in3fp;
+		end
+	end
+		
+
 
 	//MAC32_pipeline2_top实例化参数
 	logic NV_o_to_FP32toFP16;
 	logic OF_o_to_FP32toFP16;
 	logic UF_o_to_FP32toFP16;
 	logic NX_o_to_FP32toFP16;
+
 
 
     // MAC32计算单元实例化
@@ -119,6 +167,11 @@ module MAC_FP#(
 	logic FP32toFP16_NV_out;
 
 
+	logic FP32toBF16_OF_out;
+	logic FP32toBF16_UF_out;
+	logic FP32toBF16_NX_out;
+	logic FP32toBF16_NV_out;
+
 	//参数设定
 	always_comb begin
 		case(mode)
@@ -132,6 +185,7 @@ module MAC_FP#(
 
     //如果是fp16模式，输出结果需要转换回FP16格式;
     logic [31:0] FP32toFP16_result;
+	logic [31:0] FP32toBF16_result; // BF16结果复用FP32toFP16_result
     FP32toFP16 u_fp32_to_fp16 (
         .result_i(mac32_result),
         .result_o(FP32toFP16_result),
@@ -146,6 +200,19 @@ module MAC_FP#(
 		.NX_out(FP32toFP16_NX_out),
 		.NV_out(FP32toFP16_NV_out)
     );
+	FP32toBF16 u_fp32_to_bf16 (
+		.fp32(mac32_result),
+		.bf16(FP32toBF16_result), // 直接复用FP32toFP16_result
+		.mode(modebf16), // 是否转换为BF16 mode=1 转换
+		.OF_in(OF_o_to_FP32toFP16),
+		.UF_in(UF_o_to_FP32toFP16),
+		.NX_in(NX_o_to_FP32toFP16),
+		.NV_in(NV_o_to_FP32toFP16),
+		.OF_out(FP32toBF16_OF_out),
+		.UF_out(FP32toBF16_UF_out),
+		.NX_out(FP32toBF16_NX_out),
+		.NV_out(FP32toBF16_NV_out)
+	);
 
 
 
@@ -184,7 +251,7 @@ module MAC_FP#(
 	// assign NV_o = FP32toFP16_NV_out_reg;
 
 	// 输出结果赋值（寄存器在外面写）
-	assign OUT = {96'b0, FP32toFP16_result};
+	assign OUT = modebf16?{96'b0,FP32toBF16_result}:{96'b0, FP32toFP16_result};
 	assign OF_o = FP32toFP16_OF_out;
 	assign UF_o = FP32toFP16_UF_out;
 	assign NX_o = FP32toFP16_NX_out;

@@ -28,7 +28,9 @@ module PE
     input logic [31:0] b_up,
     output logic [31:0] b_down,
     input params::addrgen_t addr_type,
-    input logic out_ready
+    input logic out_ready,
+    input logic modebf16,
+    input logic modeint16
 	);
     localparam N=4;
     //需要保证en的时候,c一定是有效的
@@ -175,7 +177,9 @@ always_ff@(posedge clk)
         // output DZ_o, //would not occur in Multiplication or Addition
         .OF_o(OF_o),
         .UF_o(UF_o),
-        .NX_o(NX_o)
+        .NX_o(NX_o),
+        .modebf16(modebf16),
+        .modeint16(modeint16)
     );
     logic [31:0] out_reg;
     always_ff@(posedge clk)

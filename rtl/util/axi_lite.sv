@@ -23,7 +23,10 @@ module axi_lite import params::*; #(
 										   //2'b10 SLVERR, 2'b11 DECERR
     output logic                    start,
     output logic                    mixed,
-    output compute_type_t           compute_type
+    output compute_type_t           compute_type,
+    //new add
+    output logic                    modebf16,
+    output logic                    modeint16
 );
 
     // Internal registers
@@ -74,5 +77,6 @@ module axi_lite import params::*; #(
     assign start = control_reg[0];
     assign mixed = control_reg[1];
     assign compute_type = compute_type_t'(control_reg[5:2]);
-
+    assign modebf16 = control_reg[6];
+    assign modeint16 = control_reg[7];
 endmodule
