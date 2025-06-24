@@ -34,7 +34,7 @@ module FP32toBF16 #(
         NX_out = NX_in;
 
         if (!mode) begin
-            bf16 = fp32[15:0];           // 简单截断
+            bf16 = fp32;           // 简单截断
         end else begin
             // 拆字段
             sign    = fp32[31];

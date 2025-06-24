@@ -179,7 +179,8 @@ always_ff@(posedge clk)
         .UF_o(UF_o),
         .NX_o(NX_o),
         .modebf16(modebf16),
-        .modeint16(modeint16)
+        .modeint16(modeint16),
+        .mixed(mixed)
     );
     logic [31:0] out_reg;
     always_ff@(posedge clk)
@@ -219,14 +220,14 @@ always_ff@(posedge clk)
         end
         if(enFP)
         begin
-            if(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)
+            if((addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)&&!modeint16)
             begin
                 regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
             end
         end
         if(en)
         begin
-            if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
+            if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8|modeint16)
             begin
                 regfile<=OUT;
             end

@@ -127,6 +127,32 @@ void run_tensorcore_test(DUT* top,size_t chunk) {
     //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
     //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
     //auto fmacase=FmaCase<int4_t,int4_t,int4_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+
+
+
+
+    //对于新增的case:
+    //top->mixed=1;
+    //top->modeint16=1;
+    //top->modebf16=1;
+    //top->compute_type=1;//int16/bf16,32,16,8
+    //top->compute_type=5;//int16/bf16,16,16,16
+    //top->compute_type=9;//int16/bf16,8,16,32
+    //auto fmacase=FmaCase<int16_t,int16_t,int,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<int16_t,int16_t,int16_t,int,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<int16_t,int16_t,int,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    //auto fmacase=FmaCase<int16_t,int16_t,int16_t,int,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    //auto fmacase=FmaCase<int16_t,int16_t,int,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+    //auto fmacase=FmaCase<int16_t,int16_t,int16_t,int,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,bf16,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,float,32,16,8>("M32K16×K16N8+M32N8", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,bf16,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,float,16,16,16>("M16K16×K16N16+M16N16", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,bf16,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+    //auto fmacase=FmaCase<bf16,bf16,bf16,float,8,16,32>("M8K16×K16N32+M8N32", rng,chunk);
+
+
+
     // Simulation setup
     int cycle_count = 0;
     bool in_transfer_state = false;

@@ -113,7 +113,7 @@ module MAC_FP#(
 	)
 	u_bf16_to_fp32_3
 	(
-		.mode(modebf16),
+		.mode(mixed),
         .bf16(IN3[31:0]), // 只取IN3的低32位
         .fp32(fp32_in3bf)
     );

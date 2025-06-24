@@ -27,6 +27,7 @@ module MAC_top#(
     input logic[31:0] IN2,
     input logic[127:0] IN3,
     input logic [2:0] mode,
+    input logic mixed,
     //new add
     input logic modebf16,
     input logic modeint16,
@@ -70,6 +71,7 @@ module MAC_top#(
         .IN2(IN2),
         .IN3(IN3),
         .modebf16(modebf16),
+        .mixed(mixed),
         .mode(MAC_FP__mode),
         .OUT(MAC_FP__out),
         .Rounding_mode_i(Rounding_mode_i),
@@ -135,12 +137,19 @@ MAC_IN3_Adjent16_add MAC_IN3_Adjent16_add_u(
 
 //选择最终输出
     always_comb begin
+        if(modeint16)
+        OUT=MAC_INT__out;
+        else if(modebf16)
+        OUT = MAC_FP__out; // 如果是BF16模式，直接输出MAC_FP
+        else
+        begin
         case(mode)
             3'b000, 3'b001, 3'b010: OUT = MAC_FP__out; // 浮点计算结果
             3'b011, 3'b101, 3'b110: OUT = MAC_INT__out; // 整数计算结果
             3'b100: OUT = MAC_IN3_Adjent16_add_result; // IN3处理后的结果
             default: OUT = 128'h0; // 默认输出为0
         endcase
+        end
     end
 //输出异常信号
     assign NV_o = MAC_FP__NV_o; // 非规范化异常

@@ -21,7 +21,8 @@ module TRANS (
     output logic [7:0][7:0][31:0]        data_out_C,
     output logic [7:0][7:0]             we_A,
     output logic [7:0][7:0]             we_B,
-    output logic [7:0][7:0]             we_C
+    output logic [7:0][7:0]             we_C,
+    input logic                       modeint16
 );
 
 //8个bank,每个bank 4bit
@@ -280,18 +281,27 @@ always_comb begin
                         2'b00: begin//M32N8
                             we_C_temp[burst_num[2:0]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
+                                if(modeint16)
+                                    data_out_C_temp[burst_num[2:0]][i] = {{16{data_in[16*i+15]}},data_in[16*i +: 16]};
+                                else
                                 data_out_C_temp[burst_num[2:0]][i] = {16'h0000,data_in[16*i +: 16]};
                             end
                         end
                         2'b01: begin//M16N16
                             we_C_temp[burst_num[3:1]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
+                                if(modeint16)
+                                    data_out_C_temp[burst_num[3:1]][i] = {{16{data_in[16*i+15]}},data_in[16*i +: 16]};
+                                else
                                 data_out_C_temp[burst_num[3:1]][i] = {16'h0000,data_in[16*i +: 16]};
                             end
                         end
                         2'b10: begin//M8N32
                             we_C_temp[burst_num[4:2]]=8'hFF;
                             for(integer i=0;i<8;i++) begin
+                                 if(modeint16)
+                                 data_out_C_temp[burst_num[4:2]][i] = {{16{data_in[16*i+15]}},data_in[16*i +: 16]};
+                                 else
                                 data_out_C_temp[burst_num[4:2]][i] = {16'h0000,data_in[16*i +: 16]};
                             end
                         end

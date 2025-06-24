@@ -1,6 +1,7 @@
 `include "mult_INT4.sv"
 `include "mult_INT8.sv"
 `include "Adder.v"
+`include "MAC_INT16.sv"
 //这里mode=1是8itMA,mode=0是4bitMA
 module MAC_ADDER(
 input logic clk,
@@ -69,8 +70,16 @@ endgenerate
 //     end
 // end
 
-assign OUT = OUT_wire;
 
-
-
+logic [31:0] out_int16;
+logic [127:0] OUT_int16;
+assign OUT_int16 = {96'b0, out_int16};
+assign OUT = modeint16?OUT_int16:OUT_wire;
+mac_int16_with_overflow mac_int16 (
+    .A(IN1[15:0]),
+    .B(IN2[15:0]),
+    .C(IN3[31:0]),
+    .D(out_int16),
+    .overflow()
+);
 endmodule

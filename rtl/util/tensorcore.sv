@@ -465,7 +465,8 @@ TRANS trans_inst (
     .we_A        (we_A),
     .we_B        (we_B),
     .we_C        (we_C),
-    .mixed       (mixed)
+    .mixed       (mixed),
+    .modeint16    (modeint16)
 );
 
 

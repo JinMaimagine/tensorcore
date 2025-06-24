@@ -16,7 +16,7 @@ module BF16toFP32 #(
 
     always_comb begin
         if (!mode) begin
-            fp32 = {16'b0,bf16};     // 兼容直通
+            fp32 = bf16;     // 兼容直通
         end else begin
             sign    = bf16[15];
             exp_b   = bf16[14:7];
