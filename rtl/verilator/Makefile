@@ -35,7 +35,7 @@ $(OBJDIR)/V$(TOP).mk:
 
 # 调用 verilator 生成的 Makefile 编译可执行文件
 
-compile: $(OBJDIR)/V$(TOP).mk
+compile: $(OBJDIR)/V$(TOP).mk $(wildcard $(TOPDIR)/*.sv)
 	$(MAKE) -C $(OBJDIR) -f V$(TOP).mk V$(TOP)
 	
 

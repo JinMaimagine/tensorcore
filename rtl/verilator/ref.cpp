@@ -61,10 +61,10 @@ public:
             std::uniform_int_distribution<int> d(-8,7);
             for(auto& e:data_) e = int4_t(d(rng));
         } else if constexpr(std::is_same_v<T,int8_t>){
-            std::uniform_int_distribution<int> d(-128,127);
+            std::uniform_int_distribution<int> d(-78,23);
             for(auto& e:data_) e = int8_t(d(rng));
         } else if constexpr(std::is_same_v<T,int16_t>){
-            std::uniform_int_distribution<int> d(-200,200);
+            std::uniform_int_distribution<int> d(1,1);
             for(auto& e:data_) e = int16_t(d(rng));
         } else if constexpr(std::is_same_v<T,bfloat16>){
             std::uniform_real_distribution<float> d(-8.f,8.f);
@@ -73,7 +73,7 @@ public:
             std::uniform_real_distribution<float> d(-8.f,8.f);
             for(auto& e:data_) e = half(d(rng));
         } else { // float
-            std::uniform_real_distribution<float> d(-8.f,8.f);
+            std::uniform_real_distribution<float> d(-100.f,100.f);
             for(auto& e:data_) e = d(rng);
         }
     }

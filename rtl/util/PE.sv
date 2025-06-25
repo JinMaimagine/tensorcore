@@ -198,6 +198,7 @@ always_ff@(posedge clk)
     if (a != 0 && b != 0) begin
         a_in <= a;//此时a,b保持不变,没有bit反转
         b_in <= b;
+        //这里有问题,成了两轮变一次
         IN3_in <= IN3;
     end
     enable_simpleout<=(a==0||b==0);
@@ -263,38 +264,41 @@ always_ff@(posedge clk)
             end
         end
     end
-    always_ff@(posedge clk)
+    always_latch
     begin
         if(rst)
         begin
-            regfile <= 0;
+            regfile = 0;
         end
         else if(we)
         begin
-            regfile[{regfile_pointer,5'b0}+:32] <= c;
+            regfile[{regfile_pointer,5'b0}+:32] = c;
         end
         if(enFP)
         begin
             if((addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)&&!modeint16)
             begin
-                regfile[{{regfile_pointer-2'b10},5'b0}+:32]<=OUT[31:0];
+                if(en)
+                regfile[{{regfile_pointer-2'b10},5'b0}+:32]=OUT[31:0];
+                else
+                regfile[{{regfile_pointer-2'b1},5'b0}+:32]=OUT[31:0];
             end
         end
         if(en)
         begin
             if(modeint16)
-            regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
+            regfile[{{regfile_pointer-2'b1},5'b0}+:32]=OUT[31:0];
             else
             if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
             begin
-                regfile<=OUT;
+                regfile=OUT;
             end
         end
         //其它情况:Dontcare
         else if(cmen)
         begin
             assert(addr_type.datatype==params::INT4) else $error("CMENABLE only support INT4");
-            regfile<=OUT;
+            regfile=OUT;
         end
     end
     always_ff@(posedge clk)
