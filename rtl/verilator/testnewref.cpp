@@ -88,7 +88,11 @@ public:
             } else if constexpr(std::is_same_v<T,half>){
                 uint16_t h; std::memcpy(&h,&e,2);
                 out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
-            } else if constexpr(std::is_same_v<T,bfloat16>){
+            } else if constexpr (std::is_same_v<T,int>) {
+                uint32_t w; std::memcpy(&w, &e, 4);
+                out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
+            }
+            else if constexpr(std::is_same_v<T,bfloat16>){
                 uint16_t h=e.v;
                 out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
             } else if constexpr(std::is_same_v<T,int16_t>){
@@ -154,7 +158,7 @@ void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
                         uint32_t bits;
                         std::memcpy(&bits, &val, sizeof(bits));
                         std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
-                    } else if constexpr (std::is_same_v<T, half>) {
+                    } else if constexpr (std::is_same_v<T, half>||std::is_same_v<T, bfloat16>) {
                         uint16_t bits;
                         std::memcpy(&bits, &val, sizeof(bits));
                         std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
@@ -255,7 +259,7 @@ int main(int argc, char **argv) {
         std::random_device rd;
         std::mt19937 rng(rd());
 
-        FmaCase<int16_t, int16_t, int16_t, int, 4, 4, 4> case_int16("Test INT16", rng, 32);
-        //FmaCase<bfloat16, bfloat16, bfloat16, bfloat16, 16, 16, 16> case_bf16("Test BF16", rng, 32);
+        //FmaCase<int16_t, int16_t, int16_t, int, 4, 4, 4> case_int16("Test INT16", rng, 32);
+        FmaCase<bfloat16, bfloat16, bfloat16, bfloat16, 16, 16, 16> case_bf16("Test BF16", rng, 32);
     return 0;
 }

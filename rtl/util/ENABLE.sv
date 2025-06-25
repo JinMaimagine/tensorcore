@@ -12,7 +12,7 @@ output logic en,
 //TODO:实际只需要一次传递compute_type就行了,但这里是每个周期传递一次，后面改成一个模块吧
 input logic clk
 );
-assign en=enleft&&enabove;
+assign en=enright;
 always_ff @(posedge clk) begin
     assert(enabove==enleft) else $error("enabove and enleft should be equal");
     if (enleft) begin
@@ -39,7 +39,7 @@ output logic enbelow,
 output logic en,
 input logic clk
 );
-assign en=enleft&&enabove;
+assign en=enright;
 always_ff @(posedge clk) begin
     assert(enabove==enleft) else $error("enabove and enleft should be equal");
     if (enleft) begin

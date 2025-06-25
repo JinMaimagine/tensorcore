@@ -1,22 +1,3 @@
-// axi_memory_tb.cpp – Verilator testbench integrating test.cpp matrix generation
-// -----------------------------------------------------------------------------
-// Drives three matrices (C → A → B) for every combination of
-//   • shape  : (M32K16N8, M16K16N16, M8K16N32)
-//   • dtype  : FP32, FP16, INT8, INT4
-// Data are produced with the same templates/structures found in the user's
-// original **test.cpp** so that the DUT receives real matrix elements instead
-// of dummy random payload.  The burst timing still inserts a 0‑7 cycle random
-// gap between beats to emulate memory latency.
-// -----------------------------------------------------------------------------
-// Build example (waveform enabled with TRACE):
-//   verilator -Wall --trace -cc tensorcore.sv para_pkg.sv \
-//             -exe axi_memory_tb.cpp -CFLAGS "-std=c++17" && make -C obj_dir -j
-// -----------------------------------------------------------------------------
-
-#include "Vtensorcore.h"
-#include "verilated.h"
-#include "verilated_vcd_c.h"
-
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -29,80 +10,105 @@
 #include <type_traits>
 #include <vector>
 
-// --------------------- HALF‑PRECISION SUPPORT ------------------------------
-// Users’ test.cpp relies on the header‑only half.hpp from <https://sourceforge.net/projects/half>.
-// Place half.hpp next to this file or adjust include path accordingly.
+// ------------------ half & bfloat16 -----------------------------------------
 #include "half.hpp"
-
 using half_float::half;
 
-struct int4_t {                  // 4‑bit signed container
-    int8_t v;                    // lower nibble stores value in [‑8,7]
-    int4_t() : v(0) {}
-    explicit int4_t(int x) {
-        if (x < -8) x = -8; if (x > 7) x = 7; v = static_cast<int8_t>(x & 0xF);
+struct bfloat16 {
+    uint16_t v{};
+    constexpr bfloat16() = default;
+    explicit bfloat16(float f) {
+        uint32_t w; std::memcpy(&w, &f, 4);
+        uint32_t lsb   = (w >> 16) & 1;
+        uint32_t round = ((w & 0xFFFF) > 0x8000) ||
+                         ((w & 0xFFFF) == 0x8000 && lsb);
+        v = static_cast<uint16_t>((w >> 16) + round);
     }
-    operator int() const {
-        int t = v & 0xF; if (t & 0x8) t |= ~0xF; return t;
+    operator float() const {
+        uint32_t w = uint32_t(v) << 16;
+        float f; std::memcpy(&f, &w, 4); return f;
     }
 };
-inline std::ostream& operator<<(std::ostream& os, const int4_t& x) {
-    return os << static_cast<int>(x);
+inline std::ostream& operator<<(std::ostream& os, const bfloat16& x){
+    return os << float(x);
 }
 
-// -------------------------------- Matrix ------------------------------------
+// ------------------ int4 container ------------------------------------------
+struct int4_t {
+    int8_t v;
+    int4_t(): v(0) {}
+    explicit int4_t(int x){
+        if(x<-8) x=-8; if(x>7) x=7; v = int8_t(x & 0xF);
+    }
+    operator int() const { int t=v&0xF; if(t&0x8) t|=~0xF; return t;}
+};
+inline std::ostream& operator<<(std::ostream& os, const int4_t& x){
+    return os << int(x);
+}
 
-template <typename T, size_t R, size_t C>
-class Matrix {
+
+
+// ------------------ Matrix ---------------------------------------------------
+template<typename T,size_t R,size_t C>
+class Matrix{
 public:
-    Matrix() : data_(R * C) {}
+    Matrix(): data_(R*C) {}
+    T&       operator()(size_t i,size_t j)       { return data_[i*C+j];}
+    const T& operator()(size_t i,size_t j) const { return data_[i*C+j];}
 
-    T&       operator()(size_t i, size_t j)       { return data_[i * C + j]; }
-    const T& operator()(size_t i, size_t j) const { return data_[i * C + j]; }
-
-    void random_fill(std::mt19937& rng) {
-        if constexpr (std::is_same_v<T, int4_t>) {
-            std::uniform_int_distribution<int> d(-8, 7);
-            for (auto& e : data_) e = int4_t(d(rng));
-        } else if constexpr (std::is_same_v<T, int8_t>) {
-            std::uniform_int_distribution<int> d(-128, 127);
-            for (auto& e : data_) e = static_cast<int8_t>(d(rng));
-        } else if constexpr (std::is_same_v<T, half>) {
-            std::uniform_real_distribution<float> d(-8.0f, 8.0f); // wider range
-            for (auto& e : data_) e = half(d(rng));
-        } else {
-            std::uniform_real_distribution<float> d(-8.0f, 8.0f);
-            for (auto& e : data_) e = d(rng);
+    void random_fill(std::mt19937& rng){
+        if constexpr(std::is_same_v<T,int4_t>){
+            std::uniform_int_distribution<int> d(-8,7);
+            for(auto& e:data_) e = int4_t(d(rng));
+        } else if constexpr(std::is_same_v<T,int8_t>){
+            std::uniform_int_distribution<int> d(-128,127);
+            for(auto& e:data_) e = int8_t(d(rng));
+        } else if constexpr(std::is_same_v<T,int16_t>){
+            std::uniform_int_distribution<int> d(-200,200);
+            for(auto& e:data_) e = int16_t(d(rng));
+        } else if constexpr(std::is_same_v<T,bfloat16>){
+            std::uniform_real_distribution<float> d(-8.f,8.f);
+            for(auto& e:data_) e = bfloat16(d(rng));
+        } else if constexpr(std::is_same_v<T,half>){
+            std::uniform_real_distribution<float> d(-8.f,8.f);
+            for(auto& e:data_) e = half(d(rng));
+        } else { // float
+            std::uniform_real_distribution<float> d(-8.f,8.f);
+            for(auto& e:data_) e = d(rng);
         }
     }
 
-    void flatten(std::vector<uint8_t>& out) const {
-        for (const auto& e : data_) {
-            if constexpr (std::is_same_v<T, float>) {
-                uint32_t w; std::memcpy(&w, &e, 4);
-                out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
-            } else if constexpr (std::is_same_v<T, half>) {
-                uint16_t h; std::memcpy(&h, &e, 2);
-                out.insert(out.end(), reinterpret_cast<uint8_t*>(&h), reinterpret_cast<uint8_t*>(&h) + 2);
+    void flatten(std::vector<uint8_t>& out) const{
+        for(const auto& e:data_){
+            if constexpr(std::is_same_v<T,float>){
+                uint32_t w; std::memcpy(&w,&e,4);
+                out.insert(out.end(),(uint8_t*)&w,(uint8_t*)&w+4);
+            } else if constexpr(std::is_same_v<T,half>){
+                uint16_t h; std::memcpy(&h,&e,2);
+                out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
             } else if constexpr (std::is_same_v<T,int>) {
                 uint32_t w; std::memcpy(&w, &e, 4);
                 out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
             }
-            else {
-            out.push_back(static_cast<uint8_t>(static_cast<int>(e)));
+            else if constexpr(std::is_same_v<T,bfloat16>){
+                uint16_t h=e.v;
+                out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
+            } else if constexpr(std::is_same_v<T,int16_t>){
+                uint16_t w; std::memcpy(&w,&e,2);
+                out.insert(out.end(),(uint8_t*)&w,(uint8_t*)&w+2);
+            } else { // int8 / int4
+                out.push_back(uint8_t(int(e)));
             }
         }
     }
-
 private:
     std::vector<T> data_;
 };
 
-// ------------------------------ Utilities -----------------------------------
 
 template <typename T, size_t R, size_t C>
 void print_matrix(const Matrix<T,R,C>& M, const std::string& tag) {
-    std::cout << "\n>>> " << tag << " (" << R << "×" << C << ")\n";
+    std::cout << "print matrix\n>>> " << tag << " (" << R << "×" << C << ")\n";
     for (size_t i = 0; i < R; ++i) {
         for (size_t j = 0; j < C; ++j) {
             if constexpr (std::is_same_v<T, half>) std::cout << std::setw(10) << float(M(i,j));
@@ -124,9 +130,8 @@ void dump_buffer(const std::vector<uint8_t>& buf, size_t chunk) {
     }
 }
 
-// ------------------ FMA kernel (templated on all types) ---------------------
 
-// ------------------ FMA kernel (templated on all types) ---------------------
+
 template <typename TA, typename TB, typename TC, typename TD,
           size_t M, size_t K, size_t N>
 class FmaCase {
@@ -151,7 +156,7 @@ void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
                         uint32_t bits;
                         std::memcpy(&bits, &val, sizeof(bits));
                         std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
-                    } else if constexpr (std::is_same_v<T, half>) {
+                    } else if constexpr (std::is_same_v<T, half>||std::is_same_v<T, bfloat16>) {
                         uint16_t bits;
                         std::memcpy(&bits, &val, sizeof(bits));
                         std::cout << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << bits << " ";
@@ -175,17 +180,25 @@ void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
         Matrix<TD, M, N> D;
 
         // 执行 A * B + C 并保存到 D
+        std::cout<<M<<"x"<<K<<" * "<<K<<"x"<<N<<" + "<<M<<"x"<<N<<std::endl;
+        
         for (size_t i = 0; i < M; ++i) {
             for (size_t j = 0; j < N; ++j) {
                 float acc = 0.0f;
-                for (size_t k = 0; k < K; ++k)
-                    acc += static_cast<float>(A(i,k)) * static_cast<float>(B(k,j));
                 acc += static_cast<float>(C(i,j));
+                for(int step=0;step<8;step++)
+                {
+                for (size_t k = 0; k < K; k+=8){
+                    acc += static_cast<float>(A(i,k+step)) * static_cast<float>(B(k+step,j));
+                    int val=static_cast<int>(acc);
+                }
+            }
                 D(i,j) = static_cast<TD>(acc); // cast down if TD == half
             }
         }
 
         std::cout << "\n=== " << label << " ===";
+        std::cout<<"print matrix"<<std::endl;
         print_matrix(A, "A");
         print_matrix(B, "B");
         print_matrix(C, "C");
@@ -207,39 +220,40 @@ void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
     }
 };
 
+// ------------------------------ Utilities -----------------------------------
 
-// ------------------------------- CLI Parse ----------------------------------
 
-enum class DType { INT4, INT8, FP16, FP32 };
 
-static std::string lower(std::string s){ for(char& c:s) c=std::tolower(c); return s; }
+// ------------------ FMA kernel (templated on all types) ---------------------
+
+
+
+// ------------------ CLI ------------------------------------------------------
+enum class DType { INT4, INT8, INT16, FP16, BF16, FP32 };
+
+static std::string lower(std::string s){ for(char&c:s)c=std::tolower(c);return s;}
 
 static void usage(const char* exe){
-    std::cerr << "Usage: " << exe << " <dtype> [mixed] [chunk_size]\n"
-              << "  dtype: int4 | int8 | fp16 | fp32\n"
-              << "  mixed: (only for fp16) -> A,B fp16 ; C,D fp32\n"
-              << "  chunk_size: positive multiple of 8, default 32\n";
+    std::cerr<<"Usage: "<<exe<<" <dtype> [mixed] [chunk_size]\n"
+             <<"  dtype: int4 | int8 | int16 | fp16 | bf16 | fp32\n"
+             <<"  mixed: (only for fp16) A,B fp16 ; C,D fp32\n"
+             <<"  chunk_size: positive multiple of 8 (default 32)\n";
 }
+struct Options{ DType dtype; bool mixed=false; size_t chunk=32;};
 
-struct Options {
-    DType dtype;
-    bool  mixed  = false; // fp16‑mixed flag
-    size_t chunk = 32;
-};
+static Options parse_opts(int argc,char**argv){
+    if(argc<2){usage(argv[0]);std::exit(1);}
+    Options o; std::string d=lower(argv[1]);
+    if(d=="int4")           o.dtype=DType::INT4;
+    else if(d=="int8")      o.dtype=DType::INT8;
+    else if(d=="int16")     o.dtype=DType::INT16;
+    else if(d=="fp16"||d=="half") o.dtype=DType::FP16;
+    else if(d=="bf16"||d=="bfloat16") o.dtype=DType::BF16;
+    else if(d=="fp32"||d=="float")   o.dtype=DType::FP32;
+    else{ std::cerr<<"Unsupported dtype "<<argv[1]<<"\n";usage(argv[0]);std::exit(1);}
 
-static Options parse_opts(int argc, char** argv){
-    if(argc < 2){ usage(argv[0]); std::exit(1);}    
-    Options o;
-    std::string d = lower(argv[1]);
-    if(d=="int4") o.dtype=DType::INT4; else if(d=="int8") o.dtype=DType::INT8;
-    else if(d=="fp16"||d=="half"||d=="float16") o.dtype=DType::FP16;
-    else if(d=="fp32"||d=="float"||d=="float32") o.dtype=DType::FP32;
-    else { std::cerr<<"Unsupported dtype "<<argv[1]<<"\n"; usage(argv[0]); std::exit(1);}    
-
-    int idx = 2;
-    if(o.dtype==DType::FP16 && idx<argc && lower(argv[idx])=="mixed"){ o.mixed=true; ++idx; }
-
-    if(idx<argc){ int v=std::stoi(argv[idx]); if(v<=0||v%8){ std::cerr<<"chunk_size must be positive and multiple of 8\n"; std::exit(1);} o.chunk=v; }
-
+    int idx=2;
+    if(o.dtype==DType::FP16 && idx<argc && lower(argv[idx])=="mixed"){ o.mixed=true; ++idx;}
+    if(idx<argc){ int v=std::stoi(argv[idx]); if(v<=0||v%8){std::cerr<<"chunk must multiple 8\n";std::exit(1);} o.chunk=v;}
     return o;
 }

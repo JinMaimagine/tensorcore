@@ -1,7 +1,27 @@
 `include "ENABLE.sv"
 `include "para_pkg.sv"
 `include "MAC_top.sv"
-
+module simpleout(
+    input logic fp,
+    input logic clk,
+    input logic [127:0]IN,
+    input logic enable_simpleout,
+    output logic [127:0] OUT,
+    output outvalid
+);
+logic [127:0] OUT1;
+logic outvalid1;
+logic [127:0] OUT2;
+logic outvalid2;
+always_ff @( posedge clk )begin
+    OUT2<=IN;
+    outvalid2<=enable_simpleout;
+end
+assign OUT1 = IN;
+assign outvalid1 = enable_simpleout;
+assign OUT=fp ? OUT2 : OUT1;
+assign outvalid = fp ? outvalid2 : outvalid1;
+endmodule
 
 module PE
 #(parameter ID=0)
@@ -164,20 +184,37 @@ always_ff@(posedge clk)
     //稀疏下的低功耗支持
     //由于主要功耗单元来源于bit反转,
     //用latch实现了a_in=0的时候
-    /*
+    
     logic [31:0] a_in;
     logic [31:0] b_in;
     logic [127:0] IN3_in;
-    logic [31:0] data_out;
-    logic clk_in;
-    assign clk_in=clk&&a!=0&&b!=0;
+    logic [127:0] IN_in;
+    logic [127:0] OUT_sim;
+    logic [127:0] data_out;
+
+    logic enable_simpleout;
+    assign OUT=outvalid ? OUT_sim : data_out;
     always @(posedge clk) begin
     if (a != 0 && b != 0) begin
-        a_in <= a;
+        a_in <= a;//此时a,b保持不变,没有bit反转
         b_in <= b;
         IN3_in <= IN3;
     end
-    end*/
+    enable_simpleout<=(a==0||b==0);
+    IN_in<=IN3;
+    end
+    logic fp;
+    assign fp=(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)&&(!modeint16);
+    logic outvalid;
+    simpleout simpleout_u(
+        .enable_simpleout(enable_simpleout),
+        .fp(fp),
+        .clk(clk),
+        .IN(IN_in),
+        .OUT(OUT_sim),
+        .outvalid(outvalid)
+    );
+
 
     MAC_top #(
         .PARM_RM(3)
@@ -185,11 +222,11 @@ always_ff@(posedge clk)
         .clk(clk),
         .rst(rst),
         .Rounding_mode_i(3'b000),
-        .IN1(a),
-        .IN2(b),
-        .IN3(IN3),
+        .IN1(a_in),
+        .IN2(b_in),
+        .IN3(IN3_in),
         .mode(mode),
-        .OUT(OUT),//bug:这里有bug
+        .OUT(data_out),//bug:这里有bug
         // 目前只有浮点运算可能出现overflow
         .NV_o(NV_o),
         // output DZ_o, //would not occur in Multiplication or Addition
@@ -211,7 +248,7 @@ always_ff@(posedge clk)
         begin
             regfile_pointer<=regfile_pointer+1'b1;//4次之后归零
         end
-        else if(en)
+        else if(enleft)
         begin
             if(addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)
             begin
@@ -240,13 +277,13 @@ always_ff@(posedge clk)
         begin
             if((addr_type.datatype==params::FP32|addr_type.datatype==params::FP16)&&!modeint16)
             begin
-                regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
+                regfile[{{regfile_pointer-2'b10},5'b0}+:32]<=OUT[31:0];
             end
         end
         if(en)
         begin
             if(modeint16)
-            regfile[{regfile_pointer,5'b0}+:32]<=OUT[31:0];
+            regfile[{{regfile_pointer-2'b1},5'b0}+:32]<=OUT[31:0];
             else
             if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
             begin

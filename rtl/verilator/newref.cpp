@@ -1,7 +1,3 @@
-#include "Vtensorcore.h"
-#include "verilated.h"
-#include "verilated_vcd_c.h"
-
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -50,6 +46,8 @@ inline std::ostream& operator<<(std::ostream& os, const int4_t& x){
     return os << int(x);
 }
 
+
+
 // ------------------ Matrix ---------------------------------------------------
 template<typename T,size_t R,size_t C>
 class Matrix{
@@ -88,7 +86,11 @@ public:
             } else if constexpr(std::is_same_v<T,half>){
                 uint16_t h; std::memcpy(&h,&e,2);
                 out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
-            } else if constexpr(std::is_same_v<T,bfloat16>){
+            } else if constexpr (std::is_same_v<T,int>) {
+                uint32_t w; std::memcpy(&w, &e, 4);
+                out.insert(out.end(), reinterpret_cast<uint8_t*>(&w), reinterpret_cast<uint8_t*>(&w) + 4);
+            }
+            else if constexpr(std::is_same_v<T,bfloat16>){
                 uint16_t h=e.v;
                 out.insert(out.end(),(uint8_t*)&h,(uint8_t*)&h+2);
             } else if constexpr(std::is_same_v<T,int16_t>){
@@ -103,6 +105,34 @@ private:
     std::vector<T> data_;
 };
 
+
+template <typename T, size_t R, size_t C>
+void print_matrix(const Matrix<T,R,C>& M, const std::string& tag) {
+    std::cout << "\n>>> " << tag << " (" << R << "×" << C << ")\n";
+    std::cout<<"print matrix"<<std::endl;
+    for (size_t i = 0; i < R; ++i) {
+        for (size_t j = 0; j < C; ++j) {
+            if constexpr (std::is_same_v<T, half>) std::cout << std::setw(10) << float(M(i,j));
+            else if constexpr (std::is_same_v<T, int8_t>) std::cout << std::setw(10) << +M(i,j);
+            else                                   std::cout << std::setw(10) << M(i,j);
+        }
+        std::cout << '\n';
+    }
+}
+
+void dump_buffer(const std::vector<uint8_t>& buf, size_t chunk) {
+    for (size_t i = 0; i < buf.size(); i += chunk) {
+        std::cout << std::setw(6) << i << ": ";
+        for (size_t j = 0; j < chunk && i + j < buf.size(); ++j) {
+            std::cout << std::hex << std::setw(2) << std::setfill('0')
+                      << static_cast<int>(buf[i + j]) << ' ';
+        }
+        std::cout << std::dec << std::setfill(' ') << '\n';
+    }
+}
+
+
+
 template <typename TA, typename TB, typename TC, typename TD,
           size_t M, size_t K, size_t N>
 class FmaCase {
@@ -111,7 +141,7 @@ public:
 
     template <typename T, size_t R, size_t C>
 void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
-    static_assert(R % 8 == 0 && C % 8 == 0, "Matrix dimensions must be multiple of 8");
+    //static_assert(R % 8 == 0 && C % 8 == 0, "Matrix dimensions must be multiple of 8");
 
     std::cout << "\n>>> " << tag << " — " << R << "×" << C << " in 8×8 tiles (hex view)\n";
 
@@ -185,29 +215,7 @@ void print_matrix_tiles_hex(const Matrix<T, R, C>& D, const std::string& tag) {
 
 // ------------------------------ Utilities -----------------------------------
 
-template <typename T, size_t R, size_t C>
-void print_matrix(const Matrix<T,R,C>& M, const std::string& tag) {
-    std::cout << "\n>>> " << tag << " (" << R << "×" << C << ")\n";
-    for (size_t i = 0; i < R; ++i) {
-        for (size_t j = 0; j < C; ++j) {
-            if constexpr (std::is_same_v<T, half>) std::cout << std::setw(10) << float(M(i,j));
-            else if constexpr (std::is_same_v<T, int8_t>) std::cout << std::setw(10) << +M(i,j);
-            else                                   std::cout << std::setw(10) << M(i,j);
-        }
-        std::cout << '\n';
-    }
-}
 
-void dump_buffer(const std::vector<uint8_t>& buf, size_t chunk) {
-    for (size_t i = 0; i < buf.size(); i += chunk) {
-        std::cout << std::setw(6) << i << ": ";
-        for (size_t j = 0; j < chunk && i + j < buf.size(); ++j) {
-            std::cout << std::hex << std::setw(2) << std::setfill('0')
-                      << static_cast<int>(buf[i + j]) << ' ';
-        }
-        std::cout << std::dec << std::setfill(' ') << '\n';
-    }
-}
 
 // ------------------ FMA kernel (templated on all types) ---------------------
 
