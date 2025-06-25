@@ -107,13 +107,14 @@ module MAC_FP#(
         .bf16(IN2),
         .fp32(fp32_in2bf)
     );
-
+	logic change;
+	assign change=modebf16&&!mixed;
 	BF16toFP32 #(
 		.PARM_XLEN(32)
 	)
 	u_bf16_to_fp32_3
 	(
-		.mode(mixed),
+		.mode(change),
         .bf16(IN3[31:0]), // 只取IN3的低32位
         .fp32(fp32_in3bf)
     );
@@ -203,7 +204,7 @@ module MAC_FP#(
 	FP32toBF16 u_fp32_to_bf16 (
 		.fp32(mac32_result),
 		.bf16(FP32toBF16_result), // 直接复用FP32toFP16_result
-		.mode(modebf16), // 是否转换为BF16 mode=1 转换
+		.mode(FP32toFP16_convert_enb), // 是否转换为BF16 mode=1 转换
 		.OF_in(OF_o_to_FP32toFP16),
 		.UF_in(UF_o_to_FP32toFP16),
 		.NX_in(NX_o_to_FP32toFP16),

@@ -161,6 +161,24 @@ always_ff@(posedge clk)
         .en(cmen),
         .clk(clk)
     );
+    //稀疏下的低功耗支持
+    //由于主要功耗单元来源于bit反转,
+    //用latch实现了a_in=0的时候
+    /*
+    logic [31:0] a_in;
+    logic [31:0] b_in;
+    logic [127:0] IN3_in;
+    logic [31:0] data_out;
+    logic clk_in;
+    assign clk_in=clk&&a!=0&&b!=0;
+    always @(posedge clk) begin
+    if (a != 0 && b != 0) begin
+        a_in <= a;
+        b_in <= b;
+        IN3_in <= IN3;
+    end
+    end*/
+
     MAC_top #(
         .PARM_RM(3)
     ) _MAC(
@@ -227,7 +245,10 @@ always_ff@(posedge clk)
         end
         if(en)
         begin
-            if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8|modeint16)
+            if(modeint16)
+            regfile[{regfile_pointer,5'b0}+:32]<=OUT[31:0];
+            else
+            if(addr_type.datatype==params::INT4|addr_type.datatype==params::INT8)
             begin
                 regfile<=OUT;
             end
