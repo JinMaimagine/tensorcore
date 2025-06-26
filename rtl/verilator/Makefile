@@ -129,6 +129,48 @@ waves: compile
 		echo "GTKWave not found. Waveform saved as $(TOP).vcd"; \
 	fi
 
+# Run code optimization analysis
+optimize:
+	@echo "Running code optimization analysis..."
+	@if [ -f ../../scripts/code_optimizer.py ]; then \
+		python3 ../../scripts/code_optimizer.py $(TOPDIR); \
+	else \
+		echo "Code optimizer not found. Please ensure scripts/code_optimizer.py exists."; \
+	fi
+
+# Estimate FPGA resource utilization
+resource:
+	@echo "Estimating FPGA resource utilization..."
+	@if [ -f ../../scripts/resource_estimator.py ]; then \
+		python3 ../../scripts/resource_estimator.py \
+			--fpga $(or $(FPGA),zynq_ultrascale) \
+			--array-size $(ARRAY_SIZE) \
+			--data-type $(if $(filter mixed,$(PRECISION)),fp16,fp32); \
+	else \
+		echo "Resource estimator not found. Please ensure scripts/resource_estimator.py exists."; \
+	fi
+
+# Run performance analysis
+performance:
+	@echo "Running performance analysis..."
+	@if [ -f ../../scripts/performance_analysis.py ]; then \
+		python3 ../../scripts/performance_analysis.py --clock-freq 200; \
+	else \
+		echo "Performance analyzer not found. Please ensure scripts/performance_analysis.py exists."; \
+	fi
+
+# Run comprehensive test framework
+test-suite: compile
+	@echo "Running comprehensive test framework..."
+	@if [ -f ../../scripts/test_framework.py ]; then \
+		python3 ../../scripts/test_framework.py \
+			--build-dir $(OBJDIR) \
+			--exe V$(TOP) \
+			--test-types unit integration; \
+	else \
+		echo "Test framework not found. Please ensure scripts/test_framework.py exists."; \
+	fi
+
 # Show build information
 info:
 	@echo "TensorCore Build Configuration:"
@@ -153,6 +195,10 @@ help:
 	@echo "  test        - Run test suite"
 	@echo "  regression  - Run regression tests with all configurations"
 	@echo "  waves       - Generate and view waveforms"
+	@echo "  optimize    - Run code optimization analysis"
+	@echo "  resource    - Estimate FPGA resource utilization"
+	@echo "  performance - Run performance analysis"
+	@echo "  test-suite  - Run comprehensive test framework"
 	@echo "  clean       - Clean build artifacts"
 	@echo "  info        - Show build configuration"
 	@echo "  help        - Show this help message"
@@ -161,11 +207,15 @@ help:
 	@echo "  CONFIG      - Build configuration (debug|release) [default: debug]"
 	@echo "  PRECISION   - Precision mode (normal|mixed) [default: mixed]"
 	@echo "  ARRAY_SIZE  - Systolic array size [default: 8]"
+	@echo "  FPGA        - Target FPGA family for resource estimation [default: zynq_ultrascale]"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make compile CONFIG=release PRECISION=mixed"
 	@echo "  make run ARRAY_SIZE=16"
 	@echo "  make regression"
+	@echo "  make optimize"
+	@echo "  make resource FPGA=kintex_ultrascale"
+	@echo "  make performance"
 
 # Clean build artifacts
 clean:
@@ -174,7 +224,7 @@ clean:
 	rm -f *.vcd *.fst
 
 # Declare phony targets
-.PHONY: all compile run lint test regression waves info help clean
+.PHONY: all compile run lint test regression waves optimize resource performance test-suite info help clean
 
 # Default target
 all: compile
