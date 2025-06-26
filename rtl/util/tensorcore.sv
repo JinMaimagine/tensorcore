@@ -5,12 +5,16 @@
 `include "addrgen.sv"
 `include "control.sv"
 `include "systolic.sv" 
-//基本的调度框架
-//systolic遵循一个原则:要么一直流动,要么保持，PE本身遵循这个规律,边界也要遵循这个规律
+// TensorCore: High-performance tensor processing unit with systolic array architecture
+// Supports multiple precision formats (FP32, FP16, INT8, INT4) with mixed precision
+// 
+// Design principle: Systolic array follows consistent flow - either continuous flow or hold
+// Both PE units and boundaries follow this principle for optimal data movement
+
 module tensorcore #(
-parameter L=8,
-parameter ENTRYS=1024,
-parameter WIDTH=32
+    parameter L=8,
+    parameter ENTRYS=1024,
+    parameter WIDTH=32
 )(
     input logic clk,
     input logic rst,
@@ -36,10 +40,40 @@ parameter WIDTH=32
     input logic modeint16
 );
 logic [31:0] output_burst_num;
-//TODO:always logic
+
+// Address generation type configuration
 params::addrgen_t addrtype;
-assign addrtype.datatype=compute_type.data_type;
-assign addrtype.rc=compute_type.compute_shape==params::M32K16N8?2'b00:(compute_type.compute_shape==params::M16K16N16?2'b01:2'b10);//TODO:error这里可能有问题
+assign addrtype.datatype = compute_type.data_type;
+assign addrtype.rc = compute_type.compute_shape == params::M32K16N8 ? 2'b00 : 
+                    (compute_type.compute_shape == params::M16K16N16 ? 2'b01 : 2'b10);
+
+// Function to calculate burst parameters based on data type and mixed precision mode
+function automatic void calc_burst_params(
+    input params::type_t data_type,
+    input logic mixed_precision,
+    output logic [5:0] burst_num,
+    output logic [2:0] burst_size
+);
+    burst_num = 6'd31; // Default burst length
+    case(data_type)
+        params::FP32: begin
+            burst_size = $clog2(256/8); // 32 bytes per beat
+        end
+        params::FP16: begin
+            if (!mixed_precision) begin
+                burst_size = $clog2(128/8); // 16 bytes per beat
+            end else begin
+                burst_size = $clog2(256/8); // 32 bytes per beat for mixed precision
+            end
+        end
+        params::INT8: begin
+            burst_size = $clog2(64/8); // 8 bytes per beat
+        end
+        default: begin // INT4
+            burst_size = $clog2(32/8); // 4 bytes per beat
+        end
+    endcase
+endfunction
 params::SYSTOLIC_pkg_t systolic;
 params::state_t state;
 params::state_t next_state;
