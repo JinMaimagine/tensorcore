@@ -1,3 +1,6 @@
+`ifndef PARAMS_PKG_SV
+`define PARAMS_PKG_SV
+
 package params;
 //always块必须能综合在一起,不然出现多个always块
 //取C：放C，取出A,B,开始systolic,继续doublebuffer取B,每完成一轮,取C，取A，继续doublebuffer取B，直到完成
@@ -96,3 +99,5 @@ typedef enum logic [STATE_BIT-1:0] {
 
 
 endpackage
+
+`endif // PARAMS_PKG_SV
