@@ -14,14 +14,13 @@ $(OBJDIR)/V$(TOP).mk:
 	--Wno-UNUSEDSIGNAL \
 	--Wno-CASEINCOMPLETE \
 	--Wno-UNUSEDPARAM \
-	--Wno-WIDTHTRUNC \
-	--Wno-WIDTHEXPAND \
-	--Wno-GENUNNAMED \
+	--Wno-WIDTH \
 	--Wno-TIMESCALEMOD \
 	--Wno-DECLFILENAME \
 	--Wno-VARHIDDEN \
 	--Wno-PINCONNECTEMPTY \
 	--Wno-MODDUP \
+	--Wno-MULTITOP \
 	--Wno-EOFNEWLINE \
 	-I$(abspath $(CURDIR)/../util) \
 	-I$(abspath $(CURDIR)/../util/MAC) \
@@ -43,7 +42,29 @@ compile: $(OBJDIR)/V$(TOP).mk $(wildcard $(TOPDIR)/*.sv)
 run: compile
 	$(OBJDIR)/V$(TOP)
 
+# RTL lint check
+lint:
+	verilator --lint-only -Wall \
+	--Wno-LATCH \
+	--Wno-UNDRIVEN \
+	--Wno-UNUSEDSIGNAL \
+	--Wno-CASEINCOMPLETE \
+	--Wno-UNUSEDPARAM \
+	--Wno-WIDTH \
+	--Wno-TIMESCALEMOD \
+	--Wno-DECLFILENAME \
+	--Wno-VARHIDDEN \
+	--Wno-PINCONNECTEMPTY \
+	--Wno-MODDUP \
+	--Wno-MULTITOP \
+	--Wno-EOFNEWLINE \
+	-I$(abspath $(CURDIR)/../util) \
+	-I$(abspath $(CURDIR)/../util/MAC) \
+	-I$(abspath $(CURDIR)/../util/MAC/mac) \
+	$(TOPDIR)/$(TOP).sv \
+	--top-module $(TOP)
+
 # 清理
-.PHONY: all compile run clean
+.PHONY: all compile run clean lint
 clean:
 	rm -rf $(OBJDIR)
