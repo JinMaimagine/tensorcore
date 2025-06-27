@@ -1,8 +1,116 @@
-.vscode
+# TensorCore .gitignore
+# Build artifacts and temporary files
+
+# IDE and editor files
+.vscode/
 .clangd
-clear.sh
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
-2025年集创赛中科芯杯数据集说明
+
+# Build scripts and patches
+clear.sh
 mac_modified_FP32toFP16.patch
-rtl/util/MAC/build
-obj_dir
+
+# Competition data (large files)
+2025年集创赛中科芯杯数据集说明/
+
+# Verilator build outputs
+obj_dir/
+rtl/util/MAC/build/
+*.mk
+*.d
+*.o
+*.a
+
+# Waveform files
+*.vcd
+*.fst
+*.ghw
+*.lxt
+*.lxt2
+
+# Simulation outputs
+*.log
+*.out
+*.dump
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Synthesis outputs
+*.bit
+*.ltx
+*.rpt
+*.dcp
+*.xpr
+vivado*
+.Xil/
+
+# Documentation build
+docs/_build/
+*.aux
+*.synctex.gz
+*.toc
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Test outputs
+test_results/
+coverage/
+*.cov
+
+# Quartus files (if using Intel FPGA)
+*.qpf
+*.qsf
+*.qws
+*.rpt
+*.summary
+*.pin
+*.jdi
+*.sof
+*.pof
+db/
+incremental_db/
+output_files/
+
+# Modelsim/QuestaSim
+work/
+transcript
+*.wlf
+*.vstf
+
+# Xilinx files
+*.jou
+*.str
+*.xpe
+*.hw
+*.ip_user_files
+*.cache
+*.runs
+*.sim
+*.srcs/sources_1/ip
+*.gen
+
+# Project specific exclusions
+说明.aux
+说明.log
+说明.out
+说明.synctex.gz
+说明.toc
